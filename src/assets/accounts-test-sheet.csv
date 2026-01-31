@@ -1,0 +1,45 @@
+Account Number,Product Type,Bank,Branch,Company,Value,Currency,Current Rate (%),Start Date,End Date,Duration (Days),Interest Up To Date,Total Outstanding,Total Interest,Estimated Total,Status
+08201002006,Current Account,Hatton National Bank,Kaduwela Branch,Lion Brewery Sri Lanka,,LKR,N/A,2026-01-30,N/A,N/A,N/A,N/A,N/A,N/A,Active
+LB0001112223,Short Term Loan,Citi Bank,Head Office Branch,Luxury Brands,2000,LKR,10,2026-01-29,2026-03-01,1 month,1.1,2001.1,16.99,2016.99,Active
+GBP002,Short Term Loan,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,3600000,LKR,N/A,2026-01-29,2027-01-29,1 year,N/A,3600000,N/A,3600000,Active
+082030042908,Short Term Loan,Standard Chartered,Fort Branch,Lion Brewery Sri Lanka,250000,SGD,10,2026-01-28,2027-01-28,1 year,208.33,250208.33,25347.22,275347.22,Active
+00-3010012018As,Current Account,Hatton National Bank,Head Office Branch,Lion Brewery Sri Lanka,,LKR,N/A,2026-01-28,N/A,N/A,N/A,N/A,N/A,N/A,Active
+003010012018,Current Account,Hatton National Bank,Head Office Branch,Lion Brewery Sri Lanka,,LKR,N/A,2026-01-28,N/A,N/A,N/A,N/A,N/A,N/A,Active
+004,Fixed Deposit,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,1200000,LKR,10,2026-01-28,2026-04-28,3 months,986.3,1200986.3,29589.04,1229589.04,Renewed
+EXP,Fixed Deposit,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,1100000,LKR,10,2026-01-28,2027-01-28,1 year,904.11,1100904.11,110000,1210000,Renewed
+N002,Fixed Deposit,NDB Bank,Head Office Branch,New Company 1,250000,LKR,25,2026-01-27,2027-01-27,1 year,684.93,250684.93,62500,312500,Active
+N001,Fixed Deposit,Nation Trust Bank,Union Place,New Company 1,450000,LKR,20,2026-01-27,2028-01-27,2 years,986.3,450986.3,180000,630000,Active
+New01,Savings Account,Commercial Bank,Head Office Branch,Lion Brewery Sri Lanka,,LKR,N/A,2026-01-27,N/A,N/A,N/A,N/A,N/A,N/A,Active
+0039545005,Savings Account,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,,LKR,N/A,2026-01-26,N/A,N/A,N/A,N/A,N/A,N/A,Active
+0039545002,Current Account,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,,LKR,N/A,2026-01-26,N/A,N/A,N/A,N/A,N/A,N/A,Active
+0039545004,Savings Account,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,,EUR,N/A,2026-01-26,N/A,N/A,N/A,N/A,N/A,N/A,Active
+0039545003,Current Account,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,,LKR,N/A,2026-01-26,N/A,N/A,N/A,N/A,N/A,N/A,Active
+0039545001,Current Account,Bank of China,Head Office Branch,New Company 1,,LKR,N/A,2026-01-26,N/A,N/A,N/A,N/A,N/A,N/A,Active
+8080,Current Account,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,,LKR,N/A,2026-01-24,N/A,N/A,N/A,N/A,N/A,N/A,Active
+1421310601,Savings Account,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,,LKR,N/A,2026-01-24,N/A,N/A,N/A,N/A,N/A,N/A,Active
+STLUSD,Short Term Loan,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,10000000,USD,10,2026-01-23,2027-01-23,1 year,21917.81,10021917.81,1000000,11000000,Active
+FDEUR001,Fixed Deposit,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,1000,EUR,10,2026-01-23,2026-07-23,6 months,2.19,1002.19,49.59,1049.59,Active
+FDUSD1,Fixed Deposit,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,100000,USD,10,2026-01-23,2027-01-23,1 year,219.18,100219.18,10000,110000,Active
+STL001,Short Term Loan,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,10000,LKR,10,2026-01-05,2026-02-05,1 month,71.23,10071.23,84.93,10084.93,Active
+Newusd01,Current Account,People's Bank,Head Office Branch,New Company 1,,LKR,N/A,2025-12-26,N/A,N/A,N/A,N/A,N/A,N/A,Active
+02468,Fixed Deposit,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,20000,GBP,10,2025-12-21,2028-12-21,3 years,224.66,20224.66,6005.48,26005.48,Active
+0039545000,Current Account,Citi Bank,Head Office Branch,Lion Brewery Sri Lanka,,LKR,N/A,2025-12-18,N/A,N/A,N/A,N/A,N/A,N/A,Active
+CAO1,Current Account,Citi Bank,Head Office Branch,Lion Brewery Sri Lanka,,LKR,N/A,2025-12-15,N/A,N/A,N/A,N/A,N/A,N/A,Active
+0039545-00-0,Current Account,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,,LKR,N/A,2025-12-14,N/A,N/A,N/A,N/A,N/A,N/A,Active
+SA001,Savings Account,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,,LKR,N/A,2025-12-12,N/A,N/A,N/A,N/A,N/A,N/A,Active
+CA001,Current Account,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,,GBP,N/A,2025-12-12,N/A,N/A,N/A,N/A,N/A,N/A,Active
+Test 04,Long Term Loan,New Bank 1,Main Branch,Lion Brewery Sri Lanka,1200000,LKR,N/A,2025-12-01,2027-12-01,2 years,N/A,1200000,N/A,1200000,Active
+FD003,Fixed Deposit,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,1500000,LKR,10,2025-11-26,2029-11-26,4 years,27123.29,1527123.29,600410.96,2100410.96,Active
+STL 001,Short Term Loan,Citi Bank,Head Office Branch,Lion Brewery Sri Lanka,120000000,LKR,10,2025-11-25,2026-11-25,1 year,2202739.73,122202739.7,12000000,132000000,Active
+ch 0001,Fixed Deposit,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,1200000,LKR,10,2025-11-25,2026-11-25,1 year,22027.4,1222027.4,120000,1320000,Withdrawn
+slab test 111,Long Term Loan,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,1500000,LKR,N/A,2025-11-18,2027-11-18,2 years,N/A,1500000,N/A,1500000,Draft
+FD003,Fixed Deposit,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,1,EUR,10,2025-11-18,2026-11-18,1 year,0.02,1.02,0.1,1.1,Withdrawn
+slab test,Long Term Loan,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,1000000,LKR,N/A,2025-11-12,2027-11-12,2 years,N/A,1000000,N/A,1000000,Draft
+test,Fixed Deposit,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,1,LKR,-100000000000,2025-11-08,N/A,N/A,N/A,1,N/A,1,Draft
+LTL36,Long Term Loan,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,3600000,LKR,N/A,2025-01-14,2028-01-14,3 years,N/A,3600000,N/A,3600000,Draft
+FD003,Fixed Deposit,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,1200000,LKR,10,2025-01-14,2026-01-14,1 year,120000,1320000,120000,1320000,Draft
+LTL,Long Term Loan,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,6000000,LKR,N/A,2025-01-14,2028-01-14,3 years,N/A,6000000,N/A,6000000,Active
+FD003,Fixed Deposit,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,100000,LKR,10,2025-01-01,2026-01-01,1 year,10000,110000,10000,110000,Draft
+LTL002,Long Term Loan,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,100000,LKR,N/A,2025-01-01,2027-01-01,2 years,N/A,100000,N/A,100000,Draft
+LTL001,Long Term Loan,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,100000,LKR,10,2025-01-01,2027-01-01,2 years,10821.92,110821.92,20000,120000,Draft
+FD001,Fixed Deposit,Bank of China,Head Office Branch,Lion Brewery Sri Lanka,100000,LKR,10,2025-01-01,2026-01-01,1 year,10000,110000,10000,110000,Draft
