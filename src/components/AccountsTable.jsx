@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
 import { 
   Search, 
   SlidersHorizontal, 
@@ -11,7 +12,9 @@ import {
   Settings,
   MoreVertical,
   AlertCircle,
-  Loader2
+  Loader2,
+  RotateCw,
+  X
 } from 'lucide-react';
 import csvFile from '../assets/accounts-test-sheet.csv?raw';
 
@@ -21,10 +24,41 @@ const AccountsTable = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const [selectedRows, setSelectedRows] = useState(new Set());
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilters, setActiveFilters] = useState({});
+  const [tempFilters, setTempFilters] = useState({});
   
   const lastScrollTopA = useRef(0);
   const tableContainerRef = useRef(null);
   const ITEMS_PER_BATCH = 20;
+
+  const filteredData = useMemo(() => {
+    return allData.filter(row => {
+      // Global Search
+      const searchMatch = !searchQuery || Object.values(row).some(val => 
+        String(val).toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      
+      // Granular Filters
+      const filterMatch = Object.entries(activeFilters).every(([key, value]) => {
+        if (!value) return true;
+        // Map UI keys to row object keys
+        const rowKeyMap = {
+          'Account No.': 'accountNumber',
+          'Bank': 'bank',
+          'Branch': 'branch',
+          'Type': 'type',
+          'Currency': 'currency',
+          'Status': 'status'
+        };
+        const actualKey = rowKeyMap[key] || key;
+        return String(row[actualKey]).toLowerCase().includes(value.toLowerCase());
+      });
+
+      return searchMatch && filterMatch;
+    });
+  }, [allData, searchQuery, activeFilters]);
 
   useEffect(() => {
     const parseCSV = (csvText) => {
@@ -66,62 +100,18 @@ const AccountsTable = () => {
     }
   }, []);
 
-  const loadMoreRows = () => {
-    // We need to use refs or functional state updates to access latest state in some contexts,
-    // but here we rely on the component re-render cycle.
-    if (!hasMore) return; 
-
-    setIsLoading(true);
-    
-    // Simulate network delay for effect
-    setTimeout(() => {
-      setVisibleData(prev => {
-        const currentLength = prev.length;
-        // Don't rely on allData state directly potentially being stale if effect closure, 
-        // but here allData is stable after initial load.
-        // Better: access current allData via closure or ref if it changed, but it doesn't.
-        
-        // However, inside setTimeout, we must be careful. 
-        // Since allData is constant after mount (for now), we can use it directly 
-        // IF we assume this closure captures it. 
-        // But to be safe, let's just use the length logic.
-        
-        // NOTE: In a real app, 'allData' might not be available in this scope correctly if it changed.
-        // But since we only set it once on mount, it's fine.
-        
-        const nextBatch = allData.slice(currentLength, currentLength + ITEMS_PER_BATCH);
-        
-        if (currentLength + nextBatch.length >= allData.length) {
-          setHasMore(false);
-        }
-        
-        return [...prev, ...nextBatch];
-      });
-      
-      setIsLoading(false);
-    }, 600); 
-  };
-
   // Auto-fill screen if content is too short to scroll
   useEffect(() => {
     const checkScrollFill = () => {
       if (tableContainerRef.current && hasMore && !isLoading && visibleData.length > 0) {
         const { scrollHeight, clientHeight } = tableContainerRef.current;
         if (scrollHeight <= clientHeight) {
-          // Content is shorter than screen, load more immediately
-          
-          // We bypass the delay/loader for initial auto-fill to make it snappy,
-          // OR we can just call loadMoreRows() if we want the spinner.
-          // Let's call loadMoreRows to show the user "work is happening" 
-          // or ideally just fill it silently. 
-          // Let's force fill silently for better UX.
-          
           const currentLength = visibleData.length;
-          const nextBatch = allData.slice(currentLength, currentLength + ITEMS_PER_BATCH);
+          const nextBatch = filteredData.slice(currentLength, currentLength + ITEMS_PER_BATCH);
           
           if (nextBatch.length > 0) {
             setVisibleData(prev => [...prev, ...nextBatch]);
-            if (currentLength + nextBatch.length >= allData.length) {
+            if (currentLength + nextBatch.length >= filteredData.length) {
               setHasMore(false);
             }
           }
@@ -129,10 +119,8 @@ const AccountsTable = () => {
       }
     };
     
-    // Check after render
     checkScrollFill();
-    
-  }, [visibleData, hasMore, isLoading, allData]);
+  }, [visibleData, hasMore, isLoading, filteredData]);
 
 
   const handleScroll = (e) => {
@@ -158,6 +146,57 @@ const AccountsTable = () => {
     }
   };
 
+  const toggleRowSelection = (id) => {
+    const newSelected = new Set(selectedRows);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedRows(newSelected);
+  };
+
+  const toggleAllSelection = () => {
+    if (selectedRows.size === visibleData.length) {
+      setSelectedRows(new Set());
+    } else {
+      setSelectedRows(new Set(visibleData.map(row => row.id)));
+    }
+  };
+
+
+
+  // Update visible data when filtered data changes or scrolling happens
+  useEffect(() => {
+    setVisibleData(filteredData.slice(0, ITEMS_PER_BATCH));
+    setHasMore(filteredData.length > ITEMS_PER_BATCH);
+  }, [filteredData]);
+
+  const loadMoreRows = () => {
+    if (!hasMore) return; 
+    setIsLoading(true);
+    setTimeout(() => {
+      setVisibleData(prev => {
+        const currentLength = prev.length;
+        const nextBatch = filteredData.slice(currentLength, currentLength + ITEMS_PER_BATCH);
+        if (currentLength + nextBatch.length >= filteredData.length) {
+          setHasMore(false);
+        }
+        return [...prev, ...nextBatch];
+      });
+      setIsLoading(false);
+    }, 600); 
+  };
+
+  const handleApplyFilters = () => {
+    setActiveFilters(tempFilters);
+  };
+
+  const handleClearFilters = () => {
+    setTempFilters({});
+    setActiveFilters({});
+  };
+
   return (
     <div className="page-content">
       <div className={`page-header ${!isHeaderVisible ? 'header-hidden' : ''}`}>
@@ -165,7 +204,7 @@ const AccountsTable = () => {
           <div className="page-title">
             <h1>All Accounts</h1>
           </div>
-          <div className="page-subtitle">Showing {visibleData.length} of {allData.length} results</div>
+          <div className="page-subtitle">Showing {visibleData.length} of {filteredData.length} results</div>
         </div>
         <div className="actions-row">
           <button className="btn btn-outline">
@@ -181,17 +220,78 @@ const AccountsTable = () => {
       <div className="table-controls">
         <div className="search-bar">
           <Search size={16} className="text-secondary" />
-          <input type="text" placeholder="Search" className="search-input" />
-          <SlidersHorizontal size={16} className="text-secondary" style={{ cursor: 'pointer' }} />
+          <input 
+            type="text" 
+            placeholder="Search" 
+            className="search-input" 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
+            <button 
+              className="clear-search"
+              onClick={() => setSearchQuery('')}
+              title="Clear search"
+            >
+              <X size={14} />
+            </button>
+          )}
+
+          <Dialog.Root onOpenChange={(open) => { if(open) setTempFilters(activeFilters); }}>
+            <Dialog.Trigger asChild>
+               <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                  <SlidersHorizontal size={16} className="text-secondary" />
+               </div>
+            </Dialog.Trigger>
+            <Dialog.Portal>
+              <Dialog.Overlay className="dialog-overlay" />
+              <Dialog.Content className="dialog-content">
+                <Dialog.Title className="dialog-title">Advanced Filters</Dialog.Title>
+                <div className="filter-form">
+                  {[
+                    'Account No.', 'Bank', 'Branch', 'Type', 'Currency', 'Status'
+                  ].map(field => (
+                    <div className="filter-field" key={field}>
+                      <label>{field}</label>
+                      <input 
+                        type="text" 
+                        placeholder={`Filter by ${field.toLowerCase()}`}
+                        value={tempFilters[field] || ''}
+                        onChange={(e) => setTempFilters(prev => ({ ...prev, [field]: e.target.value }))}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="dialog-actions">
+                  <button className="btn-clear" onClick={handleClearFilters}>Clear all</button>
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                    <Dialog.Close asChild>
+                      <button className="btn-cancel">Cancel</button>
+                    </Dialog.Close>
+                    <Dialog.Close asChild>
+                      <button className="btn-search" onClick={handleApplyFilters}>Search</button>
+                    </Dialog.Close>
+                  </div>
+                </div>
+              </Dialog.Content>
+            </Dialog.Portal>
+          </Dialog.Root>
         </div>
         
         <div className="control-icons">
           <div className="control-group-left">
-            <RotateCcw className="control-icon" size={16} />
-            <div className="vertical-divider"></div>
-            <SquareArrowOutUpRight className="control-icon" size={16} />
-            <Pencil className="control-icon" size={16} />
-            <Trash2 className="control-icon" size={16} />
+            <div className="perma-controls">
+              <RotateCw className="control-icon" size={16} />
+            </div>
+            
+            {selectedRows.size > 0 && (
+              <div className="temp-icons">
+                <div className="vertical-divider"></div>
+                <SquareArrowOutUpRight className="control-icon" size={16} />
+                <Pencil className="control-icon" size={16} />
+                <Trash2 className="control-icon" size={16} />
+              </div>
+            )}
           </div>
 
           <div className="control-group-right">
@@ -217,7 +317,11 @@ const AccountsTable = () => {
           <thead style={{ position: 'sticky', top: 0, zIndex: 20 }}>
             <tr>
               <th className="checkbox-col">
-                <input type="checkbox" />
+                <input 
+                  type="checkbox" 
+                  checked={visibleData.length > 0 && selectedRows.size === visibleData.length}
+                  onChange={toggleAllSelection}
+                />
               </th>
               <th>ACCOUNT NO.</th>
               <th>BANK</th>
@@ -237,7 +341,11 @@ const AccountsTable = () => {
             {visibleData.map((row) => (
               <tr key={row.id}>
                 <td className="checkbox-col">
-                  <input type="checkbox" />
+                  <input 
+                    type="checkbox" 
+                    checked={selectedRows.has(row.id)}
+                    onChange={() => toggleRowSelection(row.id)}
+                  />
                 </td>
                 <td style={{ fontWeight: 500 }}>{row.accountNumber}</td>
                 <td style={{ fontWeight: 600 }}>{row.bank}</td>

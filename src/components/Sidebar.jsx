@@ -15,10 +15,14 @@ import {
   Bell,
 } from "lucide-react";
 
+import lionLogo from "../assets/lion-logo.png";
+
 const Sidebar = () => {
   return (
     <div className="sidebar">
-      <div className="sidebar-header">LION</div>
+      <div className="sidebar-header">
+        <img src={lionLogo} alt="Lion Logo" className="logo-img" />
+      </div>
 
       <div className="sidebar-nav">
         <a href="#" className="nav-item">
