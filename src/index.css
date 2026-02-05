@@ -132,6 +132,55 @@ body {
   padding-left: calc(var(--spacing-lg) - 3px);
 }
 
+.nav-item-expandable {
+  justify-content: space-between;
+}
+
+.nav-item-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chevron-icon {
+  transition: transform 0.2s ease;
+  color: #78716c;
+}
+
+.chevron-icon.open {
+  transform: rotate(180deg);
+}
+
+.sidebar-sub-nav {
+  padding: 4px 0 8px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sub-nav-item {
+  display: flex;
+  align-items: center;
+  padding: 8px var(--spacing-lg) 8px calc(var(--spacing-sm) + 28px);
+  font-size: 13px;
+  color: #a8a29e; /* Lighter tan/grey */
+  text-decoration: none;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+.sub-nav-item:hover {
+  color: var(--sidebar-text-active);
+  background-color: var(--sidebar-hover);
+}
+
+.sub-nav-item svg {
+  color: #78716c;
+}
+
+.sub-nav-item:hover svg {
+  color: var(--sidebar-text-active);
+}
+
 /* Main Content */
 .main-content {
   margin-left: var(--sidebar-width);

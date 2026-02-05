@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   LayoutDashboard,
   Book,
@@ -10,14 +10,45 @@ import {
   Calendar,
   Sliders,
   Users,
+  User,
   History,
   Settings,
   Bell,
+  ChevronDown,
+  Landmark,
+  BarChart3,
+  MapPin,
+  Briefcase,
+  CircleDollarSign,
+  Clock,
+  Percent,
+  Coins,
+  Tag
 } from "lucide-react";
 
 import lionLogo from "../assets/lion-logo.png";
 
 const Sidebar = () => {
+  const [isParametersOpen, setIsParametersOpen] = useState(false);
+  const [isUsersOpen, setIsUsersOpen] = useState(false);
+
+  const subItems = [
+    { name: "Banks", icon: <Landmark size={16} /> },
+    { name: "Benchmarks", icon: <BarChart3 size={16} /> },
+    { name: "Branches", icon: <MapPin size={16} /> },
+    { name: "Companies", icon: <Briefcase size={16} /> },
+    { name: "Currencies", icon: <CircleDollarSign size={16} /> },
+    { name: "Durations", icon: <Clock size={16} /> },
+    { name: "Interest Rates", icon: <Percent size={16} /> },
+    { name: "Exchange Rates", icon: <Coins size={16} /> },
+    { name: "Purpose Tags", icon: <Tag size={16} /> },
+  ];
+
+  const usersSubItems = [
+    { name: "Users", icon: <User size={16} /> },
+    { name: "User Groups", icon: <Users size={16} /> },
+  ];
+
   return (
     <div className="sidebar">
       <div className="sidebar-header">
@@ -59,14 +90,57 @@ const Sidebar = () => {
         </a>
 
         <div className="nav-group-label">Setup</div>
-        <a href="#" className="nav-item">
-          <Sliders size={18} />
-          Parameters
-        </a>
-        <a href="#" className="nav-item">
-          <Users size={18} />
-          User Groups
-        </a>
+        
+        <div 
+          className="nav-item nav-item-expandable" 
+          onClick={() => setIsParametersOpen(!isParametersOpen)}
+        >
+          <div className="nav-item-content">
+            <Sliders size={18} />
+            Parameters
+          </div>
+          <ChevronDown 
+            size={16} 
+            className={`chevron-icon ${isParametersOpen ? 'open' : ''}`} 
+          />
+        </div>
+
+        {isParametersOpen && (
+          <div className="sidebar-sub-nav">
+            {subItems.map((item) => (
+              <a key={item.name} href="#" className="sub-nav-item">
+                {item.icon}
+                {item.name}
+              </a>
+            ))}
+          </div>
+        )}
+
+        <div 
+          className="nav-item nav-item-expandable" 
+          onClick={() => setIsUsersOpen(!isUsersOpen)}
+        >
+          <div className="nav-item-content">
+            <Users size={18} />
+            Users & Groups
+          </div>
+          <ChevronDown 
+            size={16} 
+            className={`chevron-icon ${isUsersOpen ? 'open' : ''}`} 
+          />
+        </div>
+
+        {isUsersOpen && (
+          <div className="sidebar-sub-nav">
+            {usersSubItems.map((item) => (
+              <a key={item.name} href="#" className="sub-nav-item">
+                {item.icon}
+                {item.name}
+              </a>
+            ))}
+          </div>
+        )}
+
         <a href="#" className="nav-item">
           <History size={18} />
           Change Log
