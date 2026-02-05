@@ -287,7 +287,8 @@ body {
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.search-bar:focus-within {
+.search-bar:focus-within,
+.search-bar.is-expanded {
   width: 480px;
   border-color: var(--color-primary-action);
 }
@@ -671,3 +672,48 @@ input[type="checkbox"] {
   from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }
   to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+.filter-trigger-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.filter-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  min-width: 14px;
+  height: 14px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  box-shadow: 0 0 0 2px white;
+  animation: badgePop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes badgePop {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.highlight {
+  background-color: #ffd54f; /* Amber 300 - theme compatible gold */
+  color: #111827;
+  padding: 0 2px;
+  border-radius: 2px;
+  margin: 0 -1px;
+}
+

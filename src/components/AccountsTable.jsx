@@ -18,6 +18,25 @@ import {
 } from 'lucide-react';
 import csvFile from '../assets/accounts-test-sheet.csv?raw';
 
+const HighlightText = ({ text, highlight }) => {
+  if (!highlight || !highlight.trim()) {
+    return <span>{text}</span>;
+  }
+
+  const parts = String(text).split(new RegExp(`(${highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'));
+  return (
+    <span>
+      {parts.map((part, i) => 
+        part.toLowerCase() === highlight.toLowerCase() ? (
+          <mark key={i} className="highlight">{part}</mark>
+        ) : (
+          part
+        )
+      )}
+    </span>
+  );
+};
+
 const AccountsTable = () => {
   const [allData, setAllData] = useState([]); // Store full dataset
   const [visibleData, setVisibleData] = useState([]); // Store displayed subset
@@ -26,8 +45,12 @@ const AccountsTable = () => {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeFilters, setActiveFilters] = useState({});
   const [tempFilters, setTempFilters] = useState({});
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   
   const lastScrollTopA = useRef(0);
   const tableContainerRef = useRef(null);
@@ -36,8 +59,8 @@ const AccountsTable = () => {
   const filteredData = useMemo(() => {
     return allData.filter(row => {
       // Global Search
-      const searchMatch = !searchQuery || Object.values(row).some(val => 
-        String(val).toLowerCase().includes(searchQuery.toLowerCase())
+      const searchMatch = !debouncedSearchQuery || Object.values(row).some(val => 
+        String(val).toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
       
       // Granular Filters
@@ -58,7 +81,24 @@ const AccountsTable = () => {
 
       return searchMatch && filterMatch;
     });
-  }, [allData, searchQuery, activeFilters]);
+  }, [allData, debouncedSearchQuery, activeFilters]);
+
+  // Count active filters (ignore empty strings or nulls)
+  const activeFilterCount = useMemo(() => {
+    return Object.values(activeFilters).filter(val => val && val.trim() !== '').length;
+  }, [activeFilters]);
+
+  // Search Debounce Effect
+  useEffect(() => {
+    if (searchQuery !== debouncedSearchQuery) {
+      setIsSearching(true);
+      const timer = setTimeout(() => {
+        setDebouncedSearchQuery(searchQuery);
+        setIsSearching(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [searchQuery, debouncedSearchQuery]);
 
   useEffect(() => {
     const parseCSV = (csvText) => {
@@ -197,6 +237,28 @@ const AccountsTable = () => {
     setActiveFilters({});
   };
 
+  const handleClearAll = () => {
+    setSearchQuery('');
+    setActiveFilters({});
+    setTempFilters({});
+  };
+
+  const handleRefresh = () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    setIsLoading(true);
+    
+    // Simulate data reload
+    setTimeout(() => {
+      // Logic to "refresh" data - here we just reset visible data and let effects re-fill
+      setVisibleData(filteredData.slice(0, ITEMS_PER_BATCH));
+      setHasMore(filteredData.length > ITEMS_PER_BATCH);
+      
+      setIsRefreshing(false);
+      setIsLoading(false);
+    }, 1500);
+  };
+
   return (
     <div className="page-content">
       <div className={`page-header ${!isHeaderVisible ? 'header-hidden' : ''}`}>
@@ -218,8 +280,12 @@ const AccountsTable = () => {
       </div>
 
       <div className="table-controls">
-        <div className="search-bar">
-          <Search size={16} className="text-secondary" />
+        <div className={`search-bar ${isFilterModalOpen ? 'is-expanded' : ''}`}>
+          {isSearching ? (
+            <Loader2 size={16} className="text-secondary spinner" />
+          ) : (
+            <Search size={16} className="text-secondary" />
+          )}
           <input 
             type="text" 
             placeholder="Search" 
@@ -227,22 +293,30 @@ const AccountsTable = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          {searchQuery && (
-            <button 
-              className="clear-search"
-              onClick={() => setSearchQuery('')}
-              title="Clear search"
-            >
-              <X size={14} />
-            </button>
-          )}
+          {(searchQuery || activeFilterCount > 0) && (
+            <button className="clear-search" onClick={handleClearAll} title="Clear all">
+            <X size={14} />
+          </button>
+        )}
 
-          <Dialog.Root onOpenChange={(open) => { if(open) setTempFilters(activeFilters); }}>
-            <Dialog.Trigger asChild>
-               <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                  <SlidersHorizontal size={16} className="text-secondary" />
-               </div>
-            </Dialog.Trigger>
+        <Dialog.Root 
+          open={isFilterModalOpen} 
+          onOpenChange={(open) => { 
+            setIsFilterModalOpen(open);
+            if(open) setTempFilters(activeFilters); 
+          }}
+        >
+          <Dialog.Trigger asChild>
+            <div 
+              className="filter-trigger-wrapper" 
+              onMouseDown={(e) => e.preventDefault()}
+            >
+              <SlidersHorizontal size={16} className="text-secondary" />
+              {activeFilterCount > 0 && (
+                <span className="filter-badge">{activeFilterCount}</span>
+              )}
+            </div>
+          </Dialog.Trigger>
             <Dialog.Portal>
               <Dialog.Overlay className="dialog-overlay" />
               <Dialog.Content className="dialog-content">
@@ -281,7 +355,16 @@ const AccountsTable = () => {
         <div className="control-icons">
           <div className="control-group-left">
             <div className="perma-controls">
-              <RotateCw className="control-icon" size={16} />
+              {isRefreshing ? (
+                <Loader2 className="control-icon spinner" size={16} />
+              ) : (
+                <RotateCw 
+                  className="control-icon" 
+                  size={16} 
+                  onClick={handleRefresh}
+                  style={{ cursor: 'pointer' }}
+                />
+              )}
             </div>
             
             {selectedRows.size > 0 && (
@@ -347,19 +430,31 @@ const AccountsTable = () => {
                     onChange={() => toggleRowSelection(row.id)}
                   />
                 </td>
-                <td style={{ fontWeight: 500 }}>{row.accountNumber}</td>
-                <td style={{ fontWeight: 600 }}>{row.bank}</td>
-                <td>{row.branch}</td>
-                <td>{row.type}</td>
-                <td style={{ fontWeight: 500 }}>{row.currency}</td>
-                <td style={{ fontFamily: 'monospace', fontWeight: 500 }}>{row.amount}</td>
+                <td style={{ fontWeight: 500 }}>
+                  <HighlightText text={row.accountNumber} highlight={debouncedSearchQuery} />
+                </td>
+                <td style={{ fontWeight: 600 }}>
+                  <HighlightText text={row.bank} highlight={debouncedSearchQuery} />
+                </td>
+                <td>
+                  <HighlightText text={row.branch} highlight={debouncedSearchQuery} />
+                </td>
+                <td>
+                  <HighlightText text={row.type} highlight={debouncedSearchQuery} />
+                </td>
+                <td style={{ fontWeight: 500 }}>
+                  <HighlightText text={row.currency} highlight={debouncedSearchQuery} />
+                </td>
+                <td style={{ fontFamily: 'monospace', fontWeight: 500 }}>
+                  <HighlightText text={row.amount} highlight={debouncedSearchQuery} />
+                </td>
                 <td>{row.rate !== '-' && row.rate !== 'N/A' ? `${row.rate}%` : '-'}</td>
                 <td>{row.interestType}</td>
                 <td>{row.startDate}</td>
                 <td>{row.duration}</td>
                 <td>
                   <span className={`status-pill ${row.status === 'Active' ? 'status-active' : 'status-renewed'}`}>
-                    {row.status}
+                    <HighlightText text={row.status} highlight={debouncedSearchQuery} />
                   </span>
                 </td>
                 <td className="actions-col">
