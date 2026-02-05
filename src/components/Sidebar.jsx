@@ -28,7 +28,7 @@ import {
 
 import lionLogo from "../assets/lion-logo.png";
 
-const Sidebar = () => {
+const Sidebar = ({ activePage, setActivePage }) => {
   const [isParametersOpen, setIsParametersOpen] = useState(false);
   const [isUsersOpen, setIsUsersOpen] = useState(false);
 
@@ -56,35 +56,35 @@ const Sidebar = () => {
       </div>
 
       <div className="sidebar-nav">
-        <a href="#" className="nav-item">
+        <a href="#" className={`nav-item ${activePage === 'Dashboard' ? 'active' : ''}`} onClick={() => setActivePage('Dashboard')}>
           <LayoutDashboard size={18} />
           Dashboard
         </a>
-        <a href="#" className="nav-item active">
+        <a href="#" className={`nav-item ${activePage === 'Accounts' ? 'active' : ''}`} onClick={() => setActivePage('Accounts')}>
           <Book size={18} />
           Accounts
         </a>
-        <a href="#" className="nav-item">
+        <a href="#" className={`nav-item ${activePage === 'Payments' ? 'active' : ''}`} onClick={() => setActivePage('Payments')}>
           <DollarSign size={18} />
           Payments
         </a>
-        <a href="#" className="nav-item">
+        <a href="#" className={`nav-item ${activePage === 'Accruals' ? 'active' : ''}`} onClick={() => setActivePage('Accruals')}>
           <Stamp size={18} />
           Accruals
         </a>
-        <a href="#" className="nav-item">
+        <a href="#" className={`nav-item ${activePage === 'Reports' ? 'active' : ''}`} onClick={() => setActivePage('Reports')}>
           <FileText size={18} />
           Reports
         </a>
-        <a href="#" className="nav-item">
+        <a href="#" className={`nav-item ${activePage === 'Floating Rates' ? 'active' : ''}`} onClick={() => setActivePage('Floating Rates')}>
           <TrendingUp size={18} />
           Floating Rates
         </a>
-        <a href="#" className="nav-item">
+        <a href="#" className={`nav-item ${activePage === 'Posting Center' ? 'active' : ''}`} onClick={() => setActivePage('Posting Center')}>
           <ListChecks size={18} />
           Posting Center
         </a>
-        <a href="#" className="nav-item">
+        <a href="#" className={`nav-item ${activePage === 'Working Calendar' ? 'active' : ''}`} onClick={() => setActivePage('Working Calendar')}>
           <Calendar size={18} />
           Working Calendar
         </a>
@@ -108,7 +108,12 @@ const Sidebar = () => {
         {isParametersOpen && (
           <div className="sidebar-sub-nav">
             {subItems.map((item) => (
-              <a key={item.name} href="#" className="sub-nav-item">
+              <a 
+                key={item.name} 
+                href="#" 
+                className={`sub-nav-item ${activePage === item.name ? 'active' : ''}`}
+                onClick={() => setActivePage(item.name)}
+              >
                 {item.icon}
                 {item.name}
               </a>
@@ -133,7 +138,12 @@ const Sidebar = () => {
         {isUsersOpen && (
           <div className="sidebar-sub-nav">
             {usersSubItems.map((item) => (
-              <a key={item.name} href="#" className="sub-nav-item">
+              <a 
+                key={item.name} 
+                href="#" 
+                className={`sub-nav-item ${activePage === item.name ? 'active' : ''}`}
+                onClick={() => setActivePage(item.name)}
+              >
                 {item.icon}
                 {item.name}
               </a>
@@ -141,17 +151,17 @@ const Sidebar = () => {
           </div>
         )}
 
-        <a href="#" className="nav-item">
+        <a href="#" className={`nav-item ${activePage === 'Change Log' ? 'active' : ''}`} onClick={() => setActivePage('Change Log')}>
           <History size={18} />
           Change Log
         </a>
 
         <div className="nav-group-label">Settings</div>
-        <a href="#" className="nav-item">
+        <a href="#" className={`nav-item ${activePage === 'Settings' ? 'active' : ''}`} onClick={() => setActivePage('Settings')}>
           <Settings size={18} />
           Settings
         </a>
-        <a href="#" className="nav-item">
+        <a href="#" className={`nav-item ${activePage === 'Notifications' ? 'active' : ''}`} onClick={() => setActivePage('Notifications')}>
           <Bell size={18} />
           Notifications
         </a>
