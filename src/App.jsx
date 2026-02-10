@@ -65,7 +65,7 @@ function App() {
     <div className="app-container">
       <Sidebar activePage={activePage} setActivePage={setActivePage} />
       <div className="main-content">
-        <Topbar />
+        <Topbar activePage={activePage} />
         {renderPage()}
       </div>
     </div>
