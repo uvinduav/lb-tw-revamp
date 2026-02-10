@@ -14,8 +14,12 @@ import {
   MoreVertical,
   AlertCircle,
   Loader2,
-  X
+  X,
+  Eye,
+  EyeOff,
+  RotateCcw
 } from 'lucide-react';
+import * as Popover from '@radix-ui/react-popover';
 import HighlightText from './common/HighlightText';
 import emptyBox from '../assets/empty-box.png';
 
@@ -30,7 +34,8 @@ const ModulePage = ({
   alertCount = 0, // Optional: number of alerts to show
   showAddButton = true, // Optional: whether to show the "Add New" button
   renderHeaderActions = null, // Optional: function to render custom header actions () => JSX
-  showDefaultRowActions = true // Optional: whether to show default Edit and Delete actions
+  showDefaultRowActions = true, // Optional: whether to show default Edit and Delete actions
+  showColumnCustomization = true // Default to true
 }) => {
   const [allData, setAllData] = useState([]);
   const [visibleData, setVisibleData] = useState([]);
@@ -46,6 +51,27 @@ const ModulePage = ({
   const [tempFilters, setTempFilters] = useState({});
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [showEmptyState, setShowEmptyState] = useState(false);
+
+  // Column Visibility State
+  const [visibleColumns, setVisibleColumns] = useState(new Set(columns));
+  const [isColumnPopoverOpen, setIsColumnPopoverOpen] = useState(false);
+
+  // Initialize visible columns when columns prop changes
+  useEffect(() => {
+    setVisibleColumns(new Set(columns));
+  }, [columns]);
+
+  const toggleColumnVisibility = (columnId) => {
+    setVisibleColumns(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(columnId)) {
+        newSet.delete(columnId);
+      } else {
+        newSet.add(columnId);
+      }
+      return newSet;
+    });
+  };
 
   const searchInputRef = useRef(null);
   useKeyboardShortcuts(searchInputRef, setIsFilterModalOpen);
@@ -480,7 +506,143 @@ const ModulePage = ({
             )}
 
             {renderHeaderActions && renderHeaderActions()}
-            <Settings className="control-icon" size={16} />
+
+            {/* Column Visibility Popover */}
+            {showColumnCustomization && (
+              <Popover.Root open={isColumnPopoverOpen} onOpenChange={setIsColumnPopoverOpen}>
+                <Popover.Trigger asChild>
+                  <button
+                    className="control-icon"
+                    type="button"
+                    title="View options"
+                    style={{ zIndex: 20, position: 'relative' }}
+                  >
+                    {visibleColumns.size === 0 ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </Popover.Trigger>
+                <Popover.Portal>
+                  <Popover.Content className="popover-content" align="end" sideOffset={5} style={{
+                    backgroundColor: 'white',
+                    borderRadius: '8px',
+                    boxShadow: '0 10px 38px -10px rgba(22, 23, 24, 0.35), 0 10px 20px -15px rgba(22, 23, 24, 0.2)',
+                    width: '280px',
+                    zIndex: 2000,
+                    border: '1px solid var(--color-border)',
+                    overflow: 'hidden', // Ensure header doesn't scroll
+                    display: 'flex',
+                    flexDirection: 'column'
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '16px 16px 12px',
+                      borderBottom: '1px solid var(--color-border)'
+                    }}>
+                      <span style={{ fontWeight: 600, fontSize: '14px' }}>View options</span>
+                      <button
+                        onClick={() => setVisibleColumns(new Set(columns))}
+                        title="Reset to Default"
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: 'var(--color-text-secondary)',
+                          cursor: 'pointer',
+                          padding: '4px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: '4px'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-secondary)'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                      >
+                        <RotateCcw size={14} />
+                      </button>
+                    </div>
+
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      maxHeight: '300px',
+                      overflowY: 'auto',
+                      padding: '0'
+                    }}>
+                      {columns.map((col, index) => {
+                        const isVisible = visibleColumns.has(col);
+                        const isLast = index === columns.length - 1;
+                        return (
+                          <label key={col} style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            padding: '6px 16px', // Compact height
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            transition: 'background-color 0.2s',
+                            borderBottom: isLast ? 'none' : '1px solid var(--color-border)' // Correct border variable
+                          }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-subtle)'} // Correct hover variable
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <span style={{
+                                color: isVisible ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+                                display: 'flex',
+                                alignItems: 'center'
+                              }}>
+                                {isVisible ? <Eye size={14} /> : <EyeOff size={14} />}
+                              </span>
+                              <span style={{
+                                color: isVisible ? 'var(--color-text-main)' : 'var(--color-text-secondary)'
+                              }}>{col}</span>
+                            </div>
+
+                            {/* Custom Toggle Switch */}
+                            <div style={{ position: 'relative', width: '32px', height: '18px' }}>
+                              <input
+                                type="checkbox"
+                                checked={isVisible}
+                                onChange={() => toggleColumnVisibility(col)}
+                                style={{
+                                  opacity: 0,
+                                  width: 0,
+                                  height: 0
+                                }}
+                              />
+                              <div style={{
+                                position: 'absolute',
+                                cursor: 'pointer',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                backgroundColor: isVisible ? 'var(--color-primary)' : '#ccc',
+                                transition: '.4s',
+                                borderRadius: '34px'
+                              }}>
+                                <div style={{
+                                  position: 'absolute',
+                                  content: '',
+                                  height: '14px',
+                                  width: '14px',
+                                  left: isVisible ? '16px' : '2px',
+                                  bottom: '2px',
+                                  backgroundColor: 'white',
+                                  transition: '.4s',
+                                  borderRadius: '50%'
+                                }}></div>
+                              </div>
+                            </div>
+                          </label>
+                        );
+                      })}
+                    </div>
+                    <Popover.Arrow className="popover-arrow" style={{ fill: 'white' }} />
+                  </Popover.Content>
+                </Popover.Portal>
+              </Popover.Root>
+            )}
             <MoreVertical className="control-icon" size={16} />
           </div>
         </div>
@@ -503,14 +665,14 @@ const ModulePage = ({
                   onChange={toggleAllSelection}
                 />
               </th>
-              {columns.map(col => (
+              {columns.filter(col => visibleColumns.has(col)).map(col => (
                 <th key={col}>{col.toUpperCase()}</th>
               ))}
               <th className="actions-col"></th>
             </tr>
           </thead>
           <tbody>
-            {visibleData.map((row) => (
+            {visibleColumns.size > 0 && visibleData.map((row) => (
               <tr key={row.id}>
                 <td className="checkbox-col">
                   <input
@@ -519,7 +681,7 @@ const ModulePage = ({
                     onChange={() => toggleRowSelection(row.id)}
                   />
                 </td>
-                {columns.map(col => (
+                {columns.filter(col => visibleColumns.has(col)).map(col => (
                   <td key={col} style={col === 'Amount' ? { fontFamily: 'monospace', fontWeight: 500 } : {}}>
                     {getCellContent(row, col)}
                   </td>
@@ -550,9 +712,9 @@ const ModulePage = ({
                 </td>
               </tr>
             ))}
-            {(visibleData.length === 0 && (isLoading || !showEmptyState)) && (
+            {visibleColumns.size > 0 && visibleData.length === 0 && (isLoading || !showEmptyState) && (
               <tr className="loading-state-row">
-                <td colSpan={columns.length + 2} style={{ textAlign: 'center', padding: '60px 40px', borderBottom: 'none' }}>
+                <td colSpan={visibleColumns.size + 2} style={{ textAlign: 'center', padding: '60px 40px', borderBottom: 'none' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', color: 'var(--color-text-secondary)' }}>
                     <Loader2 className="spinner" size={32} />
                     <span>Loading data...</span>
@@ -560,16 +722,16 @@ const ModulePage = ({
                 </td>
               </tr>
             )}
-            {visibleData.length === 0 && !isLoading && showEmptyState && (
+            {(visibleColumns.size === 0 || (visibleData.length === 0 && !isLoading && showEmptyState)) && (
               <tr className="empty-state-row">
-                <td colSpan={columns.length + 2} style={{ textAlign: 'center', padding: '60px 40px', color: '#888', borderBottom: 'none' }}>
+                <td colSpan={visibleColumns.size + 2} style={{ textAlign: 'center', padding: '60px 40px', color: '#888', borderBottom: 'none' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
                     <img
                       src={emptyBox}
                       alt="No records"
                       style={{ width: '80px', height: '80px', opacity: 0.4 }}
                     />
-                    <span>No records found</span>
+                    <span>{visibleColumns.size === 0 ? 'No columns visible' : 'No records found'}</span>
                   </div>
                 </td>
               </tr>

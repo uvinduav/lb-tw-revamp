@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import useKeyboardShortcuts from '../hooks/useKeyboardShortcuts';
 import * as Dialog from '@radix-ui/react-dialog';
+import * as Popover from '@radix-ui/react-popover';
 import {
   Search,
   SlidersHorizontal,
@@ -15,7 +16,9 @@ import {
   AlertCircle,
   Loader2,
   RotateCw,
-  X
+  X,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import csvFile from '../assets/accounts-test-sheet.csv?raw';
 
@@ -38,6 +41,28 @@ const HighlightText = ({ text, highlight }) => {
   );
 };
 
+const COLUMN_DEFS = [
+  { id: 'accountNumber', label: 'ACCOUNT NO.', style: { fontWeight: 500 } },
+  { id: 'bank', label: 'BANK', style: { fontWeight: 600 } },
+  { id: 'branch', label: 'BRANCH' },
+  { id: 'type', label: 'TYPE' },
+  { id: 'currency', label: 'CURRENCY', style: { fontWeight: 500 } },
+  { id: 'amount', label: 'AMOUNT', style: { fontFamily: 'monospace', fontWeight: 500 } },
+  { id: 'rate', label: 'RATE', accessor: (row) => row.rate !== '-' && row.rate !== 'N/A' ? `${row.rate}%` : '-' },
+  { id: 'interestType', label: 'INT. TYPE' },
+  { id: 'startDate', label: 'START DATE' },
+  { id: 'duration', label: 'DURATION' },
+  {
+    id: 'status',
+    label: 'STATUS',
+    accessor: (row, query) => (
+      <span className={`status-pill ${row.status === 'Active' ? 'status-active' : 'status-renewed'}`}>
+        <HighlightText text={row.status} highlight={query} />
+      </span>
+    )
+  }
+];
+
 const AccountsTable = () => {
   const [allData, setAllData] = useState([]); // Store full dataset
   const [visibleData, setVisibleData] = useState([]); // Store displayed subset
@@ -52,6 +77,12 @@ const AccountsTable = () => {
   const [activeFilters, setActiveFilters] = useState({});
   const [tempFilters, setTempFilters] = useState({});
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+
+  // Column Visibility State
+  const [visibleColumns, setVisibleColumns] = useState(
+    new Set(COLUMN_DEFS.map(col => col.id))
+  );
+  const [isColumnPopoverOpen, setIsColumnPopoverOpen] = useState(false);
 
   const searchInputRef = useRef(null);
   useKeyboardShortcuts(searchInputRef, setIsFilterModalOpen);
@@ -208,7 +239,17 @@ const AccountsTable = () => {
     }
   };
 
-
+  const toggleColumnVisibility = (columnId) => {
+    setVisibleColumns(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(columnId)) {
+        newSet.delete(columnId);
+      } else {
+        newSet.add(columnId);
+      }
+      return newSet;
+    });
+  };
 
   // Update visible data when filtered data changes or scrolling happens
   useEffect(() => {
@@ -262,6 +303,14 @@ const AccountsTable = () => {
       setIsLoading(false);
     }, 1500);
   };
+
+  // derived columns for rendering
+  const displayedColumns = COLUMN_DEFS.filter(col => visibleColumns.has(col.id));
+
+  // Debug: Log when popover state changes
+  useEffect(() => {
+    console.log('Popover open state changed:', isColumnPopoverOpen);
+  }, [isColumnPopoverOpen]);
 
   return (
     <div className="page-content">
@@ -385,13 +434,85 @@ const AccountsTable = () => {
             )}
           </div>
 
-          <div className="control-group-right">
+          <div className="control-group-right" style={{ border: '1px solid blue' }} onClick={() => console.log('Control Group Right Clicked')}>
             <div className="alert-pill">
               <AlertCircle size={14} />
               2 Alerts
             </div>
 
-            <Settings className="control-icon" size={16} />
+            {/* Column Visibility Popover */}
+            <Popover.Root open={isColumnPopoverOpen} onOpenChange={setIsColumnPopoverOpen}>
+              <Popover.Trigger asChild>
+                <button
+                  className="control-icon"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '2px solid red', // DEBUG: Visible hit area
+                    background: 'transparent',
+                    outline: 'none',
+                    padding: '6px',
+                    cursor: 'pointer',
+                    zIndex: 20,
+                    position: 'relative',
+                    pointerEvents: 'auto'
+                  }}
+                  type="button"
+                  title="Customize Columns"
+                  onClick={(e) => {
+                    console.log('Settings button clicked');
+                    // e.stopPropagation(); // Let's see if it bubbles first
+                  }}
+                >
+                  <Settings size={16} />
+                </button>
+              </Popover.Trigger>
+              <Popover.Portal>
+                <Popover.Content className="popover-content" align="end" sideOffset={5} style={{
+                  backgroundColor: 'white',
+                  borderRadius: '8px',
+                  boxShadow: '0 10px 38px -10px rgba(22, 23, 24, 0.35), 0 10px 20px -15px rgba(22, 23, 24, 0.2)',
+                  padding: '16px',
+                  width: '260px',
+                  zIndex: 2000,
+                  border: '1px solid var(--color-border)'
+                }}>
+                  <div style={{ marginBottom: '12px', fontWeight: 600, fontSize: '14px' }}>Customize Columns</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '300px', overflowY: 'auto' }}>
+                    {COLUMN_DEFS.map(col => {
+                      const isVisible = visibleColumns.has(col.id);
+                      return (
+                        <label key={col.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 0', cursor: 'pointer', fontSize: '13px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <input
+                              type="checkbox"
+                              checked={isVisible}
+                              onChange={() => toggleColumnVisibility(col.id)}
+                              style={{ accentColor: 'var(--color-primary)' }}
+                            />
+                            <span>{col.label}</span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: isVisible ? 'var(--color-success)' : 'var(--color-text-secondary)' }}>
+                            {isVisible ? (
+                              <>
+                                <Eye size={12} /> Visible
+                              </>
+                            ) : (
+                              <>
+                                <EyeOff size={12} /> Hidden
+                              </>
+                            )}
+                          </div>
+                        </label>
+                      );
+                    })}
+                  </div>
+                  <Popover.Arrow style={{ fill: 'white' }} />
+                </Popover.Content>
+              </Popover.Portal>
+            </Popover.Root>
+
             <MoreVertical className="control-icon" size={16} />
           </div>
         </div>
@@ -414,17 +535,9 @@ const AccountsTable = () => {
                   onChange={toggleAllSelection}
                 />
               </th>
-              <th>ACCOUNT NO.</th>
-              <th>BANK</th>
-              <th>BRANCH</th>
-              <th>TYPE</th>
-              <th>CURRENCY</th>
-              <th>AMOUNT</th>
-              <th>RATE</th>
-              <th>INT. TYPE</th>
-              <th>START DATE</th>
-              <th>DURATION</th>
-              <th>STATUS</th>
+              {displayedColumns.map(col => (
+                <th key={col.id} style={col.headerStyle}>{col.label}</th>
+              ))}
               <th className="actions-col"></th>
             </tr>
           </thead>
@@ -438,33 +551,15 @@ const AccountsTable = () => {
                     onChange={() => toggleRowSelection(row.id)}
                   />
                 </td>
-                <td style={{ fontWeight: 500 }}>
-                  <HighlightText text={row.accountNumber} highlight={debouncedSearchQuery} />
-                </td>
-                <td style={{ fontWeight: 600 }}>
-                  <HighlightText text={row.bank} highlight={debouncedSearchQuery} />
-                </td>
-                <td>
-                  <HighlightText text={row.branch} highlight={debouncedSearchQuery} />
-                </td>
-                <td>
-                  <HighlightText text={row.type} highlight={debouncedSearchQuery} />
-                </td>
-                <td style={{ fontWeight: 500 }}>
-                  <HighlightText text={row.currency} highlight={debouncedSearchQuery} />
-                </td>
-                <td style={{ fontFamily: 'monospace', fontWeight: 500 }}>
-                  <HighlightText text={row.amount} highlight={debouncedSearchQuery} />
-                </td>
-                <td>{row.rate !== '-' && row.rate !== 'N/A' ? `${row.rate}%` : '-'}</td>
-                <td>{row.interestType}</td>
-                <td>{row.startDate}</td>
-                <td>{row.duration}</td>
-                <td>
-                  <span className={`status-pill ${row.status === 'Active' ? 'status-active' : 'status-renewed'}`}>
-                    <HighlightText text={row.status} highlight={debouncedSearchQuery} />
-                  </span>
-                </td>
+                {displayedColumns.map(col => (
+                  <td key={col.id} style={col.style}>
+                    {col.accessor ? (
+                      typeof col.accessor === 'function' ? col.accessor(row, debouncedSearchQuery) : col.accessor
+                    ) : (
+                      <HighlightText text={row[col.id]} highlight={debouncedSearchQuery} />
+                    )}
+                  </td>
+                ))}
                 <td className="actions-col">
                   <div className="row-actions">
                     <button className="action-btn" title="Edit">

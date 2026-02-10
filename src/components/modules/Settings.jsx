@@ -3,17 +3,18 @@ import ModulePage from '../ModulePage';
 
 const Settings = () => {
   return (
-    <ModulePage 
+    <ModulePage
       title="Settings"
       columns={['Setting Group', 'Key', 'Value', 'Last Modified']}
       data={[]}
       filterFields={['Setting Group', 'Key']}
-      dataMap={{ 
-          'Setting Group': 'group', 
-          'Key': 'key', 
-          'Value': 'value',
-          'Last Modified': 'lastModified'
+      dataMap={{
+        'Setting Group': 'group',
+        'Key': 'key',
+        'Value': 'value',
+        'Last Modified': 'lastModified'
       }}
+      showColumnCustomization={false}
     />
   );
 };

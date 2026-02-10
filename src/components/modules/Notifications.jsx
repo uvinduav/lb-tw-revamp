@@ -3,18 +3,19 @@ import ModulePage from '../ModulePage';
 
 const Notifications = () => {
   return (
-    <ModulePage 
+    <ModulePage
       title="Notifications"
       columns={['Subject', 'Message', 'Type', 'Received', 'Status']}
       data={[]}
       filterFields={['Subject', 'Type', 'Status']}
-      dataMap={{ 
-          'Subject': 'subject', 
-          'Message': 'message', 
-          'Type': 'type',
-          'Received': 'received',
-          'Status': 'status'
+      dataMap={{
+        'Subject': 'subject',
+        'Message': 'message',
+        'Type': 'type',
+        'Received': 'received',
+        'Status': 'status'
       }}
+      showColumnCustomization={false}
     />
   );
 };
