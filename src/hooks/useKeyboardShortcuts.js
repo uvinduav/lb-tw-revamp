@@ -5,7 +5,7 @@ import { useEffect } from 'react';
  * @param {React.RefObject} searchInputRef - Ref to the search input element
  * @param {Function} onOpenFilters - Callback to open the filter modal
  */
-const useKeyboardShortcuts = (searchInputRef, onOpenFilters) => {
+const useKeyboardShortcuts = (searchInputRef, onOpenFilters, onToggleSidebar) => {
     useEffect(() => {
         const handleKeyDown = (e) => {
             // Search shortcut: /
@@ -16,19 +16,31 @@ const useKeyboardShortcuts = (searchInputRef, onOpenFilters) => {
                 }
 
                 e.preventDefault();
-                searchInputRef.current?.focus();
+                if (searchInputRef && searchInputRef.current) {
+                    searchInputRef.current.focus();
+                }
             }
 
             // Filter shortcut: Alt + /
             if (e.key === '/' && e.altKey) {
                 e.preventDefault();
-                onOpenFilters(true);
+                if (onOpenFilters) {
+                    onOpenFilters(true);
+                }
+            }
+
+            // Sidebar toggle shortcut: Alt + \
+            if (e.key === '\\' && e.altKey) {
+                e.preventDefault();
+                if (onToggleSidebar) {
+                    onToggleSidebar();
+                }
             }
         };
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [searchInputRef, onOpenFilters]);
+    }, [searchInputRef, onOpenFilters, onToggleSidebar]);
 };
 
 export default useKeyboardShortcuts;

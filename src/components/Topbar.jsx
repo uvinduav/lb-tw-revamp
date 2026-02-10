@@ -1,17 +1,21 @@
 import React from 'react';
 import { PanelLeft, ArrowLeft, UserCircle, ChevronDown } from 'lucide-react';
 
-const Topbar = ({ activePage, toggleSidebar }) => {
+const Topbar = ({ activePage, toggleSidebar, isSidebarOpen }) => {
   return (
     <div className="topbar">
       <div className="breadcrumb">
-        <PanelLeft
-          size={20}
-          style={{ cursor: 'pointer', color: '#666' }}
+        <div
+          className="topbar-icon-btn"
           onClick={toggleSidebar}
-        />
-        <ArrowLeft size={20} style={{ cursor: 'pointer', marginLeft: '8px' }} />
-        <span>{activePage}</span>
+          title={`${isSidebarOpen ? 'Hide' : 'Show'} Sidebar (Alt+\\)`}
+        >
+          <PanelLeft size={20} color="#666" />
+        </div>
+        <div className="topbar-icon-btn" title="Back">
+          <ArrowLeft size={20} color="#666" />
+        </div>
+        <span style={{ marginLeft: '4px' }}>{activePage}</span>
       </div>
 
       <div className="user-profile">

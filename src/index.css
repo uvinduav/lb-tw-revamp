@@ -310,6 +310,27 @@ body {
   color: var(--color-text-secondary);
 }
 
+.topbar-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-left: -6px;
+  /* Offset parent padding for alignment */
+}
+
+.topbar-icon-btn:hover {
+  background-color: var(--color-bg-subtle);
+}
+
+.topbar-icon-btn:hover svg {
+  color: var(--color-primary-action) !important;
+}
+
 .breadcrumb-active {
   color: var(--color-text-main);
   font-weight: 500;
@@ -430,7 +451,7 @@ body {
 .search-bar {
   display: flex;
   align-items: center;
-  background-color: var(--color-bg-subtle);
+  /* background-color: var(--color-bg-subtle); */
   width: 300px;
   gap: 8px;
   font-size: 13px;
@@ -484,7 +505,7 @@ body {
   color: var(--color-text-secondary);
   background-color: var(--color-bg-subtle);
   padding: var(--spacing-sm) var(--spacing-sm);
-  border: 1px solid var(--color-border);
+  /* border: 1px solid var(--color-border); */
   border-radius: 4px;
   height: 40px;
 }
@@ -784,6 +805,27 @@ input[type="checkbox"] {
   margin-bottom: 20px;
   color: var(--color-text-main);
   flex-shrink: 0;
+}
+
+.dialog-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.dialog-close:hover {
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-main);
 }
 
 .filter-form {

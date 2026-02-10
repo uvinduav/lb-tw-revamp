@@ -24,6 +24,8 @@ import PurposeTags from './components/modules/PurposeTags';
 import Users from './components/modules/Users';
 import UserGroups from './components/modules/UserGroups';
 
+import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
+
 function App() {
   const [activePage, setActivePage] = useState('Accounts');
 
@@ -32,6 +34,9 @@ function App() {
 
   // Toggle sidebar function
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  // Use hook for global sidebar toggle shortcut
+  useKeyboardShortcuts(null, null, toggleSidebar);
 
   const renderPage = () => {
     switch (activePage) {

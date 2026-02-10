@@ -315,6 +315,7 @@ const AccountsTable = () => {
               <div
                 className="filter-trigger-wrapper"
                 onMouseDown={(e) => e.preventDefault()}
+                title="Advanced Filters (Alt+/)"
               >
                 <SlidersHorizontal size={16} className="text-secondary" />
                 {activeFilterCount > 0 && (
@@ -326,6 +327,11 @@ const AccountsTable = () => {
               <Dialog.Overlay className="dialog-overlay" />
               <Dialog.Content className="dialog-content">
                 <Dialog.Title className="dialog-title">Advanced Filters</Dialog.Title>
+                <Dialog.Close asChild>
+                  <button className="dialog-close" aria-label="Close">
+                    <X size={20} />
+                  </button>
+                </Dialog.Close>
                 <div className="filter-form">
                   {[
                     'Account No.', 'Bank', 'Branch', 'Type', 'Currency', 'Status'
@@ -344,9 +350,6 @@ const AccountsTable = () => {
                 <div className="dialog-actions">
                   <button className="btn-clear" onClick={handleClearFilters}>Clear all</button>
                   <div style={{ display: 'flex', gap: '12px' }}>
-                    <Dialog.Close asChild>
-                      <button className="btn-cancel">Cancel</button>
-                    </Dialog.Close>
                     <Dialog.Close asChild>
                       <button className="btn-search" onClick={handleApplyFilters}>Search</button>
                     </Dialog.Close>
