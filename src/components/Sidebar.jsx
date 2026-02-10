@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   LayoutDashboard,
   Book,
@@ -56,12 +56,56 @@ const Sidebar = ({
     { name: "User Groups", icon: <Users size={16} /> },
   ];
 
+  // Navigation Items Configuration
+  const mainNavItems = [
+    { name: 'Dashboard', icon: <LayoutDashboard size={18} />, shortcut: '0' },
+    { name: 'Accounts', icon: <Book size={18} />, shortcut: '1' },
+    { name: 'Payments', icon: <DollarSign size={18} />, shortcut: '2' },
+    { name: 'Accruals', icon: <Stamp size={18} />, shortcut: '3' },
+    { name: 'Reports', icon: <FileText size={18} />, shortcut: '4' },
+    { name: 'Floating Rates', icon: <TrendingUp size={18} />, shortcut: '5' },
+    { name: 'Posting Center', icon: <ListChecks size={18} />, shortcut: '6' },
+    { name: 'Working Calendar', icon: <Calendar size={18} />, shortcut: '7' },
+  ];
+
+  // Settings shortcut
+  const settingsShortcut = ',';
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Check if Alt key is pressed
+      if (!e.altKey) return;
+
+      // Avoid triggering when user is typing in an input
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+
+      const key = e.key.toLowerCase();
+
+      // Check main nav items
+      const targetItem = mainNavItems.find(item => item.shortcut === key);
+      if (targetItem) {
+        e.preventDefault();
+        setActivePage(targetItem.name);
+        return;
+      }
+
+      // Check settings
+      if (key === settingsShortcut) {
+        e.preventDefault();
+        setActivePage('Settings');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [setActivePage]);
+
   // Determine if sidebar should be visible
   const isVisible = isOpen || isHovered;
 
   return (
     <div
-      className={`sidebar ${!isOpen ? 'closed' : ''} ${isHovered ? 'floating' : ''}`}
+      className={`sidebar ${!isOpen ? 'closed' : ''} ${isHovered ? 'floating' : ''} `}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
@@ -70,38 +114,18 @@ const Sidebar = ({
       </div>
 
       <div className="sidebar-nav">
-        <a href="#" className={`nav-item ${activePage === 'Dashboard' ? 'active' : ''}`} onClick={() => setActivePage('Dashboard')}>
-          <LayoutDashboard size={18} />
-          Dashboard
-        </a>
-        <a href="#" className={`nav-item ${activePage === 'Accounts' ? 'active' : ''}`} onClick={() => setActivePage('Accounts')}>
-          <Book size={18} />
-          Accounts
-        </a>
-        <a href="#" className={`nav-item ${activePage === 'Payments' ? 'active' : ''}`} onClick={() => setActivePage('Payments')}>
-          <DollarSign size={18} />
-          Payments
-        </a>
-        <a href="#" className={`nav-item ${activePage === 'Accruals' ? 'active' : ''}`} onClick={() => setActivePage('Accruals')}>
-          <Stamp size={18} />
-          Accruals
-        </a>
-        <a href="#" className={`nav-item ${activePage === 'Reports' ? 'active' : ''}`} onClick={() => setActivePage('Reports')}>
-          <FileText size={18} />
-          Reports
-        </a>
-        <a href="#" className={`nav-item ${activePage === 'Floating Rates' ? 'active' : ''}`} onClick={() => setActivePage('Floating Rates')}>
-          <TrendingUp size={18} />
-          Floating Rates
-        </a>
-        <a href="#" className={`nav-item ${activePage === 'Posting Center' ? 'active' : ''}`} onClick={() => setActivePage('Posting Center')}>
-          <ListChecks size={18} />
-          Posting Center
-        </a>
-        <a href="#" className={`nav-item ${activePage === 'Working Calendar' ? 'active' : ''}`} onClick={() => setActivePage('Working Calendar')}>
-          <Calendar size={18} />
-          Working Calendar
-        </a>
+        {mainNavItems.map((item) => (
+          <a
+            key={item.name}
+            href="#"
+            className={`nav-item ${activePage === item.name ? 'active' : ''}`}
+            onClick={() => setActivePage(item.name)}
+          >
+            {item.icon}
+            {item.name}
+            <span className="shortcut-key">Alt+{item.shortcut}</span>
+          </a>
+        ))}
 
         <div className="nav-group-label">Setup</div>
 
@@ -174,6 +198,7 @@ const Sidebar = ({
         <a href="#" className={`nav-item ${activePage === 'Settings' ? 'active' : ''}`} onClick={() => setActivePage('Settings')}>
           <Settings size={18} />
           Settings
+          <span className="shortcut-key">Alt+,</span>
         </a>
         <a href="#" className={`nav-item ${activePage === 'Notifications' ? 'active' : ''}`} onClick={() => setActivePage('Notifications')}>
           <Bell size={18} />

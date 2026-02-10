@@ -196,6 +196,34 @@ body {
   color: var(--sidebar-text-active);
 }
 
+.shortcut-key {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--sidebar-text);
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: var(--font-inter);
+  opacity: 0;
+  transform: translateX(4px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  height: 18px;
+}
+
+.nav-item:hover .shortcut-key {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.5s;
+}
+
 .nav-item.active {
   background-color: transparent;
   /* Often active state in these designs implies bold text or accent, checking image */
