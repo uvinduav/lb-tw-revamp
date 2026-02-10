@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import useKeyboardShortcuts from '../hooks/useKeyboardShortcuts';
 import * as Dialog from '@radix-ui/react-dialog';
-import { 
-  Search, 
-  SlidersHorizontal, 
-  RotateCw, 
-  SquareArrowOutUpRight, 
-  Pencil, 
-  Trash2, 
-  Download, 
+import {
+  Search,
+  SlidersHorizontal,
+  RotateCw,
+  SquareArrowOutUpRight,
+  Pencil,
+  Trash2,
+  Download,
   Plus,
   Settings,
   MoreVertical,
@@ -18,10 +19,10 @@ import {
 import HighlightText from './common/HighlightText';
 import emptyBox from '../assets/empty-box.png';
 
-const ModulePage = ({ 
-  title, 
-  columns = [], 
-  data = [], 
+const ModulePage = ({
+  title,
+  columns = [],
+  data = [],
   filterFields = [],
   dataMap = {}, // Maps UI columns to data keys
   renderRowActions, // Optional: function to render custom row actions (row) => JSX
@@ -31,8 +32,8 @@ const ModulePage = ({
   renderHeaderActions = null, // Optional: function to render custom header actions () => JSX
   showDefaultRowActions = true // Optional: whether to show default Edit and Delete actions
 }) => {
-  const [allData, setAllData] = useState([]); 
-  const [visibleData, setVisibleData] = useState([]); 
+  const [allData, setAllData] = useState([]);
+  const [visibleData, setVisibleData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -45,17 +46,20 @@ const ModulePage = ({
   const [tempFilters, setTempFilters] = useState({});
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [showEmptyState, setShowEmptyState] = useState(false);
-  
+
+  const searchInputRef = useRef(null);
+  useKeyboardShortcuts(searchInputRef, setIsFilterModalOpen);
+
   const lastScrollTopA = useRef(0);
   const tableContainerRef = useRef(null);
   const ITEMS_PER_BATCH = 20;
 
   useEffect(() => {
     if (data) {
-        setAllData(data);
-        setVisibleData(data.slice(0, ITEMS_PER_BATCH));
-        setHasMore(data.length > ITEMS_PER_BATCH);
-        setIsLoading(false);
+      setAllData(data);
+      setVisibleData(data.slice(0, ITEMS_PER_BATCH));
+      setHasMore(data.length > ITEMS_PER_BATCH);
+      setIsLoading(false);
     }
   }, [data]);
 
@@ -74,20 +78,20 @@ const ModulePage = ({
   const filteredData = useMemo(() => {
     return allData.filter(row => {
       // Global Search
-      const searchMatch = !debouncedSearchQuery || Object.values(row).some(val => 
+      const searchMatch = !debouncedSearchQuery || Object.values(row).some(val =>
         String(val).toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
-      
+
       // Granular Filters
       const filterMatch = Object.entries(activeFilters).every(([key, value]) => {
         if (!value) return true;
-        
+
         // Handle value range filters
         if (key.endsWith('_currency') || key.endsWith('_min') || key.endsWith('_max')) {
           const baseKey = key.split('_').slice(0, -1).join('_');
           const actualKey = dataMap[baseKey] || baseKey;
           const rawValue = String(row[actualKey] || '');
-          
+
           // Parse currency and amount (e.g. "LKR 1,200,000.00")
           const parts = rawValue.trim().split(/\s+/);
           const currency = parts.length > 1 ? parts[0] : '';
@@ -101,7 +105,7 @@ const ModulePage = ({
           if (targetCurrency && currency && currency !== targetCurrency) return false;
           if (min && !isNaN(amount) && amount < parseFloat(min)) return false;
           if (max && !isNaN(amount) && amount > parseFloat(max)) return false;
-          
+
           return true;
         }
 
@@ -147,7 +151,7 @@ const ModulePage = ({
         if (scrollHeight <= clientHeight) {
           const currentLength = visibleData.length;
           const nextBatch = filteredData.slice(currentLength, currentLength + ITEMS_PER_BATCH);
-          
+
           if (nextBatch.length > 0) {
             setVisibleData(prev => [...prev, ...nextBatch]);
             if (currentLength + nextBatch.length >= filteredData.length) {
@@ -157,14 +161,14 @@ const ModulePage = ({
         }
       }
     };
-    
+
     checkScrollFill();
   }, [visibleData, hasMore, isLoading, filteredData]);
 
 
   const handleScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
-    
+
     // Handle Header Visibility
     const currentScrollTop = scrollTop;
     const distanceToBottom = scrollHeight - (scrollTop + clientHeight);
@@ -209,7 +213,7 @@ const ModulePage = ({
   }, [filteredData]);
 
   const loadMoreRows = () => {
-    if (!hasMore) return; 
+    if (!hasMore) return;
     setIsLoading(true);
     setTimeout(() => {
       setVisibleData(prev => {
@@ -221,7 +225,7 @@ const ModulePage = ({
         return [...prev, ...nextBatch];
       });
       setIsLoading(false);
-    }, 600); 
+    }, 600);
   };
 
   const handleApplyFilters = () => {
@@ -244,12 +248,12 @@ const ModulePage = ({
     if (isRefreshing) return;
     setIsRefreshing(true);
     setIsLoading(true);
-    
+
     // Simulate data reload
     setTimeout(() => {
       setVisibleData(filteredData.slice(0, ITEMS_PER_BATCH));
       setHasMore(filteredData.length > ITEMS_PER_BATCH);
-      
+
       setIsRefreshing(false);
       setIsLoading(false);
     }, 1500);
@@ -258,20 +262,20 @@ const ModulePage = ({
   const getCellContent = (row, col) => {
     const key = dataMap[col] || col.toLowerCase().replace(/ /g, '');
     const value = row[key];
-    
+
     if (key === 'status') {
-         const getStatusClass = (status) => {
-             const s = status?.toLowerCase();
-             if (s === 'active') return 'status-active';
-             if (s === 'posted') return 'status-posted';
-             if (s === 'failed') return 'status-failed';
-             return 'status-renewed';
-         };
-         return (
-             <span className={`status-pill ${getStatusClass(value)}`}>
-                <HighlightText text={value} highlight={debouncedSearchQuery} />
-             </span>
-         )
+      const getStatusClass = (status) => {
+        const s = status?.toLowerCase();
+        if (s === 'active') return 'status-active';
+        if (s === 'posted') return 'status-posted';
+        if (s === 'failed') return 'status-failed';
+        return 'status-renewed';
+      };
+      return (
+        <span className={`status-pill ${getStatusClass(value)}`}>
+          <HighlightText text={value} highlight={debouncedSearchQuery} />
+        </span>
+      )
     }
 
     return <HighlightText text={value || '-'} highlight={debouncedSearchQuery} />;
@@ -306,17 +310,18 @@ const ModulePage = ({
           ) : (
             <Search size={16} className="text-secondary" />
           )}
-          <input 
-            type="text" 
-            placeholder="Search" 
-            className="search-input" 
+          <input
+            type="text"
+            ref={searchInputRef}
+            placeholder="Search or press /"
+            className="search-input"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           {(searchQuery || activeFilterCount > 0) && (
-            <button 
-              className="clear-search" 
-              onClick={handleClearAll} 
+            <button
+              className="clear-search"
+              onClick={handleClearAll}
               onMouseDown={(e) => e.preventDefault()}
               title="Clear all"
             >
@@ -324,103 +329,103 @@ const ModulePage = ({
             </button>
           )}
 
-        <Dialog.Root 
-          open={isFilterModalOpen} 
-          onOpenChange={(open) => { 
-            setIsFilterModalOpen(open);
-            if(open) setTempFilters(activeFilters); 
-          }}
-        >
-          <Dialog.Trigger asChild>
-            <div 
-              className="filter-trigger-wrapper" 
-              onMouseDown={(e) => e.preventDefault()}
-            >
-              <SlidersHorizontal size={16} className="text-secondary" />
-              {activeFilterCount > 0 && (
-                <span className="filter-badge">{activeFilterCount}</span>
-              )}
-            </div>
-          </Dialog.Trigger>
+          <Dialog.Root
+            open={isFilterModalOpen}
+            onOpenChange={(open) => {
+              setIsFilterModalOpen(open);
+              if (open) setTempFilters(activeFilters);
+            }}
+          >
+            <Dialog.Trigger asChild>
+              <div
+                className="filter-trigger-wrapper"
+                onMouseDown={(e) => e.preventDefault()}
+              >
+                <SlidersHorizontal size={16} className="text-secondary" />
+                {activeFilterCount > 0 && (
+                  <span className="filter-badge">{activeFilterCount}</span>
+                )}
+              </div>
+            </Dialog.Trigger>
             <Dialog.Portal>
               <Dialog.Overlay className="dialog-overlay" />
               <Dialog.Content className="dialog-content">
                 <Dialog.Title className="dialog-title">Advanced Filters</Dialog.Title>
                 <div className="filter-form">
-                   {filterFields.map(field => {
-                     const isBankField = field.toLowerCase() === 'bank';
-                     const isValueField = field.toLowerCase().includes('value') || field.toLowerCase().includes('provision') || field.toLowerCase().includes('amount');
-                     
-                     let fieldClass = "filter-field";
-                     if (isValueField) fieldClass += " value-filter-group span-4";
-                     else fieldClass += " span-1";
+                  {filterFields.map(field => {
+                    const isBankField = field.toLowerCase() === 'bank';
+                    const isValueField = field.toLowerCase().includes('value') || field.toLowerCase().includes('provision') || field.toLowerCase().includes('amount');
 
-                     if (isValueField) {
-                       return (
-                         <div className={fieldClass} key={field}>
-                           <label>{field}</label>
-                           <div className="value-inputs">
-                             <select 
-                               value={tempFilters[`${field}_currency`] || ''}
-                               onChange={(e) => setTempFilters(prev => ({ ...prev, [`${field}_currency`]: e.target.value }))}
-                               className="filter-select currency-select"
-                             >
-                               <option value="">Currency</option>
-                               <option value="LKR">LKR</option>
-                               <option value="USD">USD</option>
-                               <option value="EUR">EUR</option>
-                               <option value="GBP">GBP</option>
-                             </select>
-                             <input 
-                               type="number" 
-                               placeholder="Min"
-                               value={tempFilters[`${field}_min`] || ''}
-                               onChange={(e) => setTempFilters(prev => ({ ...prev, [`${field}_min`]: e.target.value }))}
-                               className="value-input"
-                             />
-                             <input 
-                               type="number" 
-                               placeholder="Max"
-                               value={tempFilters[`${field}_max`] || ''}
-                               onChange={(e) => setTempFilters(prev => ({ ...prev, [`${field}_max`]: e.target.value }))}
-                               className="value-input"
-                             />
-                           </div>
-                         </div>
-                       );
-                     }
+                    let fieldClass = "filter-field";
+                    if (isValueField) fieldClass += " value-filter-group span-4";
+                    else fieldClass += " span-1";
 
-                     const options = filterOptions[field] || (isBankField ? [
-                       'Bank of China', 'Citi Bank', 'Commercial Bank', 'Deutsche Bank', 
-                       'DFCC Bank', 'Hatton National Bank', 'Nation Trust Bank', 
-                       'NDB Bank', "People's Bank", 'Sampath Bank'
-                     ] : null);
-                     
-                     return (
+                    if (isValueField) {
+                      return (
                         <div className={fieldClass} key={field}>
                           <label>{field}</label>
-                          {options ? (
-                            <select 
-                              value={tempFilters[field] || ''}
-                              onChange={(e) => setTempFilters(prev => ({ ...prev, [field]: e.target.value }))}
-                              className="filter-select"
+                          <div className="value-inputs">
+                            <select
+                              value={tempFilters[`${field}_currency`] || ''}
+                              onChange={(e) => setTempFilters(prev => ({ ...prev, [`${field}_currency`]: e.target.value }))}
+                              className="filter-select currency-select"
                             >
-                              <option value="">{isBankField ? 'Select bank' : `Select ${field.toLowerCase()}`}</option>
-                              {options.map(opt => (
-                                <option key={opt} value={opt}>{opt}</option>
-                              ))}
+                              <option value="">Currency</option>
+                              <option value="LKR">LKR</option>
+                              <option value="USD">USD</option>
+                              <option value="EUR">EUR</option>
+                              <option value="GBP">GBP</option>
                             </select>
-                          ) : (
-                            <input 
-                              type="text" 
-                              placeholder={`Filter by ${field.toLowerCase()}`}
-                              value={tempFilters[field] || ''}
-                              onChange={(e) => setTempFilters(prev => ({ ...prev, [field]: e.target.value }))}
+                            <input
+                              type="number"
+                              placeholder="Min"
+                              value={tempFilters[`${field}_min`] || ''}
+                              onChange={(e) => setTempFilters(prev => ({ ...prev, [`${field}_min`]: e.target.value }))}
+                              className="value-input"
                             />
-                          )}
+                            <input
+                              type="number"
+                              placeholder="Max"
+                              value={tempFilters[`${field}_max`] || ''}
+                              onChange={(e) => setTempFilters(prev => ({ ...prev, [`${field}_max`]: e.target.value }))}
+                              className="value-input"
+                            />
+                          </div>
                         </div>
                       );
-                   })}
+                    }
+
+                    const options = filterOptions[field] || (isBankField ? [
+                      'Bank of China', 'Citi Bank', 'Commercial Bank', 'Deutsche Bank',
+                      'DFCC Bank', 'Hatton National Bank', 'Nation Trust Bank',
+                      'NDB Bank', "People's Bank", 'Sampath Bank'
+                    ] : null);
+
+                    return (
+                      <div className={fieldClass} key={field}>
+                        <label>{field}</label>
+                        {options ? (
+                          <select
+                            value={tempFilters[field] || ''}
+                            onChange={(e) => setTempFilters(prev => ({ ...prev, [field]: e.target.value }))}
+                            className="filter-select"
+                          >
+                            <option value="">{isBankField ? 'Select bank' : `Select ${field.toLowerCase()}`}</option>
+                            {options.map(opt => (
+                              <option key={opt} value={opt}>{opt}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            type="text"
+                            placeholder={`Filter by ${field.toLowerCase()}`}
+                            value={tempFilters[field] || ''}
+                            onChange={(e) => setTempFilters(prev => ({ ...prev, [field]: e.target.value }))}
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
                 <div className="dialog-actions">
                   <button className="btn-clear" onClick={handleClearFilters}>Clear all</button>
@@ -437,22 +442,22 @@ const ModulePage = ({
             </Dialog.Portal>
           </Dialog.Root>
         </div>
-        
+
         <div className="control-icons">
           <div className="control-group-left">
             <div className="perma-controls">
               {isRefreshing ? (
                 <Loader2 className="control-icon spinner" size={16} />
               ) : (
-                <RotateCw 
-                  className="control-icon" 
-                  size={16} 
+                <RotateCw
+                  className="control-icon"
+                  size={16}
                   onClick={handleRefresh}
                   style={{ cursor: 'pointer' }}
                 />
               )}
             </div>
-            
+
             {selectedRows.size > 0 && (
               <div className="temp-icons">
                 <div className="vertical-divider"></div>
@@ -470,7 +475,7 @@ const ModulePage = ({
                 {alertCount} {alertCount === 1 ? 'Alert' : 'Alerts'}
               </div>
             )}
-            
+
             {renderHeaderActions && renderHeaderActions()}
             <Settings className="control-icon" size={16} />
             <MoreVertical className="control-icon" size={16} />
@@ -478,8 +483,8 @@ const ModulePage = ({
         </div>
       </div>
 
-      <div 
-        className="table-wrapper" 
+      <div
+        className="table-wrapper"
         ref={tableContainerRef}
         style={{ backgroundColor: 'white' }}
         onScroll={handleScroll}
@@ -489,8 +494,8 @@ const ModulePage = ({
           <thead style={{ position: 'sticky', top: 0, zIndex: 20 }}>
             <tr>
               <th className="checkbox-col">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   checked={visibleData.length > 0 && selectedRows.size === visibleData.length}
                   onChange={toggleAllSelection}
                 />
@@ -505,22 +510,22 @@ const ModulePage = ({
             {visibleData.map((row) => (
               <tr key={row.id}>
                 <td className="checkbox-col">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={selectedRows.has(row.id)}
                     onChange={() => toggleRowSelection(row.id)}
                   />
                 </td>
                 {columns.map(col => (
-                    <td key={col} style={col === 'Amount' ? { fontFamily: 'monospace', fontWeight: 500 } : {}}>
-                        {getCellContent(row, col)}
-                    </td>
+                  <td key={col} style={col === 'Amount' ? { fontFamily: 'monospace', fontWeight: 500 } : {}}>
+                    {getCellContent(row, col)}
+                  </td>
                 ))}
-                
+
                 <td className="actions-col">
                   <div className="row-actions">
                     {renderRowActions ? (
-                        renderRowActions(row)
+                      renderRowActions(row)
                     ) : (
                       <>
                         {showDefaultRowActions && (
@@ -543,32 +548,32 @@ const ModulePage = ({
               </tr>
             ))}
             {(visibleData.length === 0 && (isLoading || !showEmptyState)) && (
-                 <tr className="loading-state-row">
-                    <td colSpan={columns.length + 2} style={{ textAlign: 'center', padding: '60px 40px', borderBottom: 'none' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', color: 'var(--color-text-secondary)' }}>
-                          <Loader2 className="spinner" size={32} />
-                          <span>Loading data...</span>
-                        </div>
-                    </td>
-                 </tr>
+              <tr className="loading-state-row">
+                <td colSpan={columns.length + 2} style={{ textAlign: 'center', padding: '60px 40px', borderBottom: 'none' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', color: 'var(--color-text-secondary)' }}>
+                    <Loader2 className="spinner" size={32} />
+                    <span>Loading data...</span>
+                  </div>
+                </td>
+              </tr>
             )}
             {visibleData.length === 0 && !isLoading && showEmptyState && (
-                 <tr className="empty-state-row">
-                    <td colSpan={columns.length + 2} style={{ textAlign: 'center', padding: '60px 40px', color: '#888', borderBottom: 'none' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
-                          <img 
-                            src={emptyBox} 
-                            alt="No records" 
-                            style={{ width: '80px', height: '80px', opacity: 0.4 }} 
-                          />
-                          <span>No records found</span>
-                        </div>
-                    </td>
-                 </tr>
+              <tr className="empty-state-row">
+                <td colSpan={columns.length + 2} style={{ textAlign: 'center', padding: '60px 40px', color: '#888', borderBottom: 'none' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+                    <img
+                      src={emptyBox}
+                      alt="No records"
+                      style={{ width: '80px', height: '80px', opacity: 0.4 }}
+                    />
+                    <span>No records found</span>
+                  </div>
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
-        
+
         {isLoading && visibleData.length > 0 && (
           <div className="loading-indicator">
             <Loader2 className="spinner" size={24} />

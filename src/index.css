@@ -536,6 +536,7 @@ body {
   /* Both X and Y */
   margin-left: var(--spacing-lg);
   margin-right: var(--spacing-lg);
+  flex: 1;
 }
 
 .data-table {

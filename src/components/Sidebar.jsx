@@ -28,6 +28,38 @@ import {
 
 import lionLogo from "../assets/lion-logo.png";
 
+// Navigation Items Configuration
+const mainNavItems = [
+  { name: 'Dashboard', icon: <LayoutDashboard size={18} />, shortcut: '1' },
+  { name: 'Accounts', icon: <Book size={18} />, shortcut: '2' },
+  { name: 'Payments', icon: <DollarSign size={18} />, shortcut: '3' },
+  { name: 'Accruals', icon: <Stamp size={18} />, shortcut: '4' },
+  { name: 'Reports', icon: <FileText size={18} />, shortcut: '5' },
+  { name: 'Floating Rates', icon: <TrendingUp size={18} />, shortcut: '6' },
+  { name: 'Posting Center', icon: <ListChecks size={18} />, shortcut: '7' },
+  { name: 'Working Calendar', icon: <Calendar size={18} />, shortcut: '8' },
+];
+
+const subItems = [
+  { name: "Banks", icon: <Landmark size={16} /> },
+  { name: "Benchmarks", icon: <BarChart3 size={16} /> },
+  { name: "Branches", icon: <MapPin size={16} /> },
+  { name: "Companies", icon: <Briefcase size={16} /> },
+  { name: "Currencies", icon: <CircleDollarSign size={16} /> },
+  { name: "Durations", icon: <Clock size={16} /> },
+  { name: "Interest Rates", icon: <Percent size={16} /> },
+  { name: "Exchange Rates", icon: <Coins size={16} /> },
+  { name: "Purpose Tags", icon: <Tag size={16} /> },
+];
+
+const usersSubItems = [
+  { name: "Users", icon: <User size={16} /> },
+  { name: "User Groups", icon: <Users size={16} /> },
+];
+
+// Settings shortcut
+const settingsShortcut = ',';
+
 const Sidebar = ({
   activePage,
   setActivePage,
@@ -38,38 +70,6 @@ const Sidebar = ({
 }) => {
   const [isParametersOpen, setIsParametersOpen] = useState(false);
   const [isUsersOpen, setIsUsersOpen] = useState(false);
-
-  const subItems = [
-    { name: "Banks", icon: <Landmark size={16} /> },
-    { name: "Benchmarks", icon: <BarChart3 size={16} /> },
-    { name: "Branches", icon: <MapPin size={16} /> },
-    { name: "Companies", icon: <Briefcase size={16} /> },
-    { name: "Currencies", icon: <CircleDollarSign size={16} /> },
-    { name: "Durations", icon: <Clock size={16} /> },
-    { name: "Interest Rates", icon: <Percent size={16} /> },
-    { name: "Exchange Rates", icon: <Coins size={16} /> },
-    { name: "Purpose Tags", icon: <Tag size={16} /> },
-  ];
-
-  const usersSubItems = [
-    { name: "Users", icon: <User size={16} /> },
-    { name: "User Groups", icon: <Users size={16} /> },
-  ];
-
-  // Navigation Items Configuration
-  const mainNavItems = [
-    { name: 'Dashboard', icon: <LayoutDashboard size={18} />, shortcut: '0' },
-    { name: 'Accounts', icon: <Book size={18} />, shortcut: '1' },
-    { name: 'Payments', icon: <DollarSign size={18} />, shortcut: '2' },
-    { name: 'Accruals', icon: <Stamp size={18} />, shortcut: '3' },
-    { name: 'Reports', icon: <FileText size={18} />, shortcut: '4' },
-    { name: 'Floating Rates', icon: <TrendingUp size={18} />, shortcut: '5' },
-    { name: 'Posting Center', icon: <ListChecks size={18} />, shortcut: '6' },
-    { name: 'Working Calendar', icon: <Calendar size={18} />, shortcut: '7' },
-  ];
-
-  // Settings shortcut
-  const settingsShortcut = ',';
 
   useEffect(() => {
     const handleKeyDown = (e) => {

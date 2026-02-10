@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import useKeyboardShortcuts from '../hooks/useKeyboardShortcuts';
 import * as Dialog from '@radix-ui/react-dialog';
-import { 
-  Search, 
-  SlidersHorizontal, 
-  RotateCcw, 
-  SquareArrowOutUpRight, 
-  Pencil, 
-  Trash2, 
-  Download, 
+import {
+  Search,
+  SlidersHorizontal,
+  RotateCcw,
+  SquareArrowOutUpRight,
+  Pencil,
+  Trash2,
+  Download,
   Plus,
   Settings,
   MoreVertical,
@@ -26,7 +27,7 @@ const HighlightText = ({ text, highlight }) => {
   const parts = String(text).split(new RegExp(`(${highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'));
   return (
     <span>
-      {parts.map((part, i) => 
+      {parts.map((part, i) =>
         part.toLowerCase() === highlight.toLowerCase() ? (
           <mark key={i} className="highlight">{part}</mark>
         ) : (
@@ -51,7 +52,10 @@ const AccountsTable = () => {
   const [activeFilters, setActiveFilters] = useState({});
   const [tempFilters, setTempFilters] = useState({});
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  
+
+  const searchInputRef = useRef(null);
+  useKeyboardShortcuts(searchInputRef, setIsFilterModalOpen);
+
   const lastScrollTopA = useRef(0);
   const tableContainerRef = useRef(null);
   const ITEMS_PER_BATCH = 20;
@@ -59,10 +63,10 @@ const AccountsTable = () => {
   const filteredData = useMemo(() => {
     return allData.filter(row => {
       // Global Search
-      const searchMatch = !debouncedSearchQuery || Object.values(row).some(val => 
+      const searchMatch = !debouncedSearchQuery || Object.values(row).some(val =>
         String(val).toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
-      
+
       // Granular Filters
       const filterMatch = Object.entries(activeFilters).every(([key, value]) => {
         if (!value) return true;
@@ -104,14 +108,14 @@ const AccountsTable = () => {
     const parseCSV = (csvText) => {
       const lines = csvText.split('\n');
       const headers = lines[0].split(',').map(h => h.trim());
-      
+
       const rows = lines.slice(1).filter(line => line.trim() !== '').map((line, index) => {
         const values = line.split(',');
         const entry = {};
         headers.forEach((header, i) => {
           entry[header] = values[i]?.trim();
         });
-        
+
         return {
           id: index,
           accountNumber: entry['Account Number'],
@@ -133,7 +137,7 @@ const AccountsTable = () => {
     if (csvFile) {
       const parsedData = parseCSV(csvFile);
       setAllData(parsedData);
-      
+
       // Load initial batch
       setVisibleData(parsedData.slice(0, ITEMS_PER_BATCH));
       setHasMore(parsedData.length > ITEMS_PER_BATCH);
@@ -148,7 +152,7 @@ const AccountsTable = () => {
         if (scrollHeight <= clientHeight) {
           const currentLength = visibleData.length;
           const nextBatch = filteredData.slice(currentLength, currentLength + ITEMS_PER_BATCH);
-          
+
           if (nextBatch.length > 0) {
             setVisibleData(prev => [...prev, ...nextBatch]);
             if (currentLength + nextBatch.length >= filteredData.length) {
@@ -158,14 +162,14 @@ const AccountsTable = () => {
         }
       }
     };
-    
+
     checkScrollFill();
   }, [visibleData, hasMore, isLoading, filteredData]);
 
 
   const handleScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
-    
+
     // Handle Header Visibility
     const currentScrollTop = scrollTop;
     const distanceToBottom = scrollHeight - (scrollTop + clientHeight);
@@ -213,7 +217,7 @@ const AccountsTable = () => {
   }, [filteredData]);
 
   const loadMoreRows = () => {
-    if (!hasMore) return; 
+    if (!hasMore) return;
     setIsLoading(true);
     setTimeout(() => {
       setVisibleData(prev => {
@@ -225,7 +229,7 @@ const AccountsTable = () => {
         return [...prev, ...nextBatch];
       });
       setIsLoading(false);
-    }, 600); 
+    }, 600);
   };
 
   const handleApplyFilters = () => {
@@ -247,13 +251,13 @@ const AccountsTable = () => {
     if (isRefreshing) return;
     setIsRefreshing(true);
     setIsLoading(true);
-    
+
     // Simulate data reload
     setTimeout(() => {
       // Logic to "refresh" data - here we just reset visible data and let effects re-fill
       setVisibleData(filteredData.slice(0, ITEMS_PER_BATCH));
       setHasMore(filteredData.length > ITEMS_PER_BATCH);
-      
+
       setIsRefreshing(false);
       setIsLoading(false);
     }, 1500);
@@ -286,37 +290,38 @@ const AccountsTable = () => {
           ) : (
             <Search size={16} className="text-secondary" />
           )}
-          <input 
-            type="text" 
-            placeholder="Search" 
-            className="search-input" 
+          <input
+            type="text"
+            ref={searchInputRef}
+            placeholder="Search or press /"
+            className="search-input"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           {(searchQuery || activeFilterCount > 0) && (
             <button className="clear-search" onClick={handleClearAll} title="Clear all">
-            <X size={14} />
-          </button>
-        )}
+              <X size={14} />
+            </button>
+          )}
 
-        <Dialog.Root 
-          open={isFilterModalOpen} 
-          onOpenChange={(open) => { 
-            setIsFilterModalOpen(open);
-            if(open) setTempFilters(activeFilters); 
-          }}
-        >
-          <Dialog.Trigger asChild>
-            <div 
-              className="filter-trigger-wrapper" 
-              onMouseDown={(e) => e.preventDefault()}
-            >
-              <SlidersHorizontal size={16} className="text-secondary" />
-              {activeFilterCount > 0 && (
-                <span className="filter-badge">{activeFilterCount}</span>
-              )}
-            </div>
-          </Dialog.Trigger>
+          <Dialog.Root
+            open={isFilterModalOpen}
+            onOpenChange={(open) => {
+              setIsFilterModalOpen(open);
+              if (open) setTempFilters(activeFilters);
+            }}
+          >
+            <Dialog.Trigger asChild>
+              <div
+                className="filter-trigger-wrapper"
+                onMouseDown={(e) => e.preventDefault()}
+              >
+                <SlidersHorizontal size={16} className="text-secondary" />
+                {activeFilterCount > 0 && (
+                  <span className="filter-badge">{activeFilterCount}</span>
+                )}
+              </div>
+            </Dialog.Trigger>
             <Dialog.Portal>
               <Dialog.Overlay className="dialog-overlay" />
               <Dialog.Content className="dialog-content">
@@ -327,8 +332,8 @@ const AccountsTable = () => {
                   ].map(field => (
                     <div className="filter-field" key={field}>
                       <label>{field}</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         placeholder={`Filter by ${field.toLowerCase()}`}
                         value={tempFilters[field] || ''}
                         onChange={(e) => setTempFilters(prev => ({ ...prev, [field]: e.target.value }))}
@@ -351,22 +356,22 @@ const AccountsTable = () => {
             </Dialog.Portal>
           </Dialog.Root>
         </div>
-        
+
         <div className="control-icons">
           <div className="control-group-left">
             <div className="perma-controls">
               {isRefreshing ? (
                 <Loader2 className="control-icon spinner" size={16} />
               ) : (
-                <RotateCw 
-                  className="control-icon" 
-                  size={16} 
+                <RotateCw
+                  className="control-icon"
+                  size={16}
                   onClick={handleRefresh}
                   style={{ cursor: 'pointer' }}
                 />
               )}
             </div>
-            
+
             {selectedRows.size > 0 && (
               <div className="temp-icons">
                 <div className="vertical-divider"></div>
@@ -382,15 +387,15 @@ const AccountsTable = () => {
               <AlertCircle size={14} />
               2 Alerts
             </div>
-            
+
             <Settings className="control-icon" size={16} />
             <MoreVertical className="control-icon" size={16} />
           </div>
         </div>
       </div>
 
-      <div 
-        className="table-wrapper" 
+      <div
+        className="table-wrapper"
         ref={tableContainerRef}
         style={{ backgroundColor: 'white' }}
         onScroll={handleScroll}
@@ -400,8 +405,8 @@ const AccountsTable = () => {
           <thead style={{ position: 'sticky', top: 0, zIndex: 20 }}>
             <tr>
               <th className="checkbox-col">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   checked={visibleData.length > 0 && selectedRows.size === visibleData.length}
                   onChange={toggleAllSelection}
                 />
@@ -424,8 +429,8 @@ const AccountsTable = () => {
             {visibleData.map((row) => (
               <tr key={row.id}>
                 <td className="checkbox-col">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={selectedRows.has(row.id)}
                     onChange={() => toggleRowSelection(row.id)}
                   />
@@ -474,7 +479,7 @@ const AccountsTable = () => {
             ))}
           </tbody>
         </table>
-        
+
         {isLoading && (
           <div className="loading-indicator">
             <Loader2 className="spinner" size={24} />
