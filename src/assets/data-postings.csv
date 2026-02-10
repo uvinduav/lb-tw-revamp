@@ -1,0 +1,23 @@
+GROUP ID,COMPANY,BANK,ACCOUNTS,TOTAL VALUE / PROVISION,STATUS,SAP DOC NO,APPROVED DATE / BY
+202602_FD_LKR_SAMPATH,Lion Brewery,Sampath Bank,1,"29,157,534.25",Posted,1200007921,2025-12-09 / chanodya.l@avlyon.com
+202602_FD_LKR_COMB,Lion Brewery,Commercial Bank,3,"877,402,739.73",Posted,1200007665,2025-12-02 / Janak Wijekoon
+202602_FD_LKR_DFCC,Lion Brewery,DFCC Bank,3,"119,928,767.12",Posted,1200007669,2025-12-02 / Janak Wijekoon
+202602_FD_LKR_NDB,Lion Brewery,NDB Bank,1,"35,726,027.40",Posted,1200007500,2025-12-09 / chanodya.l@avlyon.com
+202602_LTL_LKR_COMB,Lion Brewery,Commercial Bank,3,"2,087,013.70",Posted,1200007374,2025-12-02 / Janak Wijekoon
+202602_LTL_LKR_BOCC,Lion Brewery,Bank of China,1,"424,246.58",Posted,1200007248,2025-12-02 / Janak Wijekoon
+202602_FD_LKR_HNB,Lion Brewery,Hatton National Bank,2,"34,109,589.04",Posted,1200007122,2025-12-09 / chanodya.l@avlyon.com
+202602_STL_LKR_BOCC,Lion Brewery,Bank of China,1,"22,904.11",Posted,1200006996,2025-12-02 / Janak Wijekoon
+202512_FD_LKR_NDB,Lion Brewery,NDB Bank,1,"22,552,054.79",Failed,Network error...,2026-01-06 / Oshan Rube
+202512_FD_USD_HNB,Lion Brewery,Hatton National Bank,1,"1,047.95",Failed,Network error...,2025-12-17 / ashan.p@avlyon.com
+202512_FD_USD_SCBL,Lion Brewery,Standard Chartered,2,"4,218.75",Failed,Network error...,2025-12-17 / ashan.p@avlyon.com
+202512_FD_LKR_DFCC,Lion Brewery,DFCC Bank,3,"97,663,698.63",Failed,Network error...,2025-12-16 / Oshan Rube
+202512_STL_LKR_BOCC,Lion Brewery,Bank of China,1,"13,260.27",Failed,Network error...,2025-12-09 / chanodya.l@avlyon.com
+202512_FD_LKR_COMB,Lion Brewery,Commercial Bank,3,"827,890,410.96",Posted,1200007921,2025-12-09 / chanodya.l@avlyon.com
+202511_FD_LKR_BOCC,Lion Brewery,Bank of China,1,"234,199.84",Posted,1200007665,2025-12-02 / Janak Wijekoon
+202511_FD_USD_COMB,Lion Brewery,Commercial Bank,1,"1,630.14",Posted,1200007669,2025-12-02 / Janak Wijekoon
+202511_FD_USD_HNB,Lion Brewery,Hatton National Bank,3,"6,673.01",Posted,1200007668,2025-12-02 / Janak Wijekoon
+202511_LTL_LKR_COMB,Lion Brewery,Commercial Bank,2,"3,589,041.10",Posted,1200007673,2025-12-02 / Janak Wijekoon
+202511_LTL_LKR_BOCC,Lion Brewery,Bank of China,1,"636,369.86",Posted,1200007674,2025-12-02 / Janak Wijekoon
+202511_FD_USD_SCBL,Lion Brewery,Standard Chartered,2,"9,826.39",Posted,1200007670,2025-12-01 / Janak Wijekoon
+202511_FD_EUR_SCBL,Lion Brewery,Standard Chartered,1,870,Posted,1200007672,2025-12-01 / Janak Wijekoon
+202511_FD_USD_CITI,Lion Brewery,Citi Bank,1,"6,328.77",Posted,1200007671,2025-12-01 / Janak Wijekoon

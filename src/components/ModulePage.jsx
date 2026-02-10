@@ -16,17 +16,24 @@ import {
   X
 } from 'lucide-react';
 import HighlightText from './common/HighlightText';
+import emptyBox from '../assets/empty-box.png';
 
 const ModulePage = ({ 
   title, 
   columns = [], 
   data = [], 
   filterFields = [],
-  dataMap = {} // Maps UI columns to data keys
+  dataMap = {}, // Maps UI columns to data keys
+  renderRowActions, // Optional: function to render custom row actions (row) => JSX
+  filterOptions = {}, // Optional: object mapping field names to array of options
+  alertCount = 0, // Optional: number of alerts to show
+  showAddButton = true, // Optional: whether to show the "Add New" button
+  renderHeaderActions = null, // Optional: function to render custom header actions () => JSX
+  showDefaultRowActions = true // Optional: whether to show default Edit and Delete actions
 }) => {
   const [allData, setAllData] = useState([]); 
   const [visibleData, setVisibleData] = useState([]); 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [selectedRows, setSelectedRows] = useState(new Set());
@@ -37,6 +44,7 @@ const ModulePage = ({
   const [activeFilters, setActiveFilters] = useState({});
   const [tempFilters, setTempFilters] = useState({});
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [showEmptyState, setShowEmptyState] = useState(false);
   
   const lastScrollTopA = useRef(0);
   const tableContainerRef = useRef(null);
@@ -47,8 +55,21 @@ const ModulePage = ({
         setAllData(data);
         setVisibleData(data.slice(0, ITEMS_PER_BATCH));
         setHasMore(data.length > ITEMS_PER_BATCH);
+        setIsLoading(false);
     }
   }, [data]);
+
+  useEffect(() => {
+    let timer;
+    if (visibleData.length === 0 && !isLoading) {
+      timer = setTimeout(() => {
+        setShowEmptyState(true);
+      }, 1000);
+    } else {
+      setShowEmptyState(false);
+    }
+    return () => clearTimeout(timer);
+  }, [visibleData.length, isLoading]);
 
   const filteredData = useMemo(() => {
     return allData.filter(row => {
@@ -60,6 +81,30 @@ const ModulePage = ({
       // Granular Filters
       const filterMatch = Object.entries(activeFilters).every(([key, value]) => {
         if (!value) return true;
+        
+        // Handle value range filters
+        if (key.endsWith('_currency') || key.endsWith('_min') || key.endsWith('_max')) {
+          const baseKey = key.split('_').slice(0, -1).join('_');
+          const actualKey = dataMap[baseKey] || baseKey;
+          const rawValue = String(row[actualKey] || '');
+          
+          // Parse currency and amount (e.g. "LKR 1,200,000.00")
+          const parts = rawValue.trim().split(/\s+/);
+          const currency = parts.length > 1 ? parts[0] : '';
+          const amountStr = parts.length > 1 ? parts[1] : parts[0];
+          const amount = parseFloat(amountStr.replace(/,/g, ''));
+
+          const targetCurrency = activeFilters[`${baseKey}_currency`];
+          const min = activeFilters[`${baseKey}_min`];
+          const max = activeFilters[`${baseKey}_max`];
+
+          if (targetCurrency && currency && currency !== targetCurrency) return false;
+          if (min && !isNaN(amount) && amount < parseFloat(min)) return false;
+          if (max && !isNaN(amount) && amount > parseFloat(max)) return false;
+          
+          return true;
+        }
+
         const actualKey = dataMap[key] || key;
         return String(row[actualKey] || '').toLowerCase().includes(value.toLowerCase());
       });
@@ -70,7 +115,16 @@ const ModulePage = ({
 
   // Count active filters (ignore empty strings or nulls)
   const activeFilterCount = useMemo(() => {
-    return Object.values(activeFilters).filter(val => val && val.trim() !== '').length;
+    const keys = new Set();
+    Object.entries(activeFilters).forEach(([key, val]) => {
+      if (val && val.trim() !== '') {
+        const baseKey = key.endsWith('_currency') || key.endsWith('_min') || key.endsWith('_max')
+          ? key.split('_').slice(0, -1).join('_')
+          : key;
+        keys.add(baseKey);
+      }
+    });
+    return keys.size;
   }, [activeFilters]);
 
   // Search Debounce Effect
@@ -181,6 +235,7 @@ const ModulePage = ({
 
   const handleClearAll = () => {
     setSearchQuery('');
+    setDebouncedSearchQuery('');
     setActiveFilters({});
     setTempFilters({});
   };
@@ -205,8 +260,15 @@ const ModulePage = ({
     const value = row[key];
     
     if (key === 'status') {
+         const getStatusClass = (status) => {
+             const s = status?.toLowerCase();
+             if (s === 'active') return 'status-active';
+             if (s === 'posted') return 'status-posted';
+             if (s === 'failed') return 'status-failed';
+             return 'status-renewed';
+         };
          return (
-             <span className={`status-pill ${value === 'Active' ? 'status-active' : 'status-renewed'}`}>
+             <span className={`status-pill ${getStatusClass(value)}`}>
                 <HighlightText text={value} highlight={debouncedSearchQuery} />
              </span>
          )
@@ -228,10 +290,12 @@ const ModulePage = ({
           <button className="btn btn-outline">
             <Download size={16} />
           </button>
-          <button className="btn btn-primary">
-            <Plus size={16} />
-            Add New {title.slice(0, -1) || 'Item'}
-          </button>
+          {showAddButton && (
+            <button className="btn btn-primary">
+              <Plus size={16} />
+              Add New {title.slice(0, -1) || 'Item'}
+            </button>
+          )}
         </div>
       </div>
 
@@ -250,10 +314,15 @@ const ModulePage = ({
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           {(searchQuery || activeFilterCount > 0) && (
-            <button className="clear-search" onClick={handleClearAll} title="Clear all">
-            <X size={14} />
-          </button>
-        )}
+            <button 
+              className="clear-search" 
+              onClick={handleClearAll} 
+              onMouseDown={(e) => e.preventDefault()}
+              title="Clear all"
+            >
+              <X size={14} />
+            </button>
+          )}
 
         <Dialog.Root 
           open={isFilterModalOpen} 
@@ -278,17 +347,80 @@ const ModulePage = ({
               <Dialog.Content className="dialog-content">
                 <Dialog.Title className="dialog-title">Advanced Filters</Dialog.Title>
                 <div className="filter-form">
-                  {filterFields.map(field => (
-                    <div className="filter-field" key={field}>
-                      <label>{field}</label>
-                      <input 
-                        type="text" 
-                        placeholder={`Filter by ${field.toLowerCase()}`}
-                        value={tempFilters[field] || ''}
-                        onChange={(e) => setTempFilters(prev => ({ ...prev, [field]: e.target.value }))}
-                      />
-                    </div>
-                  ))}
+                   {filterFields.map(field => {
+                     const isBankField = field.toLowerCase() === 'bank';
+                     const isValueField = field.toLowerCase().includes('value') || field.toLowerCase().includes('provision') || field.toLowerCase().includes('amount');
+                     
+                     let fieldClass = "filter-field";
+                     if (isValueField) fieldClass += " value-filter-group span-4";
+                     else fieldClass += " span-1";
+
+                     if (isValueField) {
+                       return (
+                         <div className={fieldClass} key={field}>
+                           <label>{field}</label>
+                           <div className="value-inputs">
+                             <select 
+                               value={tempFilters[`${field}_currency`] || ''}
+                               onChange={(e) => setTempFilters(prev => ({ ...prev, [`${field}_currency`]: e.target.value }))}
+                               className="filter-select currency-select"
+                             >
+                               <option value="">Currency</option>
+                               <option value="LKR">LKR</option>
+                               <option value="USD">USD</option>
+                               <option value="EUR">EUR</option>
+                               <option value="GBP">GBP</option>
+                             </select>
+                             <input 
+                               type="number" 
+                               placeholder="Min"
+                               value={tempFilters[`${field}_min`] || ''}
+                               onChange={(e) => setTempFilters(prev => ({ ...prev, [`${field}_min`]: e.target.value }))}
+                               className="value-input"
+                             />
+                             <input 
+                               type="number" 
+                               placeholder="Max"
+                               value={tempFilters[`${field}_max`] || ''}
+                               onChange={(e) => setTempFilters(prev => ({ ...prev, [`${field}_max`]: e.target.value }))}
+                               className="value-input"
+                             />
+                           </div>
+                         </div>
+                       );
+                     }
+
+                     const options = filterOptions[field] || (isBankField ? [
+                       'Bank of China', 'Citi Bank', 'Commercial Bank', 'Deutsche Bank', 
+                       'DFCC Bank', 'Hatton National Bank', 'Nation Trust Bank', 
+                       'NDB Bank', "People's Bank", 'Sampath Bank'
+                     ] : null);
+                     
+                     return (
+                        <div className={fieldClass} key={field}>
+                          <label>{field}</label>
+                          {options ? (
+                            <select 
+                              value={tempFilters[field] || ''}
+                              onChange={(e) => setTempFilters(prev => ({ ...prev, [field]: e.target.value }))}
+                              className="filter-select"
+                            >
+                              <option value="">{isBankField ? 'Select bank' : `Select ${field.toLowerCase()}`}</option>
+                              {options.map(opt => (
+                                <option key={opt} value={opt}>{opt}</option>
+                              ))}
+                            </select>
+                          ) : (
+                            <input 
+                              type="text" 
+                              placeholder={`Filter by ${field.toLowerCase()}`}
+                              value={tempFilters[field] || ''}
+                              onChange={(e) => setTempFilters(prev => ({ ...prev, [field]: e.target.value }))}
+                            />
+                          )}
+                        </div>
+                      );
+                   })}
                 </div>
                 <div className="dialog-actions">
                   <button className="btn-clear" onClick={handleClearFilters}>Clear all</button>
@@ -332,11 +464,14 @@ const ModulePage = ({
           </div>
 
           <div className="control-group-right">
-            <div className="alert-pill">
-              <AlertCircle size={14} />
-              2 Alerts
-            </div>
+            {alertCount > 0 && (
+              <div className="alert-pill">
+                <AlertCircle size={14} />
+                {alertCount} {alertCount === 1 ? 'Alert' : 'Alerts'}
+              </div>
+            )}
             
+            {renderHeaderActions && renderHeaderActions()}
             <Settings className="control-icon" size={16} />
             <MoreVertical className="control-icon" size={16} />
           </div>
@@ -384,30 +519,57 @@ const ModulePage = ({
                 
                 <td className="actions-col">
                   <div className="row-actions">
-                    <button className="action-btn" title="Edit">
-                      <Pencil size={14} />
-                    </button>
-                    <button className="action-btn" title="Delete">
-                      <Trash2 size={14} />
-                    </button>
-                    <button className="action-btn" title="More">
-                      <MoreVertical size={14} />
-                    </button>
+                    {renderRowActions ? (
+                        renderRowActions(row)
+                    ) : (
+                      <>
+                        {showDefaultRowActions && (
+                          <>
+                            <button className="action-btn" title="Edit">
+                              <Pencil size={14} />
+                            </button>
+                            <button className="action-btn" title="Delete">
+                              <Trash2 size={14} />
+                            </button>
+                          </>
+                        )}
+                        <button className="action-btn" title="More">
+                          <MoreVertical size={14} />
+                        </button>
+                      </>
+                    )}
                   </div>
                 </td>
               </tr>
             ))}
-            {visibleData.length === 0 && !isLoading && (
-                 <tr>
-                    <td colSpan={columns.length + 2} style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
-                        No records found
+            {(visibleData.length === 0 && (isLoading || !showEmptyState)) && (
+                 <tr className="loading-state-row">
+                    <td colSpan={columns.length + 2} style={{ textAlign: 'center', padding: '60px 40px', borderBottom: 'none' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', color: 'var(--color-text-secondary)' }}>
+                          <Loader2 className="spinner" size={32} />
+                          <span>Loading data...</span>
+                        </div>
+                    </td>
+                 </tr>
+            )}
+            {visibleData.length === 0 && !isLoading && showEmptyState && (
+                 <tr className="empty-state-row">
+                    <td colSpan={columns.length + 2} style={{ textAlign: 'center', padding: '60px 40px', color: '#888', borderBottom: 'none' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+                          <img 
+                            src={emptyBox} 
+                            alt="No records" 
+                            style={{ width: '80px', height: '80px', opacity: 0.4 }} 
+                          />
+                          <span>No records found</span>
+                        </div>
                     </td>
                  </tr>
             )}
           </tbody>
         </table>
         
-        {isLoading && (
+        {isLoading && visibleData.length > 0 && (
           <div className="loading-indicator">
             <Loader2 className="spinner" size={24} />
             <span>Loading more...</span>

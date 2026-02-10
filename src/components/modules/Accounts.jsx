@@ -42,7 +42,7 @@ const Accounts = () => {
   }, []);
 
   const columns = ['Account No.', 'Bank', 'Branch', 'Type', 'Currency', 'Amount', 'Rate', 'Int. Type', 'Start Date', 'Duration', 'Status'];
-  const filterFields = ['Account No.', 'Bank', 'Branch', 'Type', 'Currency', 'Status'];
+  const filterFields = ['Account No.', 'Bank', 'Branch', 'Type', 'Currency', 'Start Date', 'Rate', 'Int. Type', 'Amount', 'Status', 'Duration'];
   const dataMap = {
       'Account No.': 'accountNumber',
       'Bank': 'bank',
