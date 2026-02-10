@@ -12,14 +12,14 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen }) => {
         >
           <PanelLeft size={20} color="#666" />
         </div>
-        <div className="topbar-icon-btn" title="Back">
+        {/* <div className="topbar-icon-btn" title="Back">
           <ArrowLeft size={20} color="#666" />
-        </div>
+        </div> */}
         <span style={{ marginLeft: '4px' }}>{activePage}</span>
       </div>
 
       <div className="user-profile">
-        <UserCircle size={24} color="#666" />
+        <UserCircle size={20} color="#666" />
         <span>Kamal</span>
         <ChevronDown size={14} color="#666" />
       </div>

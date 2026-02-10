@@ -460,7 +460,7 @@ const AccountsTable = () => {
                   }}
                   type="button"
                   title="Customize Columns"
-                  onClick={(e) => {
+                  onClick={() => {
                     console.log('Settings button clicked');
                     // e.stopPropagation(); // Let's see if it bubbles first
                   }}

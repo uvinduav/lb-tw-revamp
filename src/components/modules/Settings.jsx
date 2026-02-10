@@ -1,21 +1,18 @@
 import React from 'react';
-import ModulePage from '../ModulePage';
+import emptyBox from '../../assets/empty-box.png';
 
 const Settings = () => {
   return (
-    <ModulePage
-      title="Settings"
-      columns={['Setting Group', 'Key', 'Value', 'Last Modified']}
-      data={[]}
-      filterFields={['Setting Group', 'Key']}
-      dataMap={{
-        'Setting Group': 'group',
-        'Key': 'key',
-        'Value': 'value',
-        'Last Modified': 'lastModified'
-      }}
-      showColumnCustomization={false}
-    />
+    <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', color: '#888' }}>
+        <img
+          src={emptyBox}
+          alt="No records"
+          style={{ width: '80px', height: '80px', opacity: 0.4 }}
+        />
+        <span style={{ fontSize: '14px', fontWeight: 500 }}>No records found</span>
+      </div>
+    </div>
   );
 };
 

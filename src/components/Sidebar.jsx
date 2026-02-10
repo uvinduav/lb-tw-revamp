@@ -100,8 +100,7 @@ const Sidebar = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [setActivePage]);
 
-  // Determine if sidebar should be visible
-  const isVisible = isOpen || isHovered;
+
 
   return (
     <div

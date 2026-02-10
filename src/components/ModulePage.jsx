@@ -491,7 +491,7 @@ const ModulePage = ({
               <div className="temp-icons">
                 <div className="vertical-divider"></div>
                 <SquareArrowOutUpRight className="control-icon" size={16} />
-                <Pencil className="control-icon" size={16} />
+                {selectedRows.size === 1 && <Pencil className="control-icon" size={16} />}
                 <Trash2 className="control-icon" size={16} />
               </div>
             )}
@@ -643,7 +643,7 @@ const ModulePage = ({
                 </Popover.Portal>
               </Popover.Root>
             )}
-            <MoreVertical className="control-icon" size={16} />
+            {/* <MoreVertical className="control-icon" size={16} /> */}
           </div>
         </div>
       </div>
@@ -703,9 +703,9 @@ const ModulePage = ({
                             </button>
                           </>
                         )}
-                        <button className="action-btn" title="More">
+                        {/* <button className="action-btn" title="More">
                           <MoreVertical size={14} />
-                        </button>
+                        </button> */}
                       </>
                     )}
                   </div>

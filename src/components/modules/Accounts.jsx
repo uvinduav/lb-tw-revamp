@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ModulePage from '../ModulePage';
 import csvFile from '../../assets/accounts-test-sheet.csv?raw';
 
 const Accounts = () => {
-  const [data, setData] = useState([]);
+  const [data] = useState(() => {
+    if (!csvFile) return [];
 
-  useEffect(() => {
     const parseCSV = (csvText) => {
       const lines = csvText.split('\n');
       const headers = lines[0].split(',').map(h => h.trim());
-      
+
       const rows = lines.slice(1).filter(line => line.trim() !== '').map((line, index) => {
         const values = line.split(',');
         const entry = {};
         headers.forEach((header, i) => {
           entry[header] = values[i]?.trim();
         });
-        
+
         return {
           id: index,
           accountNumber: entry['Account Number'],
@@ -35,30 +35,27 @@ const Accounts = () => {
       return rows;
     };
 
-    if (csvFile) {
-      const parsedData = parseCSV(csvFile);
-      setData(parsedData);
-    }
-  }, []);
+    return parseCSV(csvFile);
+  });
 
   const columns = ['Account No.', 'Bank', 'Branch', 'Type', 'Currency', 'Amount', 'Rate', 'Int. Type', 'Start Date', 'Duration', 'Status'];
   const filterFields = ['Account No.', 'Bank', 'Branch', 'Type', 'Currency', 'Start Date', 'Rate', 'Int. Type', 'Amount', 'Status', 'Duration'];
   const dataMap = {
-      'Account No.': 'accountNumber',
-      'Bank': 'bank',
-      'Branch': 'branch',
-      'Type': 'type',
-      'Currency': 'currency',
-      'Amount': 'amount',
-      'Rate': 'rate',
-      'Int. Type': 'interestType',
-      'Start Date': 'startDate',
-      'Duration': 'duration',
-      'Status': 'status'
+    'Account No.': 'accountNumber',
+    'Bank': 'bank',
+    'Branch': 'branch',
+    'Type': 'type',
+    'Currency': 'currency',
+    'Amount': 'amount',
+    'Rate': 'rate',
+    'Int. Type': 'interestType',
+    'Start Date': 'startDate',
+    'Duration': 'duration',
+    'Status': 'status'
   };
 
   return (
-    <ModulePage 
+    <ModulePage
       title="All Accounts"
       columns={columns}
       data={data}

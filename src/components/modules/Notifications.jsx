@@ -1,22 +1,18 @@
 import React from 'react';
-import ModulePage from '../ModulePage';
+import emptyBox from '../../assets/empty-box.png';
 
 const Notifications = () => {
   return (
-    <ModulePage
-      title="Notifications"
-      columns={['Subject', 'Message', 'Type', 'Received', 'Status']}
-      data={[]}
-      filterFields={['Subject', 'Type', 'Status']}
-      dataMap={{
-        'Subject': 'subject',
-        'Message': 'message',
-        'Type': 'type',
-        'Received': 'received',
-        'Status': 'status'
-      }}
-      showColumnCustomization={false}
-    />
+    <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', color: '#888' }}>
+        <img
+          src={emptyBox}
+          alt="No records"
+          style={{ width: '80px', height: '80px', opacity: 0.4 }}
+        />
+        <span style={{ fontSize: '14px', fontWeight: 500 }}>No records found</span>
+      </div>
+    </div>
   );
 };
 
