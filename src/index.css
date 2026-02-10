@@ -1,8 +1,10 @@
 :root {
   /* Colors */
-  --color-primary: #8d6e63; /* Brown - adjusting to a softer brown/bronze looking one, or maybe #795548 */
+  --color-primary: #8d6e63;
+  /* Brown - adjusting to a softer brown/bronze looking one, or maybe #795548 */
   --color-primary-dark: #6d4c41;
-  --color-primary-action: #a67b5b; /* A lighter brown/gold for the Add Button */
+  --color-primary-action: #a67b5b;
+  /* A lighter brown/gold for the Add Button */
   --color-primary-action-hover: #8f6a4e;
 
   --color-bg: #ffffff;
@@ -16,15 +18,17 @@
   --color-border: #e5e7eb;
 
   /* Sidebar Colors */
-  --sidebar-bg: #292524; /* Warm dark gray/brown tone */
-  --sidebar-text: #d6d3d1;
+  --sidebar-bg: #241600;
+  --sidebar-text: #c3b29e;
   --sidebar-text-active: #ffffff;
-  --sidebar-hover: #44403c;
+  --sidebar-hover: #3a2a10;
+  /* Adjusted hover to be a slightly lighter variant of the new bg */
 
   /* Status Colors */
   --status-active-bg: #dcfce7;
   --status-active-text: #166534;
-  --status-renewed-bg: #e0e7ff; /* Looking like purple/blue in snippet */
+  --status-renewed-bg: #e0e7ff;
+  /* Looking like purple/blue in snippet */
   --status-renewed-text: #3730a3;
   --status-posted-bg: #dcfce7;
   --status-posted-text: #166534;
@@ -40,7 +44,8 @@
 
   /* Dimensions */
   --sidebar-width: 240px;
-  --topbar-height: 48px; /* User said 44px actually */
+  --topbar-height: 48px;
+  /* User said 44px actually */
   --topbar-height-actual: 44px;
 
   /* Fonts */
@@ -78,7 +83,51 @@ body {
   height: 100%;
   left: 0;
   top: 0;
-  z-index: 10;
+  z-index: 100;
+
+  /* Transitions for collapsing/floating */
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+  transform: translateX(0);
+}
+
+.sidebar.closed {
+  transform: translateX(-100%);
+}
+
+.sidebar.floating {
+  transform: translateX(0);
+  z-index: 110;
+  /* Higher than normal content */
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+  /* Drop shadow when floating */
+}
+
+/* Hover Trigger Zone */
+.sidebar-trigger {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 24px;
+  /* Hit area width */
+  z-index: 40;
+  /* Below floating sidebar but above content */
+  background: transparent;
+}
+
+/* Main Content Expansion */
+.main-content {
+  margin-left: var(--sidebar-width);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - var(--sidebar-width));
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main-content.expanded {
+  margin-left: 0;
+  width: 100%;
 }
 
 .sidebar-header {
@@ -101,11 +150,30 @@ body {
   overflow-y: auto;
 }
 
+/* Custom Scrollbar for Sidebar */
+.sidebar-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(141, 110, 99, 0.3);
+  border-radius: 10px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(141, 110, 99, 0.5);
+}
+
 .nav-group-label {
   padding: var(--spacing-sm) var(--spacing-lg);
   font-size: 11px;
   text-transform: uppercase;
   color: #78716c;
+  /* Restoring old label color */
   font-weight: 600;
   margin-top: var(--spacing-md);
 }
@@ -129,10 +197,12 @@ body {
 }
 
 .nav-item.active {
-  background-color: transparent; /* Often active state in these designs implies bold text or accent, checking image */
+  background-color: transparent;
+  /* Often active state in these designs implies bold text or accent, checking image */
   color: var(--sidebar-text-active);
   font-weight: 600;
-  border-left: 3px solid var(--color-primary-action); /* Assuming a marker */
+  border-left: 3px solid var(--color-primary-action);
+  /* Assuming a marker */
   padding-left: calc(var(--spacing-lg) - 3px);
 }
 
@@ -148,7 +218,7 @@ body {
 
 .chevron-icon {
   transition: transform 0.2s ease;
-  color: #78716c;
+  color: var(--sidebar-text);
 }
 
 .chevron-icon.open {
@@ -166,10 +236,12 @@ body {
   align-items: center;
   padding: 8px var(--spacing-lg) 8px calc(var(--spacing-sm) + 28px);
   font-size: 13px;
-  color: #a8a29e; /* Lighter tan/grey */
+  color: var(--sidebar-text);
+  /* Lighter tan/grey */
   text-decoration: none;
   gap: 10px;
   transition: all 0.2s;
+  opacity: 0.9;
 }
 
 .sub-nav-item:hover {
@@ -178,7 +250,7 @@ body {
 }
 
 .sub-nav-item svg {
-  color: #78716c;
+  color: var(--sidebar-text);
 }
 
 .sub-nav-item:hover svg {
@@ -186,13 +258,7 @@ body {
 }
 
 /* Main Content */
-.main-content {
-  margin-left: var(--sidebar-width);
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  width: calc(100% - var(--sidebar-width));
-}
+
 
 /* Topbar */
 .topbar {
@@ -226,7 +292,8 @@ body {
   align-items: center;
   gap: var(--spacing-sm);
   padding: 4px 8px;
-  border-radius: 99px; /* Pill shape */
+  border-radius: 99px;
+  /* Pill shape */
   border: 1px solid var(--color-border);
   cursor: pointer;
 }
@@ -245,14 +312,17 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: none;
-  padding: var(--spacing-md) var(--spacing-lg) 0 var(--spacing-lg); /* Keep padding consistent */
+  padding: var(--spacing-md) var(--spacing-lg) 0 var(--spacing-lg);
+  /* Keep padding consistent */
   flex-shrink: 0;
-  
+
   /* Transition for collapsing */
   transition: all 0.3s ease-in-out;
-  max-height: 100px; /* Approximate max height */
+  max-height: 100px;
+  /* Approximate max height */
   opacity: 1;
-  overflow: hidden; /* Needed for height transition */
+  overflow: hidden;
+  /* Needed for height transition */
 }
 
 .page-header.header-hidden {
@@ -260,7 +330,8 @@ body {
   margin-bottom: 0;
   padding-top: 0;
   opacity: 0;
-  pointer-events: none; /* Prevent clicks on hidden elements */
+  pointer-events: none;
+  /* Prevent clicks on hidden elements */
 }
 
 .page-title h1 {
@@ -284,7 +355,8 @@ body {
   align-items: center;
   justify-content: center;
   padding: 8px 16px;
-  border-radius: 4px; /* Slightly rounded */
+  border-radius: 4px;
+  /* Slightly rounded */
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -306,7 +378,8 @@ body {
   background-color: white;
   border-color: var(--color-border);
   color: var(--color-text-main);
-  padding: 8px; /* Icon only usually */
+  padding: 8px;
+  /* Icon only usually */
 }
 
 .btn-outline:hover {
@@ -320,7 +393,8 @@ body {
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-md);
   background: transparent;
-  padding: var(--spacing-md) var(--spacing-lg) 0 var(--spacing-lg); /* Added top padding */
+  padding: var(--spacing-md) var(--spacing-lg) 0 var(--spacing-lg);
+  /* Added top padding */
   border: none;
   flex-shrink: 0;
 }
@@ -387,7 +461,10 @@ body {
   height: 40px;
 }
 
-.control-group-left, .control-group-right, .perma-controls, .temp-icons {
+.control-group-left,
+.control-group-right,
+.perma-controls,
+.temp-icons {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -427,20 +504,23 @@ body {
 
 
 .table-wrapper {
-  overflow: auto; /* Both X and Y */
+  overflow: auto;
+  /* Both X and Y */
   margin-left: var(--spacing-lg);
   margin-right: var(--spacing-lg);
 }
 
 .data-table {
   width: 100%;
-  min-width: 1000px; /* Force scroll on small screens */
+  min-width: 1000px;
+  /* Force scroll on small screens */
   border-collapse: collapse;
   font-size: 13px;
 }
 
 .data-table th {
-  background-color: #fafafa; /* Very light gray */
+  background-color: #fafafa;
+  /* Very light gray */
   text-align: left;
   padding: 4px 10px;
   font-weight: 600;
@@ -455,10 +535,12 @@ body {
   border-bottom: 1px solid var(--color-border);
   vertical-align: middle;
   color: var(--color-text-main);
-  white-space: nowrap; /* Prevent wrapping */
+  white-space: nowrap;
+  /* Prevent wrapping */
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 150px; /* Default max width to trigger truncation */
+  max-width: 150px;
+  /* Default max width to trigger truncation */
 }
 
 .data-table td.truncate {
@@ -510,7 +592,8 @@ body {
 }
 
 .data-table td.checkbox-col {
-  background-color: #fff; /* Solid background for sticky logic */
+  background-color: #fff;
+  /* Solid background for sticky logic */
 }
 
 /* Ensure hover state overrides the solid white background */
@@ -520,7 +603,8 @@ body {
 
 .data-table th.checkbox-col {
   text-align: center;
-  z-index: 30 !important; /* Higher than normal sticky header (20) */
+  z-index: 30 !important;
+  /* Higher than normal sticky header (20) */
   background-color: #fafafa;
 }
 
@@ -538,11 +622,15 @@ input[type="checkbox"] {
   position: sticky;
   right: 0;
   z-index: 10;
-  width: 0; /* No layout width */
-  padding: 0; /* No padding */
+  width: 0;
+  /* No layout width */
+  padding: 0;
+  /* No padding */
   border: none;
-  background-color: transparent !important; /* Ensure invisible */
-  overflow: visible !important; /* Allow popup to show */
+  background-color: transparent !important;
+  /* Ensure invisible */
+  overflow: visible !important;
+  /* Allow popup to show */
 }
 
 /* Row Actions inside the Sticky Column */
@@ -551,11 +639,13 @@ input[type="checkbox"] {
   position: absolute;
   right: 0;
   top: 50%;
-  transform: translateY(-50%) translateX(0); /* Anchored to right edge */
+  transform: translateY(-50%) translateX(0);
+  /* Anchored to right edge */
   background-image: linear-gradient(to right, #F8F9FA00, #F8F9FA, #F8F9FA, #F8F9FA);
   padding: 4px 10px;
   gap: 8px;
-  height: 32px; /* Match content height area */
+  height: 32px;
+  /* Match content height area */
   min-width: 160px;
   align-items: center;
   justify-content: flex-end;
@@ -623,6 +713,7 @@ input[type="checkbox"] {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -675,10 +766,21 @@ input[type="checkbox"] {
   padding-right: 4px;
 }
 
-.filter-field.span-1 { grid-column: span 1; }
-.filter-field.span-2 { grid-column: span 2; }
-.filter-field.span-3 { grid-column: span 3; }
-.filter-field.span-4 { grid-column: span 4; }
+.filter-field.span-1 {
+  grid-column: span 1;
+}
+
+.filter-field.span-2 {
+  grid-column: span 2;
+}
+
+.filter-field.span-3 {
+  grid-column: span 3;
+}
+
+.filter-field.span-4 {
+  grid-column: span 4;
+}
 
 .header-period-select {
   background-color: transparent;
@@ -713,7 +815,8 @@ input[type="checkbox"] {
   color: var(--color-text-tertiary);
 }
 
-.filter-field input, .filter-field select {
+.filter-field input,
+.filter-field select {
   padding: 8px 12px;
   border: 1px solid var(--color-border);
   border-radius: 4px;
@@ -724,7 +827,8 @@ input[type="checkbox"] {
   width: 100%;
 }
 
-.filter-field input:focus, .filter-field select:focus {
+.filter-field input:focus,
+.filter-field select:focus {
   border-color: var(--color-primary-action);
 }
 
@@ -794,13 +898,25 @@ input[type="checkbox"] {
 }
 
 @keyframes overlayShow {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes contentShow {
-  from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }
-  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 .spinning {
@@ -835,15 +951,22 @@ input[type="checkbox"] {
 }
 
 @keyframes badgePop {
-  from { transform: scale(0); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .highlight {
-  background-color: #ffd54f; /* Amber 300 - theme compatible gold */
+  background-color: #ffd54f;
+  /* Amber 300 - theme compatible gold */
   color: #111827;
   padding: 0 2px;
   border-radius: 2px;
   margin: 0 -1px;
 }
-

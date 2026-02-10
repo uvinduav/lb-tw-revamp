@@ -1,11 +1,15 @@
 import React from 'react';
 import { PanelLeft, ArrowLeft, UserCircle, ChevronDown } from 'lucide-react';
 
-const Topbar = ({ activePage }) => {
+const Topbar = ({ activePage, toggleSidebar }) => {
   return (
     <div className="topbar">
       <div className="breadcrumb">
-        <PanelLeft size={20} style={{ cursor: 'pointer', color: '#666' }} />
+        <PanelLeft
+          size={20}
+          style={{ cursor: 'pointer', color: '#666' }}
+          onClick={toggleSidebar}
+        />
         <ArrowLeft size={20} style={{ cursor: 'pointer', marginLeft: '8px' }} />
         <span>{activePage}</span>
       </div>

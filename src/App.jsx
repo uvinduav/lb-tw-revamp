@@ -27,8 +27,14 @@ import UserGroups from './components/modules/UserGroups';
 function App() {
   const [activePage, setActivePage] = useState('Accounts');
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
+
+  // Toggle sidebar function
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
   const renderPage = () => {
-    switch(activePage) {
+    switch (activePage) {
       case 'Dashboard': return <Dashboard />;
       case 'Accounts': return <Accounts />;
       case 'Payments': return <Payments />;
@@ -37,7 +43,7 @@ function App() {
       case 'Floating Rates': return <FloatingRates />;
       case 'Posting Center': return <PostingCenter />;
       case 'Working Calendar': return <WorkingCalendar />;
-      
+
       // Setup - Parameters
       case 'Banks': return <Banks />;
       case 'Benchmarks': return <Benchmarks />;
@@ -56,16 +62,36 @@ function App() {
       case 'Change Log': return <ChangeLog />;
       case 'Settings': return <Settings />;
       case 'Notifications': return <Notifications />;
-      
+
       default: return <Accounts />;
     }
   };
-  
+
   return (
     <div className="app-container">
-      <Sidebar activePage={activePage} setActivePage={setActivePage} />
-      <div className="main-content">
-        <Topbar activePage={activePage} />
+      {/* Sidebar Trigger Zone for Hover Reveal */}
+      {!isSidebarOpen && (
+        <div
+          className="sidebar-trigger"
+          onMouseEnter={() => setIsSidebarHovered(true)}
+        />
+      )}
+
+      <Sidebar
+        activePage={activePage}
+        setActivePage={setActivePage}
+        isOpen={isSidebarOpen}
+        isHovered={isSidebarHovered}
+        onMouseEnter={() => !isSidebarOpen && setIsSidebarHovered(true)}
+        onMouseLeave={() => setIsSidebarHovered(false)}
+      />
+
+      <div className={`main-content ${!isSidebarOpen ? 'expanded' : ''}`}>
+        <Topbar
+          activePage={activePage}
+          toggleSidebar={toggleSidebar}
+          isSidebarOpen={isSidebarOpen}
+        />
         {renderPage()}
       </div>
     </div>

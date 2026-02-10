@@ -28,7 +28,14 @@ import {
 
 import lionLogo from "../assets/lion-logo.png";
 
-const Sidebar = ({ activePage, setActivePage }) => {
+const Sidebar = ({
+  activePage,
+  setActivePage,
+  isOpen,
+  isHovered,
+  onMouseEnter,
+  onMouseLeave
+}) => {
   const [isParametersOpen, setIsParametersOpen] = useState(false);
   const [isUsersOpen, setIsUsersOpen] = useState(false);
 
@@ -49,8 +56,15 @@ const Sidebar = ({ activePage, setActivePage }) => {
     { name: "User Groups", icon: <Users size={16} /> },
   ];
 
+  // Determine if sidebar should be visible
+  const isVisible = isOpen || isHovered;
+
   return (
-    <div className="sidebar">
+    <div
+      className={`sidebar ${!isOpen ? 'closed' : ''} ${isHovered ? 'floating' : ''}`}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <div className="sidebar-header">
         <img src={lionLogo} alt="Lion Logo" className="logo-img" />
       </div>
@@ -90,27 +104,27 @@ const Sidebar = ({ activePage, setActivePage }) => {
         </a>
 
         <div className="nav-group-label">Setup</div>
-        
-        <div 
-          className="nav-item nav-item-expandable" 
+
+        <div
+          className="nav-item nav-item-expandable"
           onClick={() => setIsParametersOpen(!isParametersOpen)}
         >
           <div className="nav-item-content">
             <Sliders size={18} />
             Parameters
           </div>
-          <ChevronDown 
-            size={16} 
-            className={`chevron-icon ${isParametersOpen ? 'open' : ''}`} 
+          <ChevronDown
+            size={16}
+            className={`chevron-icon ${isParametersOpen ? 'open' : ''}`}
           />
         </div>
 
         {isParametersOpen && (
           <div className="sidebar-sub-nav">
             {subItems.map((item) => (
-              <a 
-                key={item.name} 
-                href="#" 
+              <a
+                key={item.name}
+                href="#"
                 className={`sub-nav-item ${activePage === item.name ? 'active' : ''}`}
                 onClick={() => setActivePage(item.name)}
               >
@@ -121,26 +135,26 @@ const Sidebar = ({ activePage, setActivePage }) => {
           </div>
         )}
 
-        <div 
-          className="nav-item nav-item-expandable" 
+        <div
+          className="nav-item nav-item-expandable"
           onClick={() => setIsUsersOpen(!isUsersOpen)}
         >
           <div className="nav-item-content">
             <Users size={18} />
             Users & Groups
           </div>
-          <ChevronDown 
-            size={16} 
-            className={`chevron-icon ${isUsersOpen ? 'open' : ''}`} 
+          <ChevronDown
+            size={16}
+            className={`chevron-icon ${isUsersOpen ? 'open' : ''}`}
           />
         </div>
 
         {isUsersOpen && (
           <div className="sidebar-sub-nav">
             {usersSubItems.map((item) => (
-              <a 
-                key={item.name} 
-                href="#" 
+              <a
+                key={item.name}
+                href="#"
                 className={`sub-nav-item ${activePage === item.name ? 'active' : ''}`}
                 onClick={() => setActivePage(item.name)}
               >
