@@ -121,6 +121,8 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
   width: calc(100% - var(--sidebar-width));
   transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -351,7 +353,7 @@ body {
 .page-content {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - var(--topbar-height-actual));
+  flex: 1;
   overflow: hidden;
   padding: 0;
 }
@@ -569,10 +571,22 @@ body {
 
 .data-table {
   width: 100%;
-  min-width: 1000px;
-  /* Force scroll on small screens */
+  min-width: 100%;
+  /* Fluid by default */
   border-collapse: collapse;
   font-size: 13px;
+}
+
+.min-w-1000 {
+  min-width: 1000px;
+}
+
+.min-w-800 {
+  min-width: 800px;
+}
+
+.min-w-600 {
+  min-width: 600px;
 }
 
 .data-table th {
@@ -1051,10 +1065,94 @@ input[type="checkbox"] {
 }
 
 /* Dashboard Styles */
-.dashboard-container {
-  padding: var(--spacing-lg);
+.dashboard-main-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
   background-color: white;
-  min-height: 100vh;
+}
+
+.dashboard-container {
+  padding: var(--spacing-lg) var(--spacing-lg) 100px var(--spacing-lg);
+  flex: 1;
+  overflow-y: auto;
+  scroll-padding-top: 48px;
+}
+
+.dashboard-tabs-wrapper {
+  z-index: 50;
+  background-color: white;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.dashboard-tabs {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* Hide scrollbar for tabs */
+}
+
+.dashboard-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 12px 0px 12px;
+  height: 100%;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s;
+  position: relative;
+}
+
+.tab-item:first-child {
+  padding-left: 0;
+}
+
+.tab-item svg {
+  color: #9ca3af;
+  transition: color 0.2s;
+}
+
+.tab-item:hover {
+  color: var(--color-text-main);
+}
+
+.tab-item:hover svg {
+  color: var(--color-text-main);
+}
+
+.tab-item.active {
+  color: var(--color-text-main);
+}
+
+.tab-item.active svg {
+  color: var(--color-text-main);
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-text-main);
 }
 
 .dashboard-grid {
@@ -1117,22 +1215,65 @@ input[type="checkbox"] {
   font-weight: 500;
 }
 
-.text-green { color: #16a34a !important; }
-.text-red { color: #dc2626 !important; }
-.text-gray { color: #6b7280 !important; }
-.text-blue { color: #2563eb !important; }
-.text-orange { color: #ea580c !important; }
-.text-purple { color: #9333ea !important; }
-.text-indigo { color: #4f46e5 !important; }
-.text-pink { color: #db2777 !important; }
+.text-green {
+  color: #16a34a !important;
+}
 
-.bg-blue-soft { background-color: #eff6ff; }
-.bg-red-soft { background-color: #fef2f2; }
-.bg-orange-soft { background-color: #fff7ed; }
-.bg-purple-soft { background-color: #faf5ff; }
-.bg-indigo-soft { background-color: #eef2ff; }
-.bg-pink-soft { background-color: #fdf2f8; }
-.bg-green-soft { background-color: #f0fdf4; }
+.text-red {
+  color: #dc2626 !important;
+}
+
+.text-gray {
+  color: #6b7280 !important;
+}
+
+.text-blue {
+  color: #2563eb !important;
+}
+
+.text-orange {
+  color: #ea580c !important;
+}
+
+.text-purple {
+  color: #9333ea !important;
+}
+
+.text-indigo {
+  color: #4f46e5 !important;
+}
+
+.text-pink {
+  color: #db2777 !important;
+}
+
+.bg-blue-soft {
+  background-color: #eff6ff;
+}
+
+.bg-red-soft {
+  background-color: #fef2f2;
+}
+
+.bg-orange-soft {
+  background-color: #fff7ed;
+}
+
+.bg-purple-soft {
+  background-color: #faf5ff;
+}
+
+.bg-indigo-soft {
+  background-color: #eef2ff;
+}
+
+.bg-pink-soft {
+  background-color: #fdf2f8;
+}
+
+.bg-green-soft {
+  background-color: #f0fdf4;
+}
 
 .widget-subtext {
   font-size: 11px;
@@ -1160,6 +1301,7 @@ input[type="checkbox"] {
   background-color: var(--color-bg-subtle);
   cursor: pointer;
 }
+
 .investment-grid {
   display: flex;
   flex-wrap: wrap;
@@ -1167,7 +1309,9 @@ input[type="checkbox"] {
   margin-top: 32px;
 }
 
-.investment-grid > * {
-  flex: 1 1 500px; /* Grow, Shrink, Basis */
-  min-width: 300px; /* Ensure it doesn't get too small */
+.investment-grid>* {
+  flex: 1 1 500px;
+  /* Grow, Shrink, Basis */
+  min-width: 300px;
+  /* Ensure it doesn't get too small */
 }

@@ -1,26 +1,31 @@
 import React from 'react';
-import { 
-  RotateCw, 
-  Wallet, 
-  Activity, 
-  CreditCard, 
-  TrendingUp, 
-  TrendingDown, 
+import {
+  RotateCw,
+  Wallet,
+  Activity,
+  CreditCard,
+  TrendingUp,
+  TrendingDown,
   DollarSign,
   PiggyBank,
   Calendar,
   Globe,
   AlertCircle,
-  SquareArrowOutUpRight
+  SquareArrowOutUpRight,
+  Info,
+  LayoutDashboard,
+  Building2,
+  LineChart,
+  Banknote
 } from 'lucide-react';
 
-import { 
-  Chart as ChartJS, 
-  ArcElement, 
-  Tooltip, 
-  Legend, 
-  CategoryScale, 
-  LinearScale, 
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
   BarElement,
   LineElement,
   PointElement,
@@ -29,32 +34,32 @@ import {
 import { Doughnut, Bar, Line } from 'react-chartjs-2';
 
 ChartJS.register(
-  ArcElement, 
-  Tooltip, 
-  Legend, 
-  CategoryScale, 
-  LinearScale, 
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
   BarElement,
   LineElement,
   PointElement,
   LineController
 );
 
-const LogoImage = ({ src, name, color }) => {
+const LogoImage = ({ src, name, color, size = 24 }) => {
   const [error, setError] = React.useState(false);
 
   if (error || !src) {
     return (
-      <div 
-        style={{ 
-          width: '24px', 
-          height: '24px', 
-          borderRadius: '4px', 
-          backgroundColor: color || '#f3f4f6', 
-          display: 'flex', 
-          alignItems: 'center', 
+      <div
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          borderRadius: '4px',
+          backgroundColor: color || '#f3f4f6',
+          display: 'flex',
+          alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '10px',
+          fontSize: size > 20 ? '10px' : '8px',
           fontWeight: 600,
           color: color ? 'rgba(0,0,0,0.5)' : '#9ca3af',
           border: '1px solid rgba(0,0,0,0.05)'
@@ -66,91 +71,142 @@ const LogoImage = ({ src, name, color }) => {
   }
 
   return (
-    <img 
-      src={src} 
-      alt={name} 
+    <img
+      src={src}
+      alt={name}
       onError={() => setError(true)}
-      style={{ 
-        width: '24px', 
-        height: '24px', 
-        borderRadius: '4px', 
-        objectFit: 'cover', 
-        border: '1px solid var(--color-border)' 
-      }} 
+      style={{
+        width: `${size}px`,
+        height: `${size}px`,
+        borderRadius: '4px',
+        objectFit: 'cover',
+        border: '1px solid var(--color-border)'
+      }}
     />
   );
 };
 
 // Reusable Chart Card Component
 const ChartCard = (props) => {
-    const { title, chartData, details, columns } = props;
-    
-    const chartOptions = {
-        cutout: '0%', 
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                return `${context.label}: ${context.raw}%`;
-              }
-            }
+  const { title, chartData, details, columns } = props;
+
+  const chartOptions = {
+    cutout: '0%',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            return `${context.label}: ${context.raw}%`;
           }
-        },
-        maintainAspectRatio: false,
-        elements: { arc: { borderWidth: 2 } }
-    };
+        }
+      }
+    },
+    maintainAspectRatio: false,
+    elements: { arc: { borderWidth: 2 } }
+  };
 
-    return (
-        <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h3 className="widget-title" style={{ margin: 0 }}>{title}</h3>
-                <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
-            </div>
-        
-        <div style={{ display: 'flex', alignItems: 'center', gap: '32px', flexWrap: 'wrap' }}>
-                <div style={{ width: '150px', height: '150px', position: 'relative', flexShrink: 0 }}>
-                    <Doughnut data={chartData} options={chartOptions} />
-                </div>
+  return (
+    <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <h3 className="widget-title" style={{ margin: 0 }}>{title}</h3>
+        <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
+      </div>
 
-                <div style={{ flex: 1, minWidth: '300px' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <thead>
-                            <tr style={{ borderBottom: '1px solid var(--color-border)', height: '32px' }}>
-                                {columns.map((col, index) => (
-                                    <th key={index} style={{ textAlign: col.align || 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
-                                        {col.header}
-                                    </th>
-                                ))}</tr >
-                        </thead>
-                        <tbody>
-                            {details.map((item, index) => (
-                                <tr key={index} style={{ borderBottom: index < details.length - 1 ? '1px solid #f3f4f6' : 'none', height: '32px' }}>
-                                    {columns.map((col, colIndex) => (
-                                        <td key={colIndex} style={{ padding: '4px 0' }}>
-                                            {col.render ? col.render(item) : (
-                                                <span style={{
-                                                    fontSize: '13px',
-                                                    fontWeight: 400,
-                                                    fontFamily: col.monospace ? 'monospace' : 'inherit',
-                                                    color: col.color ? (typeof col.color === 'function' ? col.color(item) : col.color) : 'var(--color-text-main)'
-                                                }}>
-                                                    {item[col.key]}
-                                                </span>
-                                            )}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '32px', flexWrap: 'wrap' }}>
+        <div style={{ width: '150px', height: '150px', position: 'relative', flexShrink: 0 }}>
+          <Doughnut data={chartData} options={chartOptions} />
         </div>
-    );
+
+        <div style={{ flex: 1, minWidth: '300px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid var(--color-border)', height: '32px' }}>
+                {columns.map((col, index) => (
+                  <th key={index} style={{ textAlign: col.align || 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
+                    {col.header}
+                  </th>
+                ))}</tr >
+            </thead>
+            <tbody>
+              {details.map((item, index) => (
+                <tr key={index} style={{ borderBottom: index < details.length - 1 ? '1px solid #f3f4f6' : 'none', height: '32px' }}>
+                  {columns.map((col, colIndex) => (
+                    <td key={colIndex} style={{ padding: '4px 0' }}>
+                      {col.render ? col.render(item) : (
+                        <span style={{
+                          fontSize: '13px',
+                          fontWeight: 400,
+                          fontFamily: col.monospace ? 'monospace' : 'inherit',
+                          color: col.color ? (typeof col.color === 'function' ? col.color(item) : col.color) : 'var(--color-text-main)'
+                        }}>
+                          {item[col.key]}
+                        </span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-const Dashboard = () => {
+const Dashboard = ({ onNavigate }) => {
+  const [showAwplrInfo, setShowAwplrInfo] = React.useState(false);
+  const [showForexInfo, setShowForexInfo] = React.useState(false);
+  const [activeTab, setActiveTab] = React.useState('overview');
+
+  const scrollToSection = (id) => {
+    // Check for external navigation first
+    if (id === 'cash-flow') {
+      if (onNavigate) {
+        setTimeout(() => onNavigate('Cash Flow'), 0);
+      }
+      return;
+    }
+
+    const element = document.getElementById(id);
+    if (element) {
+      const scrollContainer = document.querySelector('.dashboard-container');
+      if (scrollContainer) {
+        const offset = 100; // Padding offset for headspace
+        scrollContainer.scrollTo({
+          top: element.offsetTop - offset,
+          behavior: 'smooth'
+        });
+      }
+    }
+    setActiveTab(id);
+  };
+
+  const handleScroll = (e) => {
+    const scrollContainer = e.target;
+    const scrollPos = scrollContainer.scrollTop + 120; // offset + generous buffer
+
+    // Check sections in reverse to find the last one that has passed the scroll threshold
+    const currentSection = [...tabs].reverse().find(tab => {
+      const section = document.getElementById(tab.id);
+      return section && section.offsetTop <= scrollPos;
+    });
+
+    if (currentSection && currentSection.id !== activeTab) {
+      setActiveTab(currentSection.id);
+    }
+  };
+
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'entity-overview', label: 'Entity Overview', icon: Building2 },
+    { id: 'investment-profile', label: 'Investment Profile', icon: LineChart },
+    { id: 'awplr-rate', label: 'AWPLR Rate', icon: Activity },
+    { id: 'forex-rates', label: 'Forex Rates', icon: Globe },
+    { id: 'cash-flow', label: 'Cash Flow', icon: Banknote },
+  ];
+
   // Hardcoded Widgets Data
   const widgets = [
     {
@@ -308,12 +364,14 @@ const Dashboard = () => {
   ];
 
   const investmentColumns = [
-    { header: 'CATEGORY', key: 'label', fontWeight: 400, render: (item) => (
+    {
+      header: 'CATEGORY', key: 'label', fontWeight: 400, render: (item) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ width: '12px', height: '12px', borderRadius: '4px', backgroundColor: item.color }}></div>
-            <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.label}</span>
+          <div style={{ width: '12px', height: '12px', borderRadius: '4px', backgroundColor: item.color }}></div>
+          <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.label}</span>
         </div>
-    )},
+      )
+    },
     { header: 'VALUE', key: 'value', monospace: true },
     { header: 'COUNT', key: 'count', monospace: true },
     { header: 'AVG RATE', key: 'avgRate', monospace: true, color: 'var(--color-green)' },
@@ -358,12 +416,14 @@ const Dashboard = () => {
   ];
 
   const maturityColumns = [
-    { header: 'PERIOD', key: 'label', fontWeight: 400, render: (item) => (
+    {
+      header: 'PERIOD', key: 'label', fontWeight: 400, render: (item) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ width: '12px', height: '12px', borderRadius: '4px', backgroundColor: item.color }}></div>
-            <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.label}</span>
+          <div style={{ width: '12px', height: '12px', borderRadius: '4px', backgroundColor: item.color }}></div>
+          <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.label}</span>
         </div>
-    )},
+      )
+    },
     { header: 'VALUE', key: 'value', monospace: true },
     { header: 'COUNT', key: 'count', monospace: true },
     { header: 'SHARE', key: 'share', monospace: true },
@@ -430,6 +490,14 @@ const Dashboard = () => {
     }
   };
 
+  // Foreign Exchange Rates Data
+  const exchangeRates = [
+    { id: 1, currency: 'EUR/LKR', name: 'Euro', rate: '300.00', date: 'Dec 12, 2025', cost: 'LKR 30,000,000', costLabel: 'Cost per €100K', flag: 'https://flagcdn.com/w40/eu.png' },
+    { id: 2, currency: 'GBP/LKR', name: 'British Pound', rate: '415.39', date: 'Jan 18, 2026', cost: 'LKR 41,539,000', costLabel: 'Cost per £100K', flag: 'https://flagcdn.com/w40/gb.png' },
+    { id: 3, currency: 'SGD/LKR', name: 'Singapore Dollar', rate: '100.00', date: 'Feb 06, 2026', cost: 'LKR 10,000,000', costLabel: 'Cost per S$100K', flag: 'https://flagcdn.com/w40/sg.png' },
+    { id: 4, currency: 'USD/LKR', name: 'US Dollar', rate: '230.00', date: 'Dec 26, 2025', cost: 'LKR 23,000,000', costLabel: 'Cost per $100K', flag: 'https://flagcdn.com/w40/us.png' },
+  ];
+
   const lineChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -452,13 +520,13 @@ const Dashboard = () => {
       y: {
         border: { display: false },
         grid: { color: '#f3f4f6', drawBorder: false },
-        ticks: { 
-            font: { size: 11, family: 'monospace' }, 
-            color: '#6b7280', 
-            padding: 8,
-            callback: function(value) {
-                return value.toFixed(2) + '%';
-            }
+        ticks: {
+          font: { size: 11, family: 'monospace' },
+          color: '#6b7280',
+          padding: 8,
+          callback: function (value) {
+            return value.toFixed(2) + '%';
+          }
         }
       },
       x: {
@@ -475,315 +543,480 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-container">
-      {/* Widgets Grid */}
-      <div className="dashboard-grid">
-        {widgets.map((widget, index) => {
-          const Icon = widget.icon;
-          return (
-            <div key={index} className="widget-card">
-              <div className="widget-header">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  {Icon && <Icon size={14} className="text-gray" />}
-                  <h3 className="widget-title" style={{ margin: 0 }}>{widget.title}</h3>
+    <div className="dashboard-main-wrapper">
+      {/* Search/Tabs Wrapper */}
+      <div className="dashboard-tabs-wrapper">
+        <div className="dashboard-tabs">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                className={`tab-item ${activeTab === tab.id ? 'active' : ''}`}
+                onClick={() => scrollToSection(tab.id)}
+              >
+                {Icon && <Icon size={14} />}
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="dashboard-container" onScroll={handleScroll}>
+
+        {/* Widgets Grid */}
+        <div id="overview" className="dashboard-grid">
+          {widgets.map((widget, index) => {
+            const Icon = widget.icon;
+            return (
+              <div key={index} className="widget-card">
+                <div className="widget-header">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    {Icon && <Icon size={14} className="text-gray" />}
+                    <h3 className="widget-title" style={{ margin: 0 }}>{widget.title}</h3>
+                  </div>
+                  <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
                 </div>
-                <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
+
+                <div style={{ marginTop: '0px' }}>
+                  <div className="widget-value-row">
+                    <span className={`widget-value ${isNegative(widget.value) ? 'text-red' : ''}`}>
+                      {widget.value}
+                    </span>
+                    {widget.change && (
+                      <span className={`widget-change ${widget.changeType === 'positive' ? 'text-green' :
+                        widget.changeType === 'negative' ? 'text-red' : 'text-gray'
+                        }`}>
+                        {widget.change}
+                      </span>
+                    )}
+                  </div>
+                  <p className="widget-subtext">
+                    {widget.subtext}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Entity Overview Section */}
+        <div id="entity-overview" style={{ marginTop: '32px' }}>
+          <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Entity Overview</h2>
+            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Click to drill down</p>
+          </div>
+
+          <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)' }}>
+            <table className="data-table min-w-800">
+              <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+                <tr>
+                  <th style={{ paddingLeft: '24px', width: '40px' }}></th>
+                  <th style={{ width: '30%' }}>ENTITY NAME</th>
+                  <th>TOTAL BALANCE (LKR)</th>
+                  <th>ACCOUNTS</th>
+                  <th>BANKS</th>
+                  <th>CURRENCIES</th>
+                </tr>
+              </thead>
+              <tbody>
+                {entities.map((entity) => (
+                  <tr key={entity.id} className="hover-row">
+                    <td style={{ paddingLeft: '24px' }}>
+                      <LogoImage src={entity.logo} name={entity.name} color={entity.color} />
+                    </td>
+                    <td style={{ fontWeight: 500, color: 'var(--color-text-main)' }}>{entity.name}</td>
+                    <td style={{ fontFamily: 'monospace', fontWeight: 500, color: 'var(--color-text-main)' }}>{entity.balance}</td>
+                    <td style={{ color: 'var(--color-text-secondary)' }}>{entity.accounts}</td>
+                    <td style={{ color: 'var(--color-text-secondary)' }}>{entity.banks}</td>
+                    <td style={{ color: 'var(--color-text-secondary)' }}>{entity.currencies}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Investment Profile Section - Main Wrapper */}
+        <div id="investment-profile" style={{ marginTop: '32px' }}>
+          {/* Main Section Header */}
+          <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Investment Profile</h2>
+            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Click to drill down</p>
+          </div>
+
+          {/* Investment Charts Grid */}
+          <div className="investment-grid">
+            <ChartCard
+              title="Total Investments by Category"
+              chartData={investmentData}
+              details={investmentDetails}
+              columns={investmentColumns}
+            />
+            <ChartCard
+              title="FD Maturity Profile - All Currencies"
+              chartData={maturityAllData}
+              details={maturityAllDetails}
+              columns={maturityColumns}
+            />
+            <ChartCard
+              title="LKR FD Maturity Profile"
+              chartData={maturityLKRData}
+              details={maturityLKRDetails}
+              columns={maturityColumns}
+            />
+            <ChartCard
+              title="Currency-wise Investment"
+              chartData={currencyWiseData}
+              details={investmentDetails}
+              columns={investmentColumns}
+            />
+          </div>
+
+          {/* Foreign Currency Profile Section */}
+          <div style={{ marginTop: '32px', backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 className="widget-title" style={{ margin: 0 }}>Foreign Currency Deposits & Loans Overview</h3>
+              <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '32px', flexWrap: 'wrap' }}>
+
+              {/* Left: Bar Chart */}
+              <div style={{ width: '350px', height: '220px', position: 'relative', flexShrink: 0 }}>
+                <Bar
+                  data={{
+                    labels: ['USD', 'EUR'],
+                    datasets: [
+                      {
+                        label: 'Deposits',
+                        data: [4.52, 0.24],
+                        backgroundColor: '#10b981',
+                        barPercentage: 0.5,
+                        categoryPercentage: 0.7,
+                        borderRadius: 4
+                      },
+                      {
+                        label: 'Loans',
+                        data: [1.25, 0],
+                        backgroundColor: '#ef4444',
+                        barPercentage: 0.5,
+                        categoryPercentage: 0.7,
+                        borderRadius: 4
+                      }
+                    ]
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        display: false, // Hidden as per user request
+                      },
+                      tooltip: {
+                        backgroundColor: '#1f2937',
+                        padding: 12,
+                        titleFont: { size: 13 },
+                        bodyFont: { size: 12 },
+                        cornerRadius: 4,
+                        displayColors: true
+                      }
+                    },
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        border: { display: false },
+                        grid: { color: '#f3f4f6', drawBorder: false },
+                        ticks: { font: { size: 11, family: 'Inter, sans-serif' }, color: '#6b7280', padding: 8 }
+                      },
+                      x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { font: { size: 12, family: 'Inter, sans-serif' }, color: '#374151', padding: 8 },
+                        border: { display: false }
+                      }
+                    }
+                  }}
+                />
               </div>
 
-              <div style={{ marginTop: '0px' }}>
-                <div className="widget-value-row">
-                  <span className={`widget-value ${isNegative(widget.value) ? 'text-red' : ''}`}>
-                    {widget.value}
-                  </span>
-                  {widget.change && (
-                     <span className={`widget-change ${
-                         widget.changeType === 'positive' ? 'text-green' :
-                         widget.changeType === 'negative' ? 'text-red' : 'text-gray'
-                     }`}>
-                         {widget.change}
-                     </span>
+              {/* Right: Data Table */}
+              <div style={{ flex: 1.5, minWidth: '400px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid var(--color-border)', height: '32px' }}>
+                      <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>CURRENCY</th>
+                      <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <div style={{ width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#10b981' }}></div>
+                          DEPOSITS
+                        </div>
+                      </th>
+                      <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>AVG RATE</th>
+                      <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <div style={{ width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#ef4444' }}></div>
+                          LOANS
+                        </div>
+                      </th>
+                      <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>AVG RATE</th>
+                      <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>NET POSITION</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { currency: 'USD', deposits: 'USD 4.52M', depRate: '3.77%', loans: 'USD 1.25M', loanRate: '5.91%', net: 'USD 3.27M', netType: '(Asset)', color: '#3b82f6' },
+                      { currency: 'EUR', deposits: 'EUR 0.24M', depRate: '1.50%', loans: 'EUR 0.00M', loanRate: '0.00%', net: 'EUR 0.24M', netType: '(Asset)', color: '#f59e0b' }
+                    ].map((item, index, array) => (
+                      <tr key={index} style={{ borderBottom: index < array.length - 1 ? '1px solid #f3f4f6' : 'none', height: '32px' }}>
+                        <td style={{ padding: '4px 0' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div style={{ width: '12px', height: '12px', borderRadius: '4px', backgroundColor: item.color }}></div>
+                            <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.currency}</span>
+                          </div>
+                        </td>
+                        <td style={{ padding: '4px 0' }}>
+                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.deposits}</div>
+                        </td>
+                        <td style={{ padding: '4px 0' }}>
+                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.depRate}</div>
+                        </td>
+                        <td style={{ padding: '4px 0' }}>
+                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.loans}</div>
+                        </td>
+                        <td style={{ padding: '4px 0' }}>
+                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.loanRate}</div>
+                        </td>
+                        <td style={{ padding: '4px 0' }}>
+                          <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                            <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.net}</div>
+                            <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>{item.netType}</div>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        {/* AWPLR Section */}
+        <div id="awplr-rate" style={{ marginTop: '32px' }}>
+          <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+              <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>AWPLR Benchmark Rate</h2>
+              <div
+                style={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  backgroundColor: '#eff6ff',
+                  color: '#3b82f6',
+                  cursor: 'help'
+                }}
+                onMouseEnter={() => setShowAwplrInfo(true)}
+                onMouseLeave={() => setShowAwplrInfo(false)}
+              >
+                <Info size={12} />
+                {showAwplrInfo && (
+                  <div style={{
+                    position: 'absolute',
+                    left: '100%',
+                    top: '50%',
+                    transform: 'translateY(-50%) translateX(12px)',
+                    width: '300px',
+                    backgroundColor: 'white',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: '8px',
+                    padding: '16px',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                    zIndex: 100,
+                    color: 'var(--color-text-main)'
+                  }}>
+                    <h4 style={{ fontSize: '14px', fontWeight: 600, color: '#1e40af', marginBottom: '8px' }}>About AWPLR</h4>
+                    <p style={{ fontSize: '13px', color: '#374151', lineHeight: '1.5', margin: 0, fontWeight: 400 }}>
+                      The Average Weighted Prime Lending Rate (AWPLR) is the benchmark lending rate published by the Central Bank of Sri Lanka.
+                      It represents the weighted average of prime lending rates offered by licensed commercial banks and is used as a reference for pricing floating rate loans and deposits.
+                    </p>
+                    {/* Triangle arrow for popover */}
+                    <div style={{
+                      position: 'absolute',
+                      left: '-6px',
+                      top: '50%',
+                      transform: 'translateY(-50%) rotate(45deg)',
+                      width: '12px',
+                      height: '12px',
+                      backgroundColor: 'white',
+                      borderLeft: '1px solid var(--color-border)',
+                      borderBottom: '1px solid var(--color-border)'
+                    }}></div>
+                  </div>
+                )}
+              </div>
+            </div>
+            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Central Bank of Sri Lanka - Average Weighted Prime Lending Rate</p>
+          </div>
+
+          {/* Metrics Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
+            {awplrMetrics.map((metric, index) => (
+              <div key={index} className="widget-card">
+                <div className="widget-header">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <h3 className="widget-title" style={{ margin: 0 }}>{metric.title}</h3>
+                  </div>
+                  <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
+                </div>
+
+                <div style={{ marginTop: '0px' }}>
+                  <div className="widget-value-row">
+                    <span className={`widget-value ${metric.value.startsWith('+') ? 'text-green' :
+                      metric.value.startsWith('-') ? 'text-red' : ''
+                      }`}>
+                      {metric.value}
+                    </span>
+                    {metric.trend && (
+                      <span className={`widget-change ${metric.value.startsWith('+') ? 'text-green' :
+                        metric.value.startsWith('-') ? 'text-red' : 'text-gray'
+                        }`}>
+                        {metric.trend === 'up' ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                      </span>
+                    )}
+                  </div>
+                  {metric.subtext && (
+                    <p className="widget-subtext">
+                      {metric.subtext}
+                    </p>
                   )}
                 </div>
-                <p className="widget-subtext">
-                  {widget.subtext}
-                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Charts Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', marginBottom: '24px' }}>
+            <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)', height: '320px', display: 'flex', flexDirection: 'column' }}>
+              <h3 className="widget-title" style={{ marginBottom: '16px' }}>AWPLR Trend (AWPLR CBSL Monthly (System))</h3>
+              <div style={{ flex: 1, position: 'relative' }}>
+                <Line data={awplrTrendData.monthly} options={lineChartOptions} />
               </div>
             </div>
-          );
-        })}
-      </div>
+            <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)', height: '320px', display: 'flex', flexDirection: 'column' }}>
+              <h3 className="widget-title" style={{ marginBottom: '16px' }}>AWPLR Trend (AWPLR CBSL Weekly (System))</h3>
+              <div style={{ flex: 1, position: 'relative' }}>
+                <Line data={awplrTrendData.weekly} options={lineChartOptions} />
+              </div>
+            </div>
+          </div>
 
-       {/* Entity Overview Section */}
-       <div style={{ marginTop: '32px' }}>
-        <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Entity Overview</h2>
-          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Click to drill down</p>
         </div>
 
-        <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)' }}>
-             <table className="data-table">
-                <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
-                    <tr>
-                        <th style={{ paddingLeft: '24px', width: '40px' }}></th>
-                        <th style={{ width: '30%' }}>ENTITY NAME</th>
-                        <th>TOTAL BALANCE (LKR)</th>
-                        <th>ACCOUNTS</th>
-                        <th>BANKS</th>
-                        <th>CURRENCIES</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {entities.map((entity) => (
-                        <tr key={entity.id} className="hover-row">
-                            <td style={{ paddingLeft: '24px' }}>
-                                <LogoImage src={entity.logo} name={entity.name} color={entity.color} />
-                            </td>
-                            <td style={{ fontWeight: 500, color: 'var(--color-text-main)' }}>{entity.name}</td>
-                            <td style={{ fontFamily: 'monospace', fontWeight: 500, color: 'var(--color-text-main)' }}>{entity.balance}</td>
-                            <td style={{ color: 'var(--color-text-secondary)' }}>{entity.accounts}</td>
-                            <td style={{ color: 'var(--color-text-secondary)' }}>{entity.banks}</td>
-                            <td style={{ color: 'var(--color-text-secondary)' }}>{entity.currencies}</td>
-                        </tr>
-                    ))}
-                </tbody>
-             </table>
-        </div>
-      </div>
-
-       {/* Investment Profile Section - Main Wrapper */}
-       <div style={{ marginTop: '32px' }}>
-            {/* Main Section Header */}
-            <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
-                <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Investment Profile</h2>
-                <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Click to drill down</p>
-            </div>
-
-            {/* Investment Charts Grid */}
-            <div className="investment-grid">
-                <ChartCard
-                    title="Total Investments by Category"
-                    chartData={investmentData}
-                    details={investmentDetails}
-                    columns={investmentColumns}
-                />
-                <ChartCard
-                    title="FD Maturity Profile - All Currencies"
-                    chartData={maturityAllData}
-                    details={maturityAllDetails}
-                    columns={maturityColumns}
-                />
-                <ChartCard
-                    title="LKR FD Maturity Profile"
-                    chartData={maturityLKRData}
-                    details={maturityLKRDetails}
-                    columns={maturityColumns}
-                />
-                <ChartCard
-                    title="Currency-wise Investment"
-                    chartData={currencyWiseData}
-                    details={investmentDetails}
-                    columns={investmentColumns}
-                />
-            </div>
-
-            {/* Foreign Currency Profile Section */}
-            <div style={{ marginTop: '32px', backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                        <h3 className="widget-title" style={{ margin: 0 }}>Foreign Currency Deposits & Loans Overview</h3>
-                        <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
+        {/* Foreign Exchange Rates Section */}
+        <div id="forex-rates" style={{ marginTop: '32px' }}>
+          <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+              <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>Foreign Exchange Rates</h2>
+              <div
+                style={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  backgroundColor: '#eff6ff',
+                  color: '#3b82f6',
+                  cursor: 'help'
+                }}
+                onMouseEnter={() => setShowForexInfo(true)}
+                onMouseLeave={() => setShowForexInfo(false)}
+              >
+                <Info size={12} />
+                {showForexInfo && (
+                  <div style={{
+                    position: 'absolute',
+                    left: '100%',
+                    top: '50%',
+                    transform: 'translateY(-50%) translateX(12px)',
+                    width: '300px',
+                    backgroundColor: 'white',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: '8px',
+                    padding: '16px',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                    zIndex: 100,
+                    color: 'var(--color-text-main)'
+                  }}>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                      <div style={{ color: '#3b82f6', marginTop: '2px' }}><Info size={16} /></div>
+                      <div>
+                        <h4 style={{ fontSize: '14px', fontWeight: 600, color: '#1e40af', marginBottom: '4px' }}>Selling Rate</h4>
+                        <p style={{ fontSize: '13px', color: '#374151', lineHeight: '1.5', margin: 0, fontWeight: 400 }}>
+                          Rate at which banks sell foreign currency to Lion Brewery • Used for import payments, supplier settlements, and CAPEX transactions
+                        </p>
+                      </div>
                     </div>
-
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '32px', flexWrap: 'wrap' }}>
-
-                        {/* Left: Bar Chart */}
-                        <div style={{ width: '350px', height: '220px', position: 'relative', flexShrink: 0 }}>
-                            <Bar
-                                data={{
-                                    labels: ['USD', 'EUR'],
-                                    datasets: [
-                                        {
-                                            label: 'Deposits',
-                                            data: [4.52, 0.24],
-                                            backgroundColor: '#10b981',
-                                            barPercentage: 0.5,
-                                            categoryPercentage: 0.7,
-                                            borderRadius: 4
-                                        },
-                                        {
-                                            label: 'Loans',
-                                            data: [1.25, 0],
-                                            backgroundColor: '#ef4444',
-                                            barPercentage: 0.5,
-                                            categoryPercentage: 0.7,
-                                            borderRadius: 4
-                                        }
-                                    ]
-                                }}
-                                options={{
-                                    responsive: true,
-                                    maintainAspectRatio: false,
-                                    plugins: {
-                                        legend: {
-                                            display: false, // Hidden as per user request
-                                        },
-                                        tooltip: {
-                                            backgroundColor: '#1f2937',
-                                            padding: 12,
-                                            titleFont: { size: 13 },
-                                            bodyFont: { size: 12 },
-                                            cornerRadius: 4,
-                                            displayColors: true
-                                        }
-                                    },
-                                    scales: {
-                                        y: {
-                                            beginAtZero: true,
-                                            border: { display: false },
-                                            grid: { color: '#f3f4f6', drawBorder: false },
-                                            ticks: { font: { size: 11, family: 'Inter, sans-serif' }, color: '#6b7280', padding: 8 }
-                                        },
-                                        x: {
-                                            grid: { display: false, drawBorder: false },
-                                            ticks: { font: { size: 12, family: 'Inter, sans-serif' }, color: '#374151', padding: 8 },
-                                            border: { display: false }
-                                        }
-                                    }
-                                }}
-                            />
-                        </div>
-
-                        {/* Right: Data Table */}
-                        <div style={{ flex: 1.5, minWidth: '400px' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                            <tr style={{ borderBottom: '1px solid var(--color-border)', height: '32px' }}>
-                                <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>CURRENCY</th>
-                                <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                        <div style={{ width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#10b981' }}></div>
-                                        DEPOSITS
-                                    </div>
-                                </th>
-                                <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>AVG RATE</th>
-                                <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                        <div style={{ width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#ef4444' }}></div>
-                                        LOANS
-                                    </div>
-                                </th>
-                                <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>AVG RATE</th>
-                                <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>NET POSITION</th>
-                            </tr>
-                        </thead>
-                                <tbody>
-                                    {[
-                                        { currency: 'USD', deposits: 'USD 4.52M', depRate: '3.77%', loans: 'USD 1.25M', loanRate: '5.91%', net: 'USD 3.27M', netType: '(Asset)', color: '#3b82f6' },
-                                        { currency: 'EUR', deposits: 'EUR 0.24M', depRate: '1.50%', loans: 'EUR 0.00M', loanRate: '0.00%', net: 'EUR 0.24M', netType: '(Asset)', color: '#f59e0b' }
-                                    ].map((item, index, array) => (
-                                        <tr key={index} style={{ borderBottom: index < array.length - 1 ? '1px solid #f3f4f6' : 'none', height: '32px' }}>
-                                            <td style={{ padding: '4px 0' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <div style={{ width: '12px', height: '12px', borderRadius: '4px', backgroundColor: item.color }}></div>
-                                            <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.currency}</span>
-                                        </div>
-                                    </td>
-                                    <td style={{ padding: '4px 0' }}>
-                                        <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.deposits}</div>
-                                    </td>
-                                    <td style={{ padding: '4px 0' }}>
-                                        <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.depRate}</div>
-                                    </td>
-                                    <td style={{ padding: '4px 0' }}>
-                                        <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.loans}</div>
-                                    </td>
-                                    <td style={{ padding: '4px 0' }}>
-                                        <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.loanRate}</div>
-                                    </td>
-                                    <td style={{ padding: '4px 0' }}>
-                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.net}</div>
-                                            <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>{item.netType}</div>
-                                        </div>
-                                    </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    {/* Triangle arrow for popover */}
+                    <div style={{
+                      position: 'absolute',
+                      left: '-6px',
+                      top: '50%',
+                      transform: 'translateY(-50%) rotate(45deg)',
+                      width: '12px',
+                      height: '12px',
+                      backgroundColor: 'white',
+                      borderLeft: '1px solid var(--color-border)',
+                      borderBottom: '1px solid var(--color-border)'
+                    }}></div>
+                  </div>
+                )}
+              </div>
             </div>
-       </div>
+            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Daily selling rates for major currencies</p>
+          </div>
 
-
-       {/* AWPLR Section */}
-       <div style={{ marginTop: '32px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px', paddingLeft: '4px' }}>
-                <div>
-                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: '#f3e8ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#7c3aed' }}>
-                            <TrendingUp size={24} />
-                        </div>
-                        <div>
-                            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>AWPLR Benchmark Rate</h2>
-                            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Central Bank of Sri Lanka - Average Weighted Prime Lending Rate</p>
-                        </div>
-                     </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <a href="#" style={{ fontSize: '13px', color: '#3b82f6', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        CBSL Data <SquareArrowOutUpRight size={14} />
-                    </a>
-                    <RotateCw size={16} className="text-gray" style={{ cursor: 'pointer' }} />
-                </div>
-            </div>
-
-            {/* Metrics Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
-                {awplrMetrics.map((metric, index) => (
-                    <div key={index} style={{ backgroundColor: metric.bg || 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <div style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>{metric.title}</div>
-                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                             <div style={{ fontSize: '24px', fontWeight: 600, color: metric.color, fontFamily: 'monospace' }}>{metric.value}</div>
-                             {metric.trend && (
-                                 <span style={{ color: metric.color }}>
-                                     {metric.trend === 'up' ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-                                 </span>
-                             )}
-                        </div>
-                        {metric.subtext && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>{metric.subtext}</div>}
-                    </div>
+          <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)' }}>
+            <table className="data-table min-w-600">
+              <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+                <tr>
+                  <th style={{ paddingLeft: '24px', width: '20%' }}>CURRENCY (AGAINST LKR)</th>
+                  <th style={{ width: '25%' }}>SELLING RATE</th>
+                  <th style={{ width: '20%' }}>DATE</th>
+                  <th>COST PER 100K</th>
+                </tr>
+              </thead>
+              <tbody>
+                {exchangeRates.map((rate) => (
+                  <tr key={rate.id} className="hover-row">
+                    <td style={{ paddingLeft: '24px', color: 'var(--color-text-main)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <LogoImage src={rate.flag} name={rate.currency.split('/')[0]} size={20} />
+                        <span>{rate.currency.split('/')[0]}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{rate.rate}</div>
+                    </td>
+                    <td style={{ color: 'var(--color-text-secondary)' }}>{rate.date}</td>
+                    <td>
+                      <div style={{ fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{rate.cost}</div>
+                    </td>
+                  </tr>
                 ))}
-            </div>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-            {/* Charts Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', marginBottom: '24px' }}>
-                <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)', height: '320px', display: 'flex', flexDirection: 'column' }}>
-                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '16px' }}>AWPLR Trend (AWPLR CBSL Monthly (System))</h3>
-                    <div style={{ flex: 1, position: 'relative' }}>
-                        <Line data={awplrTrendData.monthly} options={lineChartOptions} />
-                    </div>
-                </div>
-                <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)', height: '320px', display: 'flex', flexDirection: 'column' }}>
-                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '16px' }}>AWPLR Trend (AWPLR CBSL Weekly (System))</h3>
-                    <div style={{ flex: 1, position: 'relative' }}>
-                         <Line data={awplrTrendData.weekly} options={lineChartOptions} />
-                    </div>
-                </div>
-            </div>
-
-            {/* Info Banner */}
-            <div style={{ backgroundColor: '#eff6ff', border: '1px solid #dbeafe', borderRadius: '8px', padding: '16px', display: 'flex', gap: '12px' }}>
-                <div style={{ color: '#2563eb', marginTop: '2px' }}><AlertCircle size={20} /></div>
-                <div>
-                    <h4 style={{ fontSize: '14px', fontWeight: 600, color: '#1e40af', marginBottom: '4px' }}>About AWPLR</h4>
-                    <p style={{ fontSize: '13px', color: '#374151', lineHeight: '1.5' }}>
-                        The Average Weighted Prime Lending Rate (AWPLR) is the benchmark lending rate published by the Central Bank of Sri Lanka. 
-                        It represents the weighted average of prime lending rates offered by licensed commercial banks and is used as a reference for pricing floating rate loans and deposits.
-                    </p>
-                </div>
-            </div>
-       </div>
-
+      </div>
     </div>
   );
 };

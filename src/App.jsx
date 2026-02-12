@@ -23,6 +23,7 @@ import ExchangeRates from './components/modules/ExchangeRates';
 import PurposeTags from './components/modules/PurposeTags';
 import Users from './components/modules/Users';
 import UserGroups from './components/modules/UserGroups';
+import CashFlow from './components/modules/CashFlow';
 
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
 
@@ -35,12 +36,18 @@ function App() {
   // Toggle sidebar function
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
-  // Use hook for global sidebar toggle shortcut
+  // use hook for global sidebar toggle shortcut
   useKeyboardShortcuts(null, null, toggleSidebar);
+
+  React.useEffect(() => {
+    document.title = activePage + ' - LB Treasury';
+    console.log('Active Page changed to:', activePage);
+  }, [activePage]);
 
   const renderPage = () => {
     switch (activePage) {
-      case 'Dashboard': return <Dashboard />;
+      case 'Dashboard': return <Dashboard onNavigate={setActivePage} />;
+      case 'Cash Flow': return <CashFlow onNavigate={setActivePage} />;
       case 'Accounts': return <Accounts />;
       case 'Payments': return <Payments />;
       case 'Accruals': return <Accruals />;
