@@ -1,7 +1,7 @@
 import React from 'react';
 import { PanelLeft, ArrowLeft, UserCircle, ChevronDown, AlertCircle } from 'lucide-react';
 
-const Topbar = ({ activePage, toggleSidebar, isSidebarOpen }) => {
+const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, breadcrumb, onNavigate }) => {
   return (
     <div className="topbar">
       <div className="breadcrumb">
@@ -12,10 +12,32 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen }) => {
         >
           <PanelLeft size={20} color="#666" />
         </div>
-        {/* <div className="topbar-icon-btn" title="Back">
-          <ArrowLeft size={20} color="#666" />
-        </div> */}
-        <span style={{ marginLeft: '4px' }}>{activePage}</span>
+        {showBack && (
+          <div className="topbar-icon-btn" title="Back" onClick={onBack}>
+            <ArrowLeft size={20} color="#666" />
+          </div>
+        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: '4px' }}>
+          {(breadcrumb || activePage).split(' > ').map((item, index, array) => (
+            <React.Fragment key={index}>
+              <span
+                className={index === array.length - 1 ? 'breadcrumb-active' : ''}
+                onClick={() => index < array.length - 1 && onNavigate && onNavigate(item)}
+                style={{
+                  fontSize: '12px',
+                  fontWeight: index === array.length - 1 ? 500 : 400,
+                  color: index === array.length - 1 ? 'var(--color-text-main)' : 'var(--color-text-secondary)',
+                  cursor: index < array.length - 1 ? 'pointer' : 'default'
+                }}
+              >
+                {item}
+              </span>
+              {index < array.length - 1 && (
+                <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)', margin: '0 2px' }}>&gt;</span>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>

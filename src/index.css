@@ -1325,5 +1325,63 @@ input[type="checkbox"] {
   flex: 1 1 500px;
   /* Grow, Shrink, Basis */
   min-width: 300px;
+
   /* Ensure it doesn't get too small */
+}
+
+.filter-dropdown-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: white;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0 12px;
+  height: 36px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.filter-dropdown-container:hover {
+  border-color: #9ca3af;
+}
+
+.filter-select {
+  appearance: none;
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-main);
+  padding: 0 24px 0 0;
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+  outline: none;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 12px;
+  pointer-events: none;
+}
+
+.download-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: white;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.download-btn:hover {
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-main);
+  border-color: #9ca3af;
 }

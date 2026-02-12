@@ -24,11 +24,20 @@ import PurposeTags from './components/modules/PurposeTags';
 import Users from './components/modules/Users';
 import UserGroups from './components/modules/UserGroups';
 import CashFlow from './components/modules/CashFlow';
+import EntityDetails from './components/modules/EntityDetails';
 
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
 
 function App() {
   const [activePage, setActivePage] = useState('Dashboard');
+  const [selectedEntity, setSelectedEntity] = useState(null);
+
+  const handlePageChange = (page, entity = null) => {
+    if (entity) {
+      setSelectedEntity(entity);
+    }
+    setActivePage(page);
+  };
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
@@ -46,7 +55,8 @@ function App() {
 
   const renderPage = () => {
     switch (activePage) {
-      case 'Dashboard': return <Dashboard onNavigate={setActivePage} />;
+      case 'Dashboard': return <Dashboard onNavigate={handlePageChange} />;
+      case 'Entity Details': return <EntityDetails entity={selectedEntity} onBack={() => setActivePage('Dashboard')} />;
       case 'Cash Flow': return <CashFlow onNavigate={setActivePage} />;
       case 'Accounts': return <Accounts />;
       case 'Payments': return <Payments />;
@@ -103,6 +113,10 @@ function App() {
           activePage={activePage}
           toggleSidebar={toggleSidebar}
           isSidebarOpen={isSidebarOpen}
+          showBack={activePage === 'Entity Details'}
+          onBack={() => setActivePage('Dashboard')}
+          onNavigate={setActivePage}
+          breadcrumb={activePage === 'Entity Details' ? 'Dashboard > Entity Details' : activePage}
         />
         {renderPage()}
       </div>

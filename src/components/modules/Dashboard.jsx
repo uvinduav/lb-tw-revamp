@@ -622,7 +622,12 @@ const Dashboard = ({ onNavigate }) => {
               </thead>
               <tbody>
                 {entities.map((entity) => (
-                  <tr key={entity.id} className="hover-row">
+                  <tr
+                    key={entity.id}
+                    className="hover-row"
+                    onClick={() => onNavigate && onNavigate('Entity Details', entity)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <td style={{ paddingLeft: '24px' }}>
                       <LogoImage src={entity.logo} name={entity.name} color={entity.color} />
                     </td>

@@ -14,7 +14,9 @@ import {
     ArrowUpRight,
     ArrowDownRight,
     Info,
-    RotateCw
+    RotateCw,
+    Download,
+    ChevronDown
 } from 'lucide-react';
 import {
     Chart as ChartJS,
@@ -158,15 +160,21 @@ const CashFlow = ({ onNavigate }) => {
                         <h1 style={{ fontSize: '20px', fontWeight: '600', color: '#111827', margin: '0 0 4px 0' }}>Daily Cash Position</h1>
                         <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>Real-time account-level cash positions with daily tracking and variance analysis</p>
                     </div>
-                    <div className="filter-dropdown-container">
-                        <Filter size={14} className="text-gray" />
-                        <select
-                            value={selectedCompany}
-                            onChange={(e) => setSelectedCompany(e.target.value)}
-                            className="filter-select"
-                        >
-                            {companies.map(c => <option key={c} value={c}>{c}</option>)}
-                        </select>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div className="filter-dropdown-container">
+                            <Filter size={14} className="text-gray" />
+                            <select
+                                value={selectedCompany}
+                                onChange={(e) => setSelectedCompany(e.target.value)}
+                                className="filter-select"
+                            >
+                                {companies.map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                            <ChevronDown size={14} className="text-gray select-arrow" />
+                        </div>
+                        <button className="download-btn" title="Download Report">
+                            <Download size={14} />
+                        </button>
                     </div>
                 </div>
 
@@ -330,7 +338,14 @@ const CashFlow = ({ onNavigate }) => {
                                                 <span style={{ fontWeight: 500 }}>{row.company}</span>
                                             </div>
                                         </td>
-                                        <td>{row.bank}</td>
+                                        <td>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                <div style={{ width: '20px', height: '20px', borderRadius: '4px', backgroundColor: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 600, color: '#9ca3af', border: '1px solid rgba(0,0,0,0.05)' }}>
+                                                    {row.bank.charAt(0)}
+                                                </div>
+                                                <span>{row.bank}</span>
+                                            </div>
+                                        </td>
                                         <td>{row.name}</td>
                                         <td style={{ fontFamily: 'monospace', color: '#6b7280', fontSize: '12px' }}>{row.number}</td>
                                         <td><span className="currency-badge">{row.currency}</span></td>
