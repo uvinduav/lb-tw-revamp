@@ -1197,6 +1197,12 @@ input[type="checkbox"] {
   margin-bottom: 4px;
 }
 
+.widget-label {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 0;
+}
+
 .widget-value-row {
   display: flex;
   align-items: flex-end;
@@ -1206,6 +1212,12 @@ input[type="checkbox"] {
 
 .widget-value {
   font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.widget-value-xl {
+  font-size: 24px;
   font-weight: 700;
   color: var(--color-text-main);
 }
