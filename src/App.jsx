@@ -27,6 +27,9 @@ import CashFlow from './components/modules/CashFlow';
 import EntityDetails from './components/modules/EntityDetails';
 import BankDetails from './components/modules/BankDetails';
 import AccountDetails from './components/modules/AccountDetails';
+import DebtDetails from './components/modules/DebtDetails';
+import CashPositionDetails from './components/modules/CashPositionDetails';
+import InvestmentDetails from './components/modules/InvestmentDetails';
 
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
 
@@ -90,6 +93,9 @@ function App() {
       case 'Entity Details': return <EntityDetails entity={selectedEntity} onNavigate={handlePageChange} onBack={() => setActivePage('Dashboard')} />;
       case 'Bank Details': return <BankDetails entity={selectedEntity} bank={selectedBank} onNavigate={handlePageChange} onBack={() => setActivePage('Entity Details')} />;
       case 'Account Details': return <AccountDetails account={selectedAccount} bank={selectedBank} entity={selectedEntity} onBack={() => setActivePage('Bank Details')} />;
+      case 'Debt Details': return <DebtDetails onNavigate={handlePageChange} />;
+      case 'Cash Position Details': return <CashPositionDetails onNavigate={handlePageChange} />;
+      case 'Investment Details': return <InvestmentDetails onNavigate={handlePageChange} />;
       case 'Cash Flow': return <CashFlow onNavigate={setActivePage} />;
       case 'Accounts': return <Accounts />;
       case 'Payments': return <Payments />;
@@ -169,7 +175,10 @@ function App() {
             activePage === 'Entity Details' ? 'Dashboard > Entity Details' :
               activePage === 'Bank Details' ? `Dashboard > Entity Details > ${selectedBank || 'Bank Details'}` :
                 activePage === 'Account Details' ? `Dashboard > Entity Details > ${selectedBank} > ${selectedAccount?.accountNo || 'Account'}` :
-                  activePage
+                  activePage === 'Debt Details' ? 'Dashboard > Debt Details' :
+                    activePage === 'Cash Position Details' ? 'Dashboard > Cash Position Details' :
+                      activePage === 'Investment Details' ? 'Dashboard > Investment Details' :
+                        activePage
           }
         />
         {renderPage()}

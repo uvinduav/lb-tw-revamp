@@ -26,7 +26,7 @@ import {
   Tag
 } from "lucide-react";
 
-import lionLogo from "../assets/lion-logo.png";
+import lionLogo from "../assets/lb-tw-logo.png";
 
 // Navigation Items Configuration
 const mainNavItems = [

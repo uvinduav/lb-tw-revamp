@@ -215,7 +215,8 @@ const Dashboard = ({ onNavigate }) => {
       change: "+2.4%",
       changeType: "positive",
       subtext: "Click for details →",
-      icon: Wallet
+      icon: Wallet,
+      onClick: () => onNavigate('Cash Position Details')
     },
     {
       title: "Net Liquidity",
@@ -232,7 +233,8 @@ const Dashboard = ({ onNavigate }) => {
       changeType: "negative",
       subtext: "4 loans (3 floating)",
       link: "Click for details →",
-      icon: CreditCard
+      icon: CreditCard,
+      onClick: () => onNavigate('Debt Details')
     },
     {
       title: "Total Investments",
@@ -241,7 +243,8 @@ const Dashboard = ({ onNavigate }) => {
       changeType: "positive",
       subtext: "20 Active FDs",
       link: "Click for details →",
-      icon: TrendingUp
+      icon: TrendingUp,
+      onClick: () => onNavigate('Investment Details')
     },
     {
       title: "Weighted Avg Cost of Debt",
@@ -570,7 +573,12 @@ const Dashboard = ({ onNavigate }) => {
           {widgets.map((widget, index) => {
             const Icon = widget.icon;
             return (
-              <div key={index} className="widget-card">
+              <div
+                key={index}
+                className="widget-card"
+                onClick={widget.onClick}
+                style={widget.onClick ? { cursor: 'pointer' } : {}}
+              >
                 <div className="widget-header">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     {Icon && <Icon size={14} className="text-gray" />}
