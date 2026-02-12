@@ -25,18 +25,50 @@ import Users from './components/modules/Users';
 import UserGroups from './components/modules/UserGroups';
 import CashFlow from './components/modules/CashFlow';
 import EntityDetails from './components/modules/EntityDetails';
+import BankDetails from './components/modules/BankDetails';
+import AccountDetails from './components/modules/AccountDetails';
 
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
 
 function App() {
   const [activePage, setActivePage] = useState('Dashboard');
   const [selectedEntity, setSelectedEntity] = useState(null);
+  const [selectedBank, setSelectedBank] = useState(null);
+  const [selectedAccount, setSelectedAccount] = useState(null);
 
-  const handlePageChange = (page, entity = null) => {
-    if (entity) {
-      setSelectedEntity(entity);
+  // History state for chronological navigation
+  const [history, setHistory] = useState([{ page: 'Dashboard', entity: null, bank: null, account: null }]);
+  const [historyIndex, setHistoryIndex] = useState(0);
+
+  const handlePageChange = (page, entity = null, bank = null, account = null, isHistoryNav = false) => {
+    // If not navigating history, push new state and truncate "forward" history
+    if (!isHistoryNav) {
+      const newHistory = history.slice(0, historyIndex + 1);
+      newHistory.push({ page, entity, bank, account });
+      setHistory(newHistory);
+      setHistoryIndex(newHistory.length - 1);
     }
+
+    if (entity !== undefined) setSelectedEntity(entity);
+    if (bank !== undefined) setSelectedBank(bank);
+    if (account !== undefined) setSelectedAccount(account);
     setActivePage(page);
+  };
+
+  const goBack = () => {
+    if (historyIndex > 0) {
+      const prev = history[historyIndex - 1];
+      setHistoryIndex(historyIndex - 1);
+      handlePageChange(prev.page, prev.entity, prev.bank, prev.account, true);
+    }
+  };
+
+  const goForward = () => {
+    if (historyIndex < history.length - 1) {
+      const next = history[historyIndex + 1];
+      setHistoryIndex(historyIndex + 1);
+      handlePageChange(next.page, next.entity, next.bank, next.account, true);
+    }
   };
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -50,13 +82,14 @@ function App() {
 
   React.useEffect(() => {
     document.title = activePage + ' - LB Treasury';
-    console.log('Active Page changed to:', activePage);
   }, [activePage]);
 
   const renderPage = () => {
     switch (activePage) {
       case 'Dashboard': return <Dashboard onNavigate={handlePageChange} />;
-      case 'Entity Details': return <EntityDetails entity={selectedEntity} onBack={() => setActivePage('Dashboard')} />;
+      case 'Entity Details': return <EntityDetails entity={selectedEntity} onNavigate={handlePageChange} onBack={() => setActivePage('Dashboard')} />;
+      case 'Bank Details': return <BankDetails entity={selectedEntity} bank={selectedBank} onNavigate={handlePageChange} onBack={() => setActivePage('Entity Details')} />;
+      case 'Account Details': return <AccountDetails account={selectedAccount} bank={selectedBank} entity={selectedEntity} onBack={() => setActivePage('Bank Details')} />;
       case 'Cash Flow': return <CashFlow onNavigate={setActivePage} />;
       case 'Accounts': return <Accounts />;
       case 'Payments': return <Payments />;
@@ -89,6 +122,20 @@ function App() {
     }
   };
 
+  const handleBreadcrumbNavigate = (item) => {
+    if (item === 'Dashboard') {
+      handlePageChange('Dashboard');
+    } else if (item === 'Entity Details') {
+      handlePageChange('Entity Details', selectedEntity);
+    } else if (item === selectedBank) {
+      handlePageChange('Bank Details', selectedEntity, selectedBank);
+    } else if (item === selectedAccount?.accountNo) {
+      handlePageChange('Account Details', selectedEntity, selectedBank, selectedAccount);
+    } else {
+      handlePageChange(item);
+    }
+  };
+
   return (
     <div className="app-container">
       {/* Sidebar Trigger Zone for Hover Reveal */}
@@ -101,7 +148,7 @@ function App() {
 
       <Sidebar
         activePage={activePage}
-        setActivePage={setActivePage}
+        setActivePage={handlePageChange}
         isOpen={isSidebarOpen}
         isHovered={isSidebarHovered}
         onMouseEnter={() => !isSidebarOpen && setIsSidebarHovered(true)}
@@ -113,10 +160,17 @@ function App() {
           activePage={activePage}
           toggleSidebar={toggleSidebar}
           isSidebarOpen={isSidebarOpen}
-          showBack={activePage === 'Entity Details'}
-          onBack={() => setActivePage('Dashboard')}
-          onNavigate={setActivePage}
-          breadcrumb={activePage === 'Entity Details' ? 'Dashboard > Entity Details' : activePage}
+          showBack={historyIndex > 0}
+          onBack={goBack}
+          showForward={historyIndex < history.length - 1}
+          onForward={goForward}
+          onNavigate={handleBreadcrumbNavigate}
+          breadcrumb={
+            activePage === 'Entity Details' ? 'Dashboard > Entity Details' :
+              activePage === 'Bank Details' ? `Dashboard > Entity Details > ${selectedBank || 'Bank Details'}` :
+                activePage === 'Account Details' ? `Dashboard > Entity Details > ${selectedBank} > ${selectedAccount?.accountNo || 'Account'}` :
+                  activePage
+          }
         />
         {renderPage()}
       </div>

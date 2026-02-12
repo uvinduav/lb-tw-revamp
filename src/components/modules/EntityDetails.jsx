@@ -69,7 +69,7 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
     );
 };
 
-const EntityDetails = ({ entity }) => {
+const EntityDetails = ({ entity, onNavigate }) => {
     if (!entity) return null;
 
     // Mock Consolidated Data for this Entity
@@ -247,7 +247,7 @@ const EntityDetails = ({ entity }) => {
                 <div id="associated-accounts" style={{ marginTop: '32px' }}>
                     <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
                         <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Associated Accounts</h2>
-                        <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Detailed list of all accounts for this entity</p>
+                        <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Click to see detailed list of all accounts by bank</p>
                     </div>
 
                     <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)', overflowX: 'auto' }}>
@@ -266,7 +266,7 @@ const EntityDetails = ({ entity }) => {
                             </thead>
                             <tbody>
                                 {accountData.map((account, idx) => (
-                                    <tr key={idx} className="hover-row">
+                                    <tr key={idx} className="hover-row" onClick={() => onNavigate && onNavigate('Bank Details', entity, account.bank)}>
                                         <td style={{ paddingLeft: '24px' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                 <LogoImage name={account.bank} size={24} />

@@ -1,7 +1,7 @@
 import React from 'react';
-import { PanelLeft, ArrowLeft, UserCircle, ChevronDown, AlertCircle } from 'lucide-react';
+import { PanelLeft, ArrowLeft, ArrowRight, UserCircle, ChevronDown, AlertCircle } from 'lucide-react';
 
-const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, breadcrumb, onNavigate }) => {
+const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, showForward, onForward, breadcrumb, onNavigate }) => {
   return (
     <div className="topbar">
       <div className="breadcrumb">
@@ -12,11 +12,30 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, br
         >
           <PanelLeft size={20} color="#666" />
         </div>
-        {showBack && (
-          <div className="topbar-icon-btn" title="Back" onClick={onBack}>
-            <ArrowLeft size={20} color="#666" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <div
+            className={`topbar-icon-btn ${!showBack ? 'disabled' : ''}`}
+            title="Back"
+            onClick={() => showBack && onBack()}
+            style={{
+              opacity: showBack ? 1 : 0.3,
+              cursor: showBack ? 'pointer' : 'not-allowed',
+            }}
+          >
+            <ArrowLeft size={18} color="#666" />
           </div>
-        )}
+          <div
+            className={`topbar-icon-btn ${!showForward ? 'disabled' : ''}`}
+            title="Forward"
+            onClick={() => showForward && onForward()}
+            style={{
+              opacity: showForward ? 1 : 0.3,
+              cursor: showForward ? 'pointer' : 'not-allowed',
+            }}
+          >
+            <ArrowRight size={18} color="#666" />
+          </div>
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: '4px' }}>
           {(breadcrumb || activePage).split(' > ').map((item, index, array) => (
             <React.Fragment key={index}>
@@ -41,12 +60,10 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, br
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        {activePage === 'Dashboard' && (
-          <div className="alert-pill">
-            <AlertCircle size={14} />
-            1 Alert
-          </div>
-        )}
+        <div className="alert-pill">
+          <AlertCircle size={14} />
+          1 Alert
+        </div>
         <div className="user-profile">
           <UserCircle size={20} color="#666" />
           <span>Kamal</span>
