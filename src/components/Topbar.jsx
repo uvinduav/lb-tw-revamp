@@ -1,5 +1,5 @@
 import React from 'react';
-import { PanelLeft, ArrowLeft, UserCircle, ChevronDown } from 'lucide-react';
+import { PanelLeft, ArrowLeft, UserCircle, ChevronDown, AlertCircle } from 'lucide-react';
 
 const Topbar = ({ activePage, toggleSidebar, isSidebarOpen }) => {
   return (
@@ -18,10 +18,18 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen }) => {
         <span style={{ marginLeft: '4px' }}>{activePage}</span>
       </div>
 
-      <div className="user-profile">
-        <UserCircle size={20} color="#666" />
-        <span>Kamal</span>
-        <ChevronDown size={14} color="#666" />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        {activePage === 'Dashboard' && (
+          <div className="alert-pill">
+            <AlertCircle size={14} />
+            1 Alert
+          </div>
+        )}
+        <div className="user-profile">
+          <UserCircle size={20} color="#666" />
+          <span>Kamal</span>
+          <ChevronDown size={14} color="#666" />
+        </div>
       </div>
     </div>
   );

@@ -27,7 +27,7 @@ import UserGroups from './components/modules/UserGroups';
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
 
 function App() {
-  const [activePage, setActivePage] = useState('Accounts');
+  const [activePage, setActivePage] = useState('Dashboard');
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);

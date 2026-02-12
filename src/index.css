@@ -1049,3 +1049,125 @@ input[type="checkbox"] {
   border-radius: 2px;
   margin: 0 -1px;
 }
+
+/* Dashboard Styles */
+.dashboard-container {
+  padding: var(--spacing-lg);
+  background-color: white;
+  min-height: 100vh;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.widget-card {
+  background-color: var(--color-bg);
+  padding: var(--spacing-md);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+  transition: all 0.2s;
+}
+
+.widget-card:hover {
+  background-color: #f3f4f6;
+}
+
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-sm);
+}
+
+.widget-icon-wrapper {
+  padding: var(--spacing-sm);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.widget-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.widget-value-row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-sm);
+  margin-bottom: 4px;
+}
+
+.widget-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.widget-change {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.text-green { color: #16a34a !important; }
+.text-red { color: #dc2626 !important; }
+.text-gray { color: #6b7280 !important; }
+.text-blue { color: #2563eb !important; }
+.text-orange { color: #ea580c !important; }
+.text-purple { color: #9333ea !important; }
+.text-indigo { color: #4f46e5 !important; }
+.text-pink { color: #db2777 !important; }
+
+.bg-blue-soft { background-color: #eff6ff; }
+.bg-red-soft { background-color: #fef2f2; }
+.bg-orange-soft { background-color: #fff7ed; }
+.bg-purple-soft { background-color: #faf5ff; }
+.bg-indigo-soft { background-color: #eef2ff; }
+.bg-pink-soft { background-color: #fdf2f8; }
+.bg-green-soft { background-color: #f0fdf4; }
+
+.widget-subtext {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.dashboard-section {
+  background-color: white;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.section-header {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-bg-subtle);
+}
+
+.hover-row:hover {
+  background-color: var(--color-bg-subtle);
+  cursor: pointer;
+}
+.investment-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-top: 32px;
+}
+
+.investment-grid > * {
+  flex: 1 1 500px; /* Grow, Shrink, Basis */
+  min-width: 300px; /* Ensure it doesn't get too small */
+}
