@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  RotateCw,
   Wallet,
   Activity,
   CreditCard,
@@ -110,7 +109,6 @@ const ChartCard = (props) => {
     <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
         <h3 className="widget-title" style={{ margin: 0 }}>{title}</h3>
-        <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', flexWrap: 'wrap' }}>
@@ -231,14 +229,6 @@ const Dashboard = ({ onNavigate }) => {
       onClick: () => onNavigate('Cash Position Details')
     },
     {
-      title: "Net Liquidity",
-      value: "LKR 4,324,850,000.36",
-      change: "",
-      changeType: "positive",
-      subtext: "Cash - Debt",
-      icon: Activity
-    },
-    {
       title: "Total Debt Outstanding",
       value: "LKR 3,396,250,000.03",
       change: "",
@@ -257,6 +247,14 @@ const Dashboard = ({ onNavigate }) => {
       link: "Click for details →",
       icon: TrendingUp,
       onClick: () => onNavigate('Investment Details')
+    },
+    {
+      title: "Net Liquidity",
+      value: "LKR 4,324,850,000.36",
+      change: "",
+      changeType: "positive",
+      subtext: "Cash - Debt",
+      icon: Activity
     },
     {
       title: "Weighted Avg Cost of Debt",
@@ -587,7 +585,7 @@ const Dashboard = ({ onNavigate }) => {
             return (
               <div
                 key={index}
-                className="widget-card"
+                className={`widget-card ${widget.onClick ? 'clickable' : ''}`}
                 onClick={widget.onClick}
                 style={widget.onClick ? { cursor: 'pointer' } : {}}
               >
@@ -596,7 +594,6 @@ const Dashboard = ({ onNavigate }) => {
                     {Icon && <Icon size={14} className="text-gray" />}
                     <h3 className="widget-title" style={{ margin: 0 }}>{widget.title}</h3>
                   </div>
-                  <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
                 </div>
 
                 <div style={{ marginTop: '0px' }}>
@@ -612,9 +609,15 @@ const Dashboard = ({ onNavigate }) => {
                       </span>
                     )}
                   </div>
-                  <p className="widget-subtext">
-                    {widget.subtext}
-                  </p>
+                  {widget.onClick ? (
+                    <div style={{ marginTop: '4px' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 500, color: '#3b82f6' }}>View more</span>
+                    </div>
+                  ) : (
+                    <p className="widget-subtext">
+                      {widget.subtext}
+                    </p>
+                  )}
                 </div>
               </div>
             );
@@ -706,7 +709,6 @@ const Dashboard = ({ onNavigate }) => {
           <div style={{ marginTop: 'var(--spacing-md)', backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <h3 className="widget-title" style={{ margin: 0 }}>Foreign Currency Deposits & Loans Overview</h3>
-              <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
             </div>
 
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-md)', flexWrap: 'wrap' }}>
@@ -915,7 +917,6 @@ const Dashboard = ({ onNavigate }) => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <h3 className="widget-title" style={{ margin: 0 }}>{metric.title}</h3>
                   </div>
-                  <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
                 </div>
 
                 <div style={{ marginTop: '0px' }}>
