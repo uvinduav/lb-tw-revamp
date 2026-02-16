@@ -11,6 +11,18 @@ import {
 } from 'chart.js';
 import { Doughnut, Bar } from 'react-chartjs-2';
 
+import bankLogoSc from '../../assets/bank-icons/scbl.png';
+import bankLogoNtb from '../../assets/bank-icons/ntb.png';
+import bankLogoCiti from '../../assets/bank-icons/citi.png';
+import bankLogoHnb from '../../assets/bank-icons/hnb.png';
+import bankLogoBoc from '../../assets/bank-icons/bocc.png';
+import bankLogoCom from '../../assets/bank-icons/comb.png';
+import bankLogoDeut from '../../assets/bank-icons/deut.png';
+import bankLogoSamp from '../../assets/bank-icons/sampath.png';
+import bankLogoNdb from '../../assets/bank-icons/ndb.png';
+import bankLogoPb from '../../assets/bank-icons/pb.png';
+import bankLogoDfcc from '../../assets/bank-icons/dfcc.png';
+
 ChartJS.register(
     ArcElement,
     Tooltip,
@@ -18,6 +30,27 @@ ChartJS.register(
     CategoryScale,
     LinearScale,
     BarElement
+);
+
+const LogoPlaceholder = ({ name, color, size = 20 }) => (
+    <div
+        style={{
+            width: `${size}px`,
+            height: `${size}px`,
+            borderRadius: '4px',
+            backgroundColor: color || '#f3f4f6',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: size > 20 ? '10px' : '9px',
+            fontWeight: 600,
+            color: color ? 'rgba(0,0,0,0.5)' : '#9ca3af',
+            border: '1px solid rgba(0,0,0,0.05)',
+            flexShrink: 0
+        }}
+    >
+        {name ? name.charAt(0) : 'E'}
+    </div>
 );
 
 const LogoImage = ({ src, name, color, size = 48 }) => {
@@ -37,7 +70,8 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
                     fontSize: size > 20 ? '16px' : '10px',
                     fontWeight: 600,
                     color: color ? 'rgba(0,0,0,0.5)' : '#9ca3af',
-                    border: '1px solid rgba(0,0,0,0.05)'
+                    border: '1px solid rgba(0,0,0,0.05)',
+                    flexShrink: 0
                 }}
             >
                 {name ? name.charAt(0) : 'B'}
@@ -46,307 +80,501 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
     }
 
     return (
-        <img
-            src={src}
-            alt={name}
-            onError={() => setError(true)}
+        <div
             style={{
                 width: `${size}px`,
                 height: `${size}px`,
                 borderRadius: '4px',
-                objectFit: 'cover',
-                border: '1px solid var(--color-border)'
+                backgroundColor: 'white',
+                border: '1px solid var(--color-border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                overflow: 'hidden'
             }}
-        />
+        >
+            <img
+                src={src}
+                alt={name}
+                onError={() => setError(true)}
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    padding: size > 30 ? '4px' : '2px'
+                }}
+            />
+        </div>
     );
 };
 
-const CashPositionDetails = ({ onNavigate }) => {
+const topLabelsPlugin = {
+    id: 'topLabels',
+    afterDatasetsDraw(chart) {
+        if (chart.config.type !== 'bar') return;
+        const { ctx } = chart;
+        ctx.save();
+        chart.data.datasets.forEach((dataset, i) => {
+            chart.getDatasetMeta(i).data.forEach((bar, index) => {
+                const value = dataset.data[index];
+                if (value !== undefined && value !== null) {
+                    ctx.fillStyle = '#64748b';
+                    ctx.font = '500 9px Inter, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    
+                    let label;
+                    if (value > 0) {
+                        label = value.toLocaleString() + 'M';
+                    } else {
+                        label = '0M';
+                    }
+                    
+                    ctx.fillText(label, bar.x, bar.y - 5);
+                }
+            });
+        });
+        ctx.restore();
+    }
+};
+
+const CashPositionDetails = () => {
     // Mock Data
     const summaryData = {
-        totalCash: "Rs 7,721,100,000.43",
-        netLiquidity: "Rs 4,324,850,000.36",
-        activeAccounts: 12,
-        totalBanks: 6
+        totalCash: "Rs 191,460,241,694.04",
+        netLiquidity: "Rs 185,200,000,000.00",
+        activeAccounts: 45,
+        totalBanks: 11
     };
+
+    const chartLabels = ['Standard Chartered', 'Nations Trust Bank', 'Citi Bank', 'Hatton National Bank', 'Bank of China', 'Commercial Bank', 'Deutsche Bank', 'Sampath Bank', 'NDB Bank', 'People\'s Bank', 'DFCC Bank'];
+    const chartDataValues = [145000, 28500, 12400, 6700, 4200, 18500, 1200, 9300, 3400, 850, 0];
+
+    const bankColors = [
+        '#3b82f6', // Standard Chartered
+        '#10b981', // Nations Trust Bank
+        '#f59e0b', // Citi Bank
+        '#ef4444', // Hatton National Bank
+        '#8b5cf6', // Bank of China
+        '#ec4899', // Commercial Bank
+        '#06b6d4', // Deutsche Bank
+        '#f97316', // Sampath Bank
+        '#6366f1', // NDB Bank
+        '#14b8a6', // People's Bank
+        '#84cc16'  // DFCC Bank
+    ];
 
     const bankDistributionData = {
-        labels: ['Lion Brewery', 'Ceylon Beverage', 'Luxury Brands'],
+        labels: chartLabels,
         datasets: [{
-            label: 'Cash',
-            data: [5120.6, 1250.5, 320.5],
-            backgroundColor: '#3b82f6',
-            borderRadius: 4,
-            barThickness: 60
+            label: 'Cash (Million LKR)',
+            data: chartDataValues,
+            backgroundColor: bankColors,
+            borderRadius: 0,
+            barThickness: 40, // thinner bars for more items
+            minBarLength: 5,
+            hoverBackgroundColor: bankColors.map(c => c + 'dd') // Slightly transparent on hover
         }]
     };
 
-    const currencyDistributionData = {
-        labels: ['LKR', 'USD', 'EUR'],
-        datasets: [{
-            data: [75.5, 20.0, 4.5],
-            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
-            borderWidth: 2,
-            borderColor: '#ffffff'
-        }]
-    };
-
-    const entities = [
+    const banks = [
         {
             id: 1,
-            name: "Lion Brewery Sri Lanka",
-            logo: "brewery_logo_2.png",
-            color: "#fef3c7",
-            totalBalance: "Rs 5,120,600,000.43",
-            share: "66.3% of total",
-            accountCount: 3,
-            accountDesc: "2 LKR, 1 USD",
+            name: "Standard Chartered",
+            logo: bankLogoSc,
+            color: "#e0f2fe",
+            totalBalance: "LKR 145,000,000,000.00",
+            share: "65.3% of total",
+            accountCount: 5,
+            accountDesc: "3 USD, 1 EUR, 1 LKR",
             accounts: [
                 {
-                    id: 'a1',
-                    bank: "Bank of China",
-                    accountNo: "7829-2231-0092",
-                    currency: "LKR",
-                    type: "Savings",
-                    rate: "4.50%",
-                    balance: "LKR 2,500,000,000.00",
-                    isForeign: false
-                },
-                {
-                    id: 'a2',
-                    bank: "Standard Chartered",
-                    accountNo: "8821-3341-1102",
+                    id: 'sc1',
+                    company: "Lion Brewery Sri Lanka",
+                    companyColor: "#f0fdf4",
+                    accountNo: "01854228901",
                     currency: "USD",
                     type: "Current",
-                    rate: "0.50%",
-                    balance: "USD 8,500,000.00",
-                    lkrBalance: "LKR 1,955,000,000.00",
+                    balance: "USD 450,000,000.00",
+                    lkrBalance: "LKR 144,000,000,000.00",
                     isForeign: true
                 },
                 {
-                    id: 'a3',
-                    bank: "Hatton National Bank",
-                    accountNo: "1122-3344-5566",
+                    id: 'sc2',
+                    company: "Lion Brewery Sri Lanka",
+                    companyColor: "#f0fdf4",
+                    accountNo: "01854224201",
+                    currency: "USD",
+                    type: "Current",
+                    balance: "USD 2,500,000.00",
+                    lkrBalance: "LKR 800,000,000.00",
+                    isForeign: true
+                },
+                {
+                    id: 'sc3',
+                    company: "Lion Brewery Sri Lanka",
+                    companyColor: "#f0fdf4",
+                    accountNo: "01854224202",
+                    currency: "EUR",
+                    type: "Current",
+                    balance: "EUR 540,540.00",
+                    lkrBalance: "LKR 198,878,720.00",
+                    isForeign: true
+                },
+                {
+                    id: 'sc4',
+                    company: "Lion Brewery Sri Lanka",
+                    companyColor: "#f0fdf4",
+                    accountNo: "01854228903",
                     currency: "LKR",
                     type: "Current",
-                    rate: "0.00%",
-                    balance: "LKR 665,600,000.43",
+                    balance: "LKR 1,121,280.00",
+                    lkrBalance: "LKR 1,121,280.00",
+                    isForeign: false
+                },
+                {
+                    id: 'sc5',
+                    company: "Lion Brewery Sri Lanka",
+                    companyColor: "#f0fdf4",
+                    accountNo: "01854228901",
+                    currency: "LKR",
+                    type: "CDA",
+                    balance: "LKR 0.00",
+                    lkrBalance: "LKR 0.00",
                     isForeign: false
                 }
+            ],
+            currencyBreakdown: [
+                { code: 'USD', amount: '452,500,000.00', lkr: '144,800,000,000.00' },
+                { code: 'EUR', amount: '540,540.00', lkr: '198,878,720.00' },
+                { code: 'LKR', amount: '1,121,280.00', lkr: '1,121,280.00' }
             ]
         },
         {
             id: 2,
-            name: "Ceylon Beverage Holdings",
-            logo: "brewery_logo_1.png",
-            color: "#e0f2fe",
-            totalBalance: "Rs 1,250,500,000.00",
-            share: "16.2% of total",
-            accountCount: 2,
-            accountDesc: "1 LKR, 1 EUR",
-            accounts: [
-                {
-                    id: 'a4',
-                    bank: "Commercial Bank",
-                    accountNo: "5566-7788-9900",
-                    currency: "LKR",
-                    type: "Savings",
-                    rate: "4.25%",
-                    balance: "LKR 800,000,000.00",
-                    isForeign: false
-                },
-                {
-                    id: 'a5',
-                    bank: "Bank of China",
-                    accountNo: "9988-7766-5544",
-                    currency: "EUR",
-                    type: "Current",
-                    rate: "0.10%",
-                    balance: "EUR 1,500,000.00",
-                    lkrBalance: "LKR 450,500,000.00",
-                    isForeign: true
-                }
-            ]
-        },
-        {
-            id: 3,
-            name: "Luxury Brands Pvt Ltd.",
-            logo: "brewery_logo_3.png",
-            color: "#f1f5f9",
-            totalBalance: "Rs 320,500,000.00",
-            share: "4.1% of total",
+            name: "Bank of China",
+            logo: bankLogoBoc,
+            color: "#fef2f2",
+            totalBalance: "LKR 5,600,000,000.00",
+            share: "2.5% of total",
             accountCount: 1,
             accountDesc: "1 LKR",
             accounts: [
                 {
-                    id: 'a6',
-                    bank: "Sampath Bank",
-                    accountNo: "1234-5678-9012",
+                    id: 'boc1',
+                    company: "Lion Brewery Sri Lanka",
+                    companyColor: "#f0fdf4",
+                    accountNo: "00109955874",
                     currency: "LKR",
-                    type: "Current",
-                    rate: "0.00%",
-                    balance: "LKR 320,500,000.00",
+                    type: "Savings",
+                    balance: "LKR 5,600,000,000.00",
+                    lkrBalance: "LKR 5,600,000,000.00",
                     isForeign: false
                 }
+            ],
+            currencyBreakdown: [
+                { code: 'LKR', amount: '5,600,000,000.00', lkr: '5,600,000,000.00' }
             ]
+        },
+        {
+            id: 3,
+            name: "Commercial Bank",
+            logo: bankLogoCom,
+            color: "#eff6ff",
+            totalBalance: "LKR 18,500,000,000.00",
+            share: "8.3% of total",
+            accountCount: 4,
+            accountDesc: "2 LKR, 2 USD",
+            accounts: [
+                {
+                    id: 'comb1',
+                    company: "Millers Brewery Ltd",
+                    companyColor: "#eff6ff",
+                    accountNo: "1500428010",
+                    currency: "LKR",
+                    type: "Current",
+                    balance: "LKR 8,500,000,000.00",
+                    lkrBalance: "LKR 8,500,000,000.00",
+                    isForeign: false
+                },
+                {
+                    id: 'comb2',
+                    company: "Millers Brewery Ltd",
+                    companyColor: "#eff6ff",
+                    accountNo: "1500420040",
+                    currency: "LKR",
+                    type: "Savings",
+                    balance: "LKR 1,500,000,000.00",
+                    lkrBalance: "LKR 1,500,000,000.00",
+                    isForeign: false
+                },
+                {
+                    id: 'comb3',
+                    company: "Lion Brewery Sri Lanka",
+                    companyColor: "#f0fdf4",
+                    accountNo: "1500420159",
+                    currency: "USD",
+                    type: "Current",
+                    balance: "USD 21,875,000.00",
+                    lkrBalance: "LKR 7,000,000,000.00",
+                    isForeign: true
+                },
+                {
+                    id: 'comb4',
+                    company: "Lion Brewery Sri Lanka",
+                    companyColor: "#f0fdf4",
+                    accountNo: "1500420801",
+                    currency: "LKR",
+                    type: "Current",
+                    balance: "LKR 1,500,000,000.00",
+                    lkrBalance: "LKR 1,500,000,000.00",
+                    isForeign: false
+                }
+            ],
+            currencyBreakdown: [
+                { code: 'LKR', amount: '11,500,000,000.00', lkr: '11,500,000,000.00' },
+                { code: 'USD', amount: '21,875,000.00', lkr: '7,000,000,000.00' }
+            ]
+        },
+        {
+            id: 4,
+            name: "Nations Trust Bank",
+            logo: bankLogoNtb,
+            color: "#f0fdf4",
+            totalBalance: "LKR 28,500,000,000.00",
+            share: "12.8% of total",
+            accountCount: 2,
+            accountDesc: "2 LKR",
+            accounts: [
+                 { id: 'ntb1', company: "Lion Brewery Sri Lanka", companyColor: "#f0fdf4", accountNo: "10023451122", currency: "LKR", type: "Savings", balance: "LKR 28,500,000,000.00", lkrBalance: "LKR 28,500,000,000.00", isForeign: false }
+            ],
+            currencyBreakdown: [{ code: 'LKR', amount: '28,500,000,000.00', lkr: '28,500,000,000.00' }]
+        },
+        {
+            id: 5,
+            name: "Hatton National Bank",
+            logo: bankLogoHnb,
+            color: "#fefce8",
+            totalBalance: "LKR 6,700,000,000.00",
+            share: "3.0% of total",
+            accountCount: 1,
+            accountDesc: "1 LKR",
+            accounts: [
+                 { id: 'hnb1', company: "Lion Brewery Sri Lanka", companyColor: "#f0fdf4", accountNo: "00344553344", currency: "LKR", type: "Current", balance: "LKR 6,700,000,000.00", lkrBalance: "LKR 6,700,000,000.00", isForeign: false }
+            ],
+            currencyBreakdown: [{ code: 'LKR', amount: '6,700,000,000.00', lkr: '6,700,000,000.00' }]
+        },
+        // Adding other banks with placeholder data to match the chart visualization
+        {
+            id: 6,
+            name: "Citi Bank",
+            logo: bankLogoCiti,
+            color: "#f1f5f9",
+            totalBalance: "LKR 12,400,000,000.00",
+            share: "5.6% of total",
+            accountCount: 2,
+            accountDesc: "1 USD, 1 LKR",
+            accounts: [
+                 { id: 'citi1', company: "Lion Brewery Sri Lanka", companyColor: "#f0fdf4", accountNo: "82345555566", currency: "USD", type: "Current", balance: "USD 20,000,000.00", lkrBalance: "LKR 6,400,000,000.00", isForeign: true },
+                 { id: 'citi2', company: "Luxury Brands", companyColor: "#fef2f2", accountNo: "82345557788", currency: "LKR", type: "Savings", balance: "LKR 6,000,000,000.00", lkrBalance: "LKR 6,000,000,000.00", isForeign: false }
+            ],
+            currencyBreakdown: [{ code: 'USD', amount: '20,000,000.00', lkr: '6,400,000,000.00' }, { code: 'LKR', amount: '6,000,000,000.00', lkr: '6,000,000,000.00' }]
+        },
+        {
+            id: 7,
+            name: "Deutsche Bank",
+            logo: bankLogoDeut,
+            color: "#eff6ff",
+            totalBalance: "LKR 1,200,000,000.00",
+            share: "0.5% of total",
+            accountCount: 1,
+            accountDesc: "1 LKR",
+            accounts: [
+                 { id: 'db1', company: "Lion Brewery Sri Lanka", companyColor: "#f0fdf4", accountNo: "00567889900", currency: "LKR", type: "Current", balance: "LKR 1,200,000,000.00", lkrBalance: "LKR 1,200,000,000.00", isForeign: false }
+            ],
+             currencyBreakdown: [{ code: 'LKR', amount: '1,200,000,000.00', lkr: '1,200,000,000.00' }]
+        },
+        {
+            id: 8,
+            name: "Sampath Bank",
+            logo: bankLogoSamp,
+            color: "#fff7ed",
+            totalBalance: "LKR 9,300,000,000.00",
+            share: "4.2% of total",
+            accountCount: 2,
+            accountDesc: "2 LKR",
+            accounts: [
+                 { id: 'samp1', company: "Pubs'N Places Pvt Ltd", companyColor: "#fff7ed", accountNo: "10024452211", currency: "LKR", type: "Savings", balance: "LKR 9,300,000,000.00", lkrBalance: "LKR 9,300,000,000.00", isForeign: false }
+            ],
+             currencyBreakdown: [{ code: 'LKR', amount: '9,300,000,000.00', lkr: '9,300,000,000.00' }]
+        },
+        {
+            id: 9,
+            name: "NDB Bank",
+            logo: bankLogoNdb,
+            color: "#fefce8",
+            totalBalance: "LKR 3,400,000,000.00",
+            share: "1.5% of total",
+            accountCount: 1,
+            accountDesc: "1 LKR",
+            accounts: [
+                 { id: 'ndb1', company: "Retail Spaces Pvt Ltd", companyColor: "#fefce8", accountNo: "10044554433", currency: "LKR", type: "Current", balance: "LKR 3,400,000,000.00", lkrBalance: "LKR 3,400,000,000.00", isForeign: false }
+            ],
+             currencyBreakdown: [{ code: 'LKR', amount: '3,400,000,000.00', lkr: '3,400,000,000.00' }]
+        },
+        {
+            id: 10,
+            name: "People's Bank",
+            logo: bankLogoPb,
+            color: "#fef2f2",
+            totalBalance: "LKR 850,000,000.00",
+            share: "0.4% of total",
+            accountCount: 1,
+            accountDesc: "1 LKR",
+            accounts: [
+                 { id: 'pb1', company: "Lion Brewery Sri Lanka", companyColor: "#f0fdf4", accountNo: "10066776655", currency: "LKR", type: "Savings", balance: "LKR 850,000,000.00", lkrBalance: "LKR 850,000,000.00", isForeign: false }
+            ],
+             currencyBreakdown: [{ code: 'LKR', amount: '850,000,000.00', lkr: '850,000,000.00' }]
+        },
+        {
+            id: 11,
+            name: "DFCC Bank",
+            logo: bankLogoDfcc,
+            color: "#f0fdf4",
+            totalBalance: "Rs 0.00",
+            share: "0.0% of total",
+            accountCount: 1,
+            accountDesc: "1 LKR",
+            accounts: [
+                 { id: 'dfcc1', company: "Luxury Brands", companyColor: "#fef2f2", accountNo: "00889988877", currency: "LKR", type: "Current", balance: "LKR 0.00", lkrBalance: "LKR 0.00", isForeign: false }
+            ],
+             currencyBreakdown: [{ code: 'LKR', amount: '0.00', lkr: '0.00' }]
         }
     ];
 
     return (
         <div className="dashboard-main-wrapper" style={{ height: '100%', overflowY: 'auto', padding: '24px' }}>
 
-            {/* Header Section */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-                <div style={{
-                    width: '56px',
-                    height: '56px',
-                    borderRadius: '8px',
-                    backgroundColor: '#dbeafe',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}>
-                    <Wallet size={28} className="text-blue" />
-                </div>
-                <div>
-                    <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
-                        Cash Position Details
-                    </h1>
-                    <div style={{ marginTop: '4px' }}>
-                        <span style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>Total Cash: </span>
-                        <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.totalCash}</span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Summary Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
-                <div className="widget-card" style={{ padding: '16px' }}>
-                    <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Active Accounts</div>
-                    <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.activeAccounts}</div>
-                </div>
-                <div className="widget-card" style={{ padding: '16px' }}>
-                    <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Total Banks</div>
-                    <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.totalBanks}</div>
-                </div>
-                <div className="widget-card" style={{ padding: '16px' }}>
-                    <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Net Liquidity</div>
-                    <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.netLiquidity}</div>
-                </div>
-                <div className="widget-card" style={{ padding: '16px' }}>
-                    <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Daily Change</div>
-                    <div style={{ fontSize: '18px', fontWeight: 600, color: '#10b981' }}>+2.4%</div>
-                </div>
-            </div>
-
-            {/* Charts Section */}
-            <div style={{ display: 'flex', gap: '24px', marginBottom: '32px' }}>
-                {/* Entity-wise Cash Distribution */}
-                <div className="widget-card" style={{ flex: 1, padding: '16px' }}>
-                    <h3 className="widget-title" style={{ marginBottom: '16px' }}>Entity-wise Cash Distribution (Million LKR)</h3>
-                    <div style={{ height: '200px' }}>
-                        <Bar
-                            data={bankDistributionData}
-                            options={{
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: { legend: { display: false } },
-                                scales: {
-                                    y: { beginAtZero: true, grid: { color: '#f3f4f6' } },
-                                    x: { grid: { display: false } }
-                                }
-                            }}
-                        />
+            <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
+                {/* Header Section */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+                    <div>
+                        <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
+                            Cash Breakdown by Bank
+                        </h1>
+                        <div style={{ marginTop: '4px', fontSize: '13px', fontWeight: 400, color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span>Total: {summaryData.totalCash}</span>
+                        </div>
                     </div>
                 </div>
 
-                {/* Cash by Currency */}
-                <div className="widget-card" style={{ flex: 1, padding: '16px' }}>
-                    <h3 className="widget-title" style={{ marginBottom: '16px' }}>Cash by Currency</h3>
-                    <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <div style={{ width: '180px', height: '180px' }}>
-                            <Doughnut
-                                data={currencyDistributionData}
+                {/* Charts Section */}
+                <div style={{ marginBottom: '0' }}>
+                    <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                        <h3 className="widget-title" style={{ marginBottom: '16px' }}>Bank-wise Cash Distribution (Million LKR)</h3>
+                        <div style={{ height: '300px' }}>
+                            <Bar
+                                data={bankDistributionData}
+                                plugins={[topLabelsPlugin]}
                                 options={{
-                                    cutout: '0%',
+                                    responsive: true,
+                                    maintainAspectRatio: false,
                                     plugins: { legend: { display: false } },
-                                    maintainAspectRatio: false
+                                    scales: {
+                                        y: { 
+                                            beginAtZero: true, 
+                                            grid: { color: '#f3f4f6' },
+                                            grace: '10%' // Add some space at the top for labels
+                                        },
+                                        x: { 
+                                            grid: { display: false },
+                                            ticks: {
+                                                autoSkip: false,
+                                                maxRotation: 45,
+                                                minRotation: 45,
+                                                font: { size: 10 }
+                                            }
+                                        }
+                                    }
                                 }}
                             />
                         </div>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '16px' }}>
-                        {currencyDistributionData.labels.map((label, index) => (
-                            <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <div style={{ width: '12px', height: '8px', backgroundColor: currencyDistributionData.datasets[0].backgroundColor[index] }}></div>
-                                <span style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>{label}: {currencyDistributionData.datasets[0].data[index]}%</span>
-                            </div>
-                        ))}
                     </div>
                 </div>
             </div>
 
             {/* Detailed Breakdown */}
-            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '16px', marginTop: '48px', paddingLeft: '4px' }}>Detailed Breakdown by Entity</h2>
-
             <div style={{ display: 'flex', flexDirection: 'column', gap: '48px', paddingBottom: '48px' }}>
-                {entities.map((entity) => (
-                    <div key={entity.id}>
+                {banks.map((bank) => (
+                    <div key={bank.id}>
 
-                        {/* Entity Header Info - Outside Table */}
+                        {/* Bank Header Info - Outside Table */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px', paddingLeft: '4px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <LogoImage src={entity.logo} name={entity.name} color={entity.color} size={32} />
+                                <LogoImage src={bank.logo} name={bank.name} color={bank.color} size={40} />
                                 <div>
-                                    <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>{entity.name}</h3>
-                                    <div style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>{entity.accountCount} accounts ({entity.accountDesc})</div>
+                                    <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>{bank.name}</h3>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+                                        <span>{bank.accountCount} accounts</span>
+                                        <span style={{ color: '#e5e7eb' }}>•</span>
+                                        <span>{bank.share}</span>
+                                    </div>
                                 </div>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                                <div style={{ fontSize: '17px', fontWeight: 600, color: 'var(--color-text-main)', lineHeight: 1.2 }}>{entity.totalBalance}</div>
-                                <div style={{ display: 'flex', gap: '12px', marginTop: '4px', justifyContent: 'flex-end' }}>
-                                    <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>{entity.share}</span>
+                                <div style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-main)', lineHeight: 1.2 }}>{bank.totalBalance}</div>
+                                <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px', fontWeight: 400, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0' }}>
+                                    {bank.currencyBreakdown.map((curr, idx) => (
+                                        <React.Fragment key={idx}>
+                                            <span>{curr.code} {curr.amount}</span>
+                                            {idx < bank.currencyBreakdown.length - 1 && (
+                                                <span style={{ color: '#e5e7eb', fontSize: '10px', margin: '0 12px' }}>|</span>
+                                            )}
+                                        </React.Fragment>
+                                    ))}
                                 </div>
                             </div>
                         </div>
 
-                        {/* Table wrapper - Dashboard Entity Overview Style */}
-                        <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)' }}>
-                            <table className="data-table" style={{ borderCollapse: 'collapse' }}>
+                        {/* Table wrapper - Debt Details Style */}
+                        <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)' }}>
+                            <table className="data-table" style={{ borderCollapse: 'collapse', width: '100%' }}>
                                 <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
                                     <tr>
-                                        <th style={{ paddingLeft: '24px', width: '25%' }}>BANK</th>
-                                        <th>ACCOUNT NUMBER</th>
-                                        <th>TYPE</th>
-                                        <th>CURRENCY</th>
-                                        <th>RATE</th>
-                                        <th style={{ textAlign: 'right', paddingRight: '24px' }}>BALANCE</th>
+                                        <th style={{ whiteSpace: 'nowrap' }}>COMPANY</th>
+                                        <th style={{ whiteSpace: 'nowrap' }}>ACCOUNT NUMBER</th>
+                                        <th style={{ whiteSpace: 'nowrap' }}>TYPE</th>
+                                        <th style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap' }}>BALANCE</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {entity.accounts.map((account) => (
+                                    {bank.accounts.map((account) => (
                                         <tr key={account.id} className="hover-row">
-                                            <td style={{ paddingLeft: '24px' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)' }}>{account.bank}</div>
+                                            <td style={{ whiteSpace: 'nowrap' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    <LogoPlaceholder name={account.company} color={account.companyColor} />
+                                                    <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{account.company}</div>
+                                                </div>
                                             </td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{account.accountNo}</td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)' }}>{account.type}</td>
-                                            <td>
-                                                <span style={{
-                                                    fontSize: '12px', fontWeight: 600, padding: '2px 6px', borderRadius: '4px',
-                                                    backgroundColor: account.currency === 'LKR' ? '#e0f2fe' : account.currency === 'USD' ? '#dcfce7' : '#fef3c7',
-                                                    color: account.currency === 'LKR' ? '#0369a1' : account.currency === 'USD' ? '#15803d' : '#b45309'
+                                            <td style={{ whiteSpace: 'nowrap' }}>
+                                                <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{account.accountNo}</div>
+                                            </td>
+                                            <td style={{ whiteSpace: 'nowrap' }}>
+                                                <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{account.type}</div>
+                                            </td>
+                                            <td style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
+                                                <div style={{ 
+                                                    fontSize: '13px', 
+                                                    fontWeight: 400, 
+                                                    color: 'var(--color-text-main)', 
+                                                    fontFamily: 'monospace', 
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '4px'
                                                 }}>
-                                                    {account.currency}
-                                                </span>
-                                            </td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{account.rate}</td>
-                                            <td style={{ textAlign: 'right', paddingRight: '24px' }}>
-                                                <div
-                                                    style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-main)', fontFamily: 'monospace', cursor: account.isForeign ? 'help' : 'default' }}
-                                                    title={account.isForeign ? account.lkrBalance : ''}
-                                                >
-                                                    {account.balance}
+                                                    <span style={{ color: '#9ca3af' }}>{account.balance.split(' ')[0]}</span>
+                                                    <span>{account.balance.split(' ')[1]}</span>
                                                 </div>
                                             </td>
                                         </tr>

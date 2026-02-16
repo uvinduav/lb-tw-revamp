@@ -113,7 +113,7 @@ const ChartCard = (props) => {
         <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '32px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', flexWrap: 'wrap' }}>
         <div style={{ width: '150px', height: '150px', position: 'relative', flexShrink: 0 }}>
           <Doughnut data={chartData} options={chartOptions} />
         </div>
@@ -132,15 +132,27 @@ const ChartCard = (props) => {
               {details.map((item, index) => (
                 <tr key={index} style={{ borderBottom: index < details.length - 1 ? '1px solid #f3f4f6' : 'none', height: '32px' }}>
                   {columns.map((col, colIndex) => (
-                    <td key={colIndex} style={{ padding: '4px 0' }}>
+                    <td key={colIndex} style={{ padding: '4px 0', textAlign: col.align || 'left' }}>
                       {col.render ? col.render(item) : (
                         <span style={{
                           fontSize: '13px',
                           fontWeight: 400,
                           fontFamily: col.monospace ? 'monospace' : 'inherit',
-                          color: col.color ? (typeof col.color === 'function' ? col.color(item) : col.color) : 'var(--color-text-main)'
+                          color: col.color ? (typeof col.color === 'function' ? col.color(item) : col.color) : '#000000'
                         }}>
-                          {item[col.key]}
+                          {(() => {
+                            const val = item[col.key];
+                            if (typeof val === 'string' && val.includes(' ') && val.split(' ')[0].length === 3) {
+                              const parts = val.split(' ');
+                              return (
+                                <>
+                                  <span style={{ color: '#9ca3af', fontWeight: 400 }}>{parts[0]}</span>
+                                  <span> {parts.slice(1).join(' ')}</span>
+                                </>
+                              );
+                            }
+                            return val;
+                          })()}
                         </span>
                       )}
                     </td>
@@ -375,10 +387,10 @@ const Dashboard = ({ onNavigate }) => {
         </div>
       )
     },
-    { header: 'VALUE', key: 'value', monospace: true },
-    { header: 'COUNT', key: 'count', monospace: true },
-    { header: 'AVG RATE', key: 'avgRate', monospace: true, color: 'var(--color-green)' },
-    { header: 'BANKS', key: 'banks', monospace: true },
+    { header: 'VALUE', key: 'value', monospace: true, align: 'right' },
+    { header: 'COUNT', key: 'count', monospace: true, align: 'right' },
+    { header: 'AVG RATE', key: 'avgRate', monospace: true, color: 'var(--color-green)', align: 'right' },
+    { header: 'BANKS', key: 'banks', monospace: true, align: 'right' },
   ];
 
   // Maturity Profile - All Currencies Data
@@ -427,9 +439,9 @@ const Dashboard = ({ onNavigate }) => {
         </div>
       )
     },
-    { header: 'VALUE', key: 'value', monospace: true },
-    { header: 'COUNT', key: 'count', monospace: true },
-    { header: 'SHARE', key: 'share', monospace: true },
+    { header: 'VALUE', key: 'value', monospace: true, align: 'right' },
+    { header: 'COUNT', key: 'count', monospace: true, align: 'right' },
+    { header: 'SHARE', key: 'share', monospace: true, align: 'right' },
   ];
 
   // Currency-wise Investment Data
@@ -620,12 +632,12 @@ const Dashboard = ({ onNavigate }) => {
             <table className="data-table min-w-800">
               <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
                 <tr>
-                  <th style={{ paddingLeft: '24px', width: '40px' }}></th>
+                  <th style={{ width: '40px' }}></th>
                   <th style={{ width: '30%' }}>ENTITY NAME</th>
-                  <th>TOTAL BALANCE (LKR)</th>
-                  <th>ACCOUNTS</th>
-                  <th>BANKS</th>
-                  <th>CURRENCIES</th>
+                  <th style={{ textAlign: 'right' }}>TOTAL BALANCE (LKR)</th>
+                  <th style={{ textAlign: 'right' }}>ACCOUNTS</th>
+                  <th style={{ textAlign: 'right' }}>BANKS</th>
+                  <th style={{ textAlign: 'right' }}>CURRENCIES</th>
                 </tr>
               </thead>
               <tbody>
@@ -636,14 +648,17 @@ const Dashboard = ({ onNavigate }) => {
                     onClick={() => onNavigate && onNavigate('Entity Details', entity)}
                     style={{ cursor: 'pointer' }}
                   >
-                    <td style={{ paddingLeft: '24px' }}>
+                    <td>
                       <LogoImage src={entity.logo} name={entity.name} color={entity.color} />
                     </td>
-                    <td style={{ fontWeight: 500, color: 'var(--color-text-main)' }}>{entity.name}</td>
-                    <td style={{ fontFamily: 'monospace', fontWeight: 500, color: 'var(--color-text-main)' }}>{entity.balance}</td>
-                    <td style={{ color: 'var(--color-text-secondary)' }}>{entity.accounts}</td>
-                    <td style={{ color: 'var(--color-text-secondary)' }}>{entity.banks}</td>
-                    <td style={{ color: 'var(--color-text-secondary)' }}>{entity.currencies}</td>
+                    <td style={{ fontWeight: 500, color: '#000000' }}>{entity.name}</td>
+                    <td style={{ fontFamily: 'monospace', fontWeight: 500, color: '#000000', textAlign: 'right' }}>
+                      <span style={{ color: '#9ca3af', fontWeight: 400 }}>{entity.balance.split(' ')[0]}</span>
+                      <span> {entity.balance.split(' ')[1]}</span>
+                    </td>
+                    <td style={{ color: '#000000', fontFamily: 'monospace', textAlign: 'right' }}>{entity.accounts}</td>
+                    <td style={{ color: '#000000', fontFamily: 'monospace', textAlign: 'right' }}>{entity.banks}</td>
+                    <td style={{ color: '#000000', fontFamily: 'monospace', textAlign: 'right' }}>{entity.currencies}</td>
                   </tr>
                 ))}
               </tbody>
@@ -688,13 +703,13 @@ const Dashboard = ({ onNavigate }) => {
           </div>
 
           {/* Foreign Currency Profile Section */}
-          <div style={{ marginTop: '32px', backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px' }}>
+          <div style={{ marginTop: 'var(--spacing-md)', backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <h3 className="widget-title" style={{ margin: 0 }}>Foreign Currency Deposits & Loans Overview</h3>
               <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '32px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-md)', flexWrap: 'wrap' }}>
 
               {/* Left: Bar Chart */}
               <div style={{ width: '350px', height: '220px', position: 'relative', flexShrink: 0 }}>
@@ -759,21 +774,21 @@ const Dashboard = ({ onNavigate }) => {
                   <thead>
                     <tr style={{ borderBottom: '1px solid var(--color-border)', height: '32px' }}>
                       <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>CURRENCY</th>
-                      <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
                           <div style={{ width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#10b981' }}></div>
                           DEPOSITS
                         </div>
                       </th>
-                      <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>AVG RATE</th>
-                      <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>AVG RATE</th>
+                      <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
                           <div style={{ width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#ef4444' }}></div>
                           LOANS
                         </div>
                       </th>
-                      <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>AVG RATE</th>
-                      <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>NET POSITION</th>
+                      <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>AVG RATE</th>
+                      <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>NET POSITION</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -788,21 +803,36 @@ const Dashboard = ({ onNavigate }) => {
                             <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.currency}</span>
                           </div>
                         </td>
-                        <td style={{ padding: '4px 0' }}>
-                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.deposits}</div>
+                        <td style={{ padding: '4px 0', textAlign: 'right' }}>
+                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: '#000000' }}>
+                            <span style={{ color: '#9ca3af', fontWeight: 400 }}>{item.deposits.split(' ')[0]}</span>
+                            <span> {item.deposits.split(' ')[1]}</span>
+                          </div>
                         </td>
-                        <td style={{ padding: '4px 0' }}>
-                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.depRate}</div>
+                        <td style={{ padding: '4px 0', textAlign: 'right' }}>
+                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: '#000000' }}>{item.depRate}</div>
                         </td>
-                        <td style={{ padding: '4px 0' }}>
-                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.loans}</div>
+                        <td style={{ padding: '4px 0', textAlign: 'right' }}>
+                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: '#000000' }}>
+                            {item.loans !== 'EUR 0.00M' && item.loans !== 'USD 0.00M' ? (
+                              <>
+                                <span style={{ color: '#9ca3af', fontWeight: 400 }}>{item.loans.split(' ')[0]}</span>
+                                <span> {item.loans.split(' ')[1]}</span>
+                              </>
+                            ) : (
+                              <span style={{ color: '#9ca3af' }}>{item.loans}</span>
+                            )}
+                          </div>
                         </td>
-                        <td style={{ padding: '4px 0' }}>
-                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.loanRate}</div>
+                        <td style={{ padding: '4px 0', textAlign: 'right' }}>
+                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: '#000000' }}>{item.loanRate}</div>
                         </td>
-                        <td style={{ padding: '4px 0' }}>
-                          <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                            <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{item.net}</div>
+                        <td style={{ padding: '4px 0', textAlign: 'right' }}>
+                          <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', justifyContent: 'flex-end' }}>
+                            <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: '#000000' }}>
+                              <span style={{ color: '#9ca3af', fontWeight: 400 }}>{item.net.split(' ')[0]}</span>
+                              <span> {item.net.split(' ')[1]}</span>
+                            </div>
                             <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>{item.netType}</div>
                           </div>
                         </td>

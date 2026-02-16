@@ -86,7 +86,9 @@ body {
   z-index: 100;
 
   /* Transitions for collapsing/floating */
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s ease;
   transform: translateX(0);
 }
 
@@ -124,7 +126,9 @@ body {
   height: 100vh;
   overflow: hidden;
   width: calc(100% - var(--sidebar-width));
-  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .main-content.expanded {
@@ -288,7 +292,6 @@ body {
 }
 
 /* Main Content */
-
 
 /* Topbar */
 .topbar {
@@ -560,7 +563,6 @@ body {
   color: var(--color-primary-action);
 }
 
-
 .table-wrapper {
   overflow: auto;
   /* Both X and Y */
@@ -680,7 +682,6 @@ body {
   background-color: #fafafa;
 }
 
-
 /* Custom Checkbox */
 
 /* Custom Checkbox */
@@ -713,7 +714,13 @@ input[type="checkbox"] {
   top: 50%;
   transform: translateY(-50%) translateX(0);
   /* Anchored to right edge */
-  background-image: linear-gradient(to right, #F8F9FA00, #F8F9FA, #F8F9FA, #F8F9FA);
+  background-image: linear-gradient(
+    to right,
+    #f8f9fa00,
+    #f8f9fa,
+    #f8f9fa,
+    #f8f9fa
+  );
   padding: 4px 10px;
   gap: 8px;
   height: 32px;
@@ -804,7 +811,9 @@ input[type="checkbox"] {
 .dialog-content {
   background-color: white;
   border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.1),
+    0 4px 10px rgba(0, 0, 0, 0.05);
   position: fixed;
   top: 50%;
   left: 50%;
@@ -1146,7 +1155,7 @@ input[type="checkbox"] {
 }
 
 .tab-item.active::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -1px;
   left: 0;
@@ -1317,11 +1326,11 @@ input[type="checkbox"] {
 .investment-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 32px;
-  margin-top: 32px;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
 }
 
-.investment-grid>* {
+.investment-grid > * {
   flex: 1 1 500px;
   /* Grow, Shrink, Basis */
   min-width: 300px;

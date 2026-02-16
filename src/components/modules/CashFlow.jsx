@@ -42,9 +42,103 @@ ChartJS.register(
     Filler
 );
 
+import bankLogoSc from '../../assets/bank-icons/scbl.png';
+import bankLogoNtb from '../../assets/bank-icons/ntb.png';
+import bankLogoCiti from '../../assets/bank-icons/citi.png';
+import bankLogoHnb from '../../assets/bank-icons/hnb.png';
+import bankLogoBoc from '../../assets/bank-icons/bocc.png';
+import bankLogoCom from '../../assets/bank-icons/comb.png';
+import bankLogoDeut from '../../assets/bank-icons/deut.png';
+import bankLogoSamp from '../../assets/bank-icons/sampath.png';
+import bankLogoNdb from '../../assets/bank-icons/ndb.png';
+import bankLogoPb from '../../assets/bank-icons/pb.png';
+import bankLogoDfcc from '../../assets/bank-icons/dfcc.png';
+
+const bankLogos = {
+    'Standard Chartered': bankLogoSc,
+    'Nations Trust Bank': bankLogoNtb,
+    'Citi Bank': bankLogoCiti,
+    'Hatton National Bank': bankLogoHnb,
+    'Bank of China': bankLogoBoc,
+    'Commercial Bank': bankLogoCom,
+    'Deutsche Bank': bankLogoDeut,
+    'Sampath Bank': bankLogoSamp,
+    'NDB Bank': bankLogoNdb,
+    "People's Bank": bankLogoPb,
+    'DFCC Bank': bankLogoDfcc
+};
+
+const LogoPlaceholder = ({ name, color, size = 20, src }) => {
+    if (src) {
+        return (
+            <div
+                style={{
+                    width: `${size}px`,
+                    height: `${size}px`,
+                    borderRadius: '4px',
+                    backgroundColor: 'white', // Ensure white background for logos
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '1px solid rgba(0,0,0,0.05)',
+                    flexShrink: 0,
+                    overflow: 'hidden'
+                }}
+            >
+                <img
+                    src={src}
+                    alt={name}
+                    style={{
+                        width: '80%', // Slightly smaller to fit nicely
+                        height: '80%',
+                        objectFit: 'contain'
+                    }}
+                />
+            </div>
+        );
+    }
+    return (
+        <div
+            style={{
+                width: `${size}px`,
+                height: `${size}px`,
+                borderRadius: '4px',
+                backgroundColor: color || '#f3f4f6',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: size > 20 ? '10px' : '9px',
+                fontWeight: 600,
+                color: color ? 'rgba(0,0,0,0.5)' : '#9ca3af',
+                border: '1px solid rgba(0,0,0,0.05)',
+                flexShrink: 0
+            }}
+        >
+            {name ? name.charAt(0) : 'E'}
+        </div>
+    );
+};
+
 const CashFlow = ({ onNavigate }) => {
     const [activeTab, setActiveTab] = useState('cash-flow');
     const [selectedCompany, setSelectedCompany] = useState('All Companies');
+    const [selectedBank, setSelectedBank] = useState('All Banks');
+    const [selectedType, setSelectedType] = useState('All Types');
+
+    const formatValue = (val) => {
+        if (!val || val === 'N/A') return val;
+        // Match optional sign, 3-letter currency code, and the rest
+        const match = val.match(/^([+-]?)([A-Z]{3})\s(.*)$/);
+        if (!match) return val;
+        const [_, sign, code, amount] = match;
+        return (
+            <>
+                {sign && <span>{sign}</span>}
+                <span style={{ color: '#9ca3af', fontWeight: 400 }}>{code}</span>
+                <span> {amount}</span>
+            </>
+        );
+    };
 
     const tabs = [
         { id: 'overview', label: 'Overview', icon: LayoutDashboard },
@@ -56,6 +150,7 @@ const CashFlow = ({ onNavigate }) => {
     ];
 
     const handleTabClick = (id) => {
+        setActiveTab(id);
         if (id !== 'cash-flow') {
             if (onNavigate) {
                 setTimeout(() => onNavigate('Dashboard'), 0);
@@ -65,6 +160,8 @@ const CashFlow = ({ onNavigate }) => {
 
     // Mock Data
     const companies = ['All Companies', 'Lion Brewery Sri Lanka', 'Lion Singapore', 'Luxury Brands', 'New Company 1'];
+    const banks = ['All Banks', 'Bank of China', 'Citi Bank', 'Commercial Bank', 'People\'s Bank'];
+    const types = ['All Types', 'SA', 'CA', 'MMS'];
 
     const trendData = {
         labels: Array.from({ length: 30 }, (_, i) => `Jan ${i + 14}`),
@@ -109,7 +206,7 @@ const CashFlow = ({ onNavigate }) => {
             },
             y: {
                 grid: { color: '#f3f4f6' },
-                ticks: { font: { size: 10 }, callback: (value) => `Rs ${value}M` }
+                ticks: { font: { size: 10 }, callback: (value) => `LKR ${value}M` }
             }
         },
         interaction: {
@@ -120,15 +217,15 @@ const CashFlow = ({ onNavigate }) => {
     };
 
     const accountData = [
-        { company: 'Luxury Brands', bank: 'Commercial Bank', name: 'PT01', number: '2845', currency: 'EUR', balance: '€4.00M', lkr: 'Rs 1,200.00M', prev: 'Rs 0.00M', change: '+Rs 1,200.00M', changeType: 'positive' },
-        { company: 'Lion Brewery Sri Lanka', bank: 'Bank of China', name: 'General Account', number: '30345', currency: 'LKR', balance: 'Rs 500.00M', lkr: 'Rs 500.00M', prev: 'Rs 0.00M', change: '+Rs 500.00M', changeType: 'positive' },
-        { company: 'Lion Brewery Sri Lanka', bank: 'Bank of China', name: 'PT01', number: '1421010001', currency: 'LKR', balance: 'Rs 284.12M', lkr: 'Rs 284.12M', prev: 'Rs 149.80M', change: '+Rs 134.33M', changeType: 'positive' },
-        { company: 'Luxury Brands', bank: 'People\'s Bank', name: 'General Account', number: '00001', currency: 'EUR', balance: '€0.80M', lkr: 'Rs 240.00M', prev: 'Rs 75.00M', change: '+Rs 165.00M', changeType: 'positive' },
-        { company: 'Lion Brewery Sri Lanka', bank: 'Commercial Bank', name: 'PT01', number: 'New01', currency: 'LKR', balance: 'Rs 85.00M', lkr: 'Rs 85.00M', prev: 'Rs 85.00M', change: '+Rs 0.00M', changeType: 'neutral' },
-        { company: 'Lion Brewery Sri Lanka', bank: 'Citi Bank', name: 'PT01', number: '0039545000', currency: 'LKR', balance: 'Rs 80.00M', lkr: 'Rs 80.00M', prev: 'Rs 80.00M', change: '+Rs 0.00M', changeType: 'neutral' },
-        { company: 'New Company 1', bank: 'People\'s Bank', name: 'urgent,PT01', number: 'Newusd01', currency: 'LKR', balance: 'Rs 7.50M', lkr: 'Rs 7.50M', prev: 'Rs 7.50M', change: '+Rs 0.00M', changeType: 'neutral' },
-        { company: 'Lion Brewery Sri Lanka', bank: 'Bank of China', name: 'urgent,PT01', number: '0039545007', currency: 'LKR', balance: 'Rs 4.50M', lkr: 'Rs 4.50M', prev: 'Rs 0.00M', change: '+Rs 4.50M', changeType: 'positive' },
-        { company: 'Lion Singapore', bank: 'Commercial Bank', name: 'PT01', number: '0909', currency: 'LKR', balance: 'Rs 0.25M', lkr: 'Rs 0.25M', prev: 'Rs 2.00M', change: '-Rs 1.75M', changeType: 'negative' },
+        { company: 'Luxury Brands', companyColor: '#fef2f2', bank: 'Commercial Bank', bankColor: '#eff6ff', accountType: 'CA', odLimit: 'LKR 100.00M', name: 'General Account', number: '1020304050', currency: 'EUR', balance: 'EUR 4.00M', lkr: 'LKR 1,200.00M', prevDay: 'LKR 1,150.00M', prev: 'LKR 0.00M', changeDay: '+LKR 50.00M', changeDayType: 'positive', changeMonth: '+LKR 1,200.00M', changeMonthType: 'positive' },
+        { company: 'Lion Brewery Sri Lanka', companyColor: '#f0fdf4', bank: 'Bank of China', bankColor: '#fff7ed', accountType: 'SA', odLimit: 'N/A', name: 'General Account', number: '9988776655', currency: 'LKR', balance: 'LKR 500.00M', lkr: 'LKR 500.00M', prevDay: 'LKR 480.00M', prev: 'LKR 0.00M', changeDay: '+LKR 20.00M', changeDayType: 'positive', changeMonth: '+LKR 500.00M', changeMonthType: 'positive' },
+        { company: 'Lion Brewery Sri Lanka', companyColor: '#f0fdf4', bank: 'Bank of China', bankColor: '#fff7ed', accountType: 'CA', odLimit: 'LKR 50.00M', name: 'General Account', number: '8877665544', currency: 'LKR', balance: 'LKR 284.12M', lkr: 'LKR 284.12M', prevDay: 'LKR 290.00M', prev: 'LKR 149.80M', changeDay: '-LKR 5.88M', changeDayType: 'negative', changeMonth: '+LKR 134.33M', changeMonthType: 'positive' },
+        { company: 'Luxury Brands', companyColor: '#fef2f2', bank: 'People\'s Bank', bankColor: '#faf5ff', accountType: 'MMS', odLimit: 'N/A', name: 'General Account', number: '7766554433', currency: 'EUR', balance: 'EUR 0.80M', lkr: 'LKR 240.00M', prevDay: 'LKR 235.00M', prev: 'LKR 75.00M', changeDay: '+LKR 5.00M', changeDayType: 'positive', changeMonth: '+LKR 165.00M', changeMonthType: 'positive' },
+        { company: 'Lion Brewery Sri Lanka', companyColor: '#f0fdf4', bank: 'Commercial Bank', bankColor: '#eff6ff', accountType: 'CA', odLimit: 'LKR 25.00M', name: 'General Account', number: '6655443322', currency: 'LKR', balance: 'LKR 85.00M', lkr: 'LKR 85.00M', prevDay: 'LKR 85.00M', prev: 'LKR 85.00M', changeDay: 'LKR 0.00M', changeDayType: 'neutral', changeMonth: 'LKR 0.00M', changeMonthType: 'neutral' },
+        { company: 'Lion Brewery Sri Lanka', companyColor: '#f0fdf4', bank: 'Citi Bank', bankColor: '#f0f9ff', accountType: 'SA', odLimit: 'N/A', name: 'General Account', number: '5544332211', currency: 'LKR', balance: 'LKR 80.00M', lkr: 'LKR 80.00M', prevDay: 'LKR 80.00M', prev: 'LKR 80.00M', changeDay: 'LKR 0.00M', changeDayType: 'neutral', changeMonth: 'LKR 0.00M', changeMonthType: 'neutral' },
+        { company: 'New Company 1', companyColor: '#f5f3ff', bank: 'People\'s Bank', bankColor: '#faf5ff', accountType: 'SA', odLimit: 'N/A', name: 'General Account', number: '4433221100', currency: 'LKR', balance: 'LKR 7.50M', lkr: 'LKR 7.50M', prevDay: 'LKR 7.50M', prev: 'LKR 7.50M', changeDay: 'LKR 0.00M', changeDayType: 'neutral', changeMonth: 'LKR 0.00M', changeMonthType: 'neutral' },
+        { company: 'Lion Brewery Sri Lanka', companyColor: '#f0fdf4', bank: 'Bank of China', bankColor: '#fff7ed', accountType: 'CA', odLimit: 'LKR 10.00M', name: 'General Account', number: '3322110099', currency: 'LKR', balance: 'LKR 4.50M', lkr: 'LKR 4.50M', prevDay: 'LKR 4.00M', prev: 'LKR 0.00M', changeDay: '+LKR 0.50M', changeDayType: 'positive', changeMonth: '+LKR 4.50M', changeMonthType: 'positive' },
+        { company: 'Lion Singapore', companyColor: '#fff7ed', bank: 'Commercial Bank', bankColor: '#eff6ff', accountType: 'MMS', odLimit: 'N/A', name: 'General Account', number: '2211009988', currency: 'LKR', balance: 'LKR 0.25M', lkr: 'LKR 0.25M', prevDay: 'LKR 0.30M', prev: 'LKR 2.00M', changeDay: '-LKR 0.05M', changeDayType: 'negative', changeMonth: '-LKR 1.75M', changeMonthType: 'negative' },
     ];
 
     return (
@@ -224,17 +321,17 @@ const CashFlow = ({ onNavigate }) => {
                                 <tbody>
                                     <tr>
                                         <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6' }}>Closing Balance (Jan 2026)</td>
-                                        <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>Rs 405.72M</td>
+                                        <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>LKR 405.72M</td>
                                     </tr>
                                     <tr>
                                         <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6' }}>Current Balance</td>
-                                        <td className="text-green" style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>Rs 2,407.79M</td>
+                                        <td className="text-green" style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>LKR 2,407.79M</td>
                                     </tr>
                                     <tr>
                                         <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6' }}>Month Change</td>
                                         <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
-                                                <span className="text-green">+Rs 2,002.08M</span>
+                                                <span className="text-green">+LKR 2,002.08M</span>
                                                 <span className="text-green" style={{ fontSize: '11px' }}>+493.46%</span>
                                             </div>
                                         </td>
@@ -243,7 +340,7 @@ const CashFlow = ({ onNavigate }) => {
                                         <td style={{ padding: '6px 0' }}>Daily Variance</td>
                                         <td style={{ padding: '6px 0', textAlign: 'right' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
-                                                <span className="text-green">+Rs 945.00M</span>
+                                                <span className="text-green">+LKR 945.00M</span>
                                                 <span className="text-green" style={{ fontSize: '11px' }}>+64.60%</span>
                                             </div>
                                         </td>
@@ -268,7 +365,7 @@ const CashFlow = ({ onNavigate }) => {
                                     <span className="widget-value text-green">+493.46%</span>
                                 </div>
                                 <p className="widget-subtext">
-                                    +Rs 2,002.08M this month
+                                    +LKR 2,002.08M this month
                                 </p>
                             </div>
                         </div>
@@ -309,57 +406,106 @@ const CashFlow = ({ onNavigate }) => {
 
                 {/* Detailed Account Breakdown */}
                 <div id="account-breakdown" style={{ marginTop: '32px' }}>
-                    <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
-                        <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Detailed Account Breakdown</h2>
-                        <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>All accounts with currency balances and LKR equivalents</p>
+                    <div style={{ marginBottom: '16px', paddingLeft: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                        <div>
+                            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Detailed Account Breakdown</h2>
+                            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>All accounts with currency balances and LKR equivalents</p>
+                        </div>
+                        <div style={{ display: 'flex', gap: '12px' }}>
+                            <div className="filter-dropdown-container">
+                                <Filter size={14} className="text-gray" />
+                                <select
+                                    value={selectedBank}
+                                    onChange={(e) => setSelectedBank(e.target.value)}
+                                    className="filter-select"
+                                >
+                                    {banks.map(b => <option key={b} value={b}>{b}</option>)}
+                                </select>
+                                <ChevronDown size={14} className="text-gray select-arrow" />
+                            </div>
+                            <div className="filter-dropdown-container">
+                                <Filter size={14} className="text-gray" />
+                                <select
+                                    value={selectedType}
+                                    onChange={(e) => setSelectedType(e.target.value)}
+                                    className="filter-select"
+                                >
+                                    {types.map(t => <option key={t} value={t}>{t}</option>)}
+                                </select>
+                                <ChevronDown size={14} className="text-gray select-arrow" />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)' }}>
                         <table className="data-table min-w-800">
                             <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
                                 <tr>
-                                    <th style={{ paddingLeft: '24px' }}>COMPANY</th>
-                                    <th>BANK</th>
-                                    <th>ACCOUNT NAME</th>
-                                    <th>ACCOUNT NUMBER</th>
-                                    <th>CURRENCY</th>
-                                    <th style={{ textAlign: 'right' }}>CURRENCY BALANCE</th>
-                                    <th style={{ textAlign: 'right' }}>LKR EQUIVALENT</th>
-                                    <th style={{ textAlign: 'right' }}>PREV MONTH CLOSING</th>
-                                    <th style={{ textAlign: 'right', paddingRight: '24px' }}>CHANGE</th>
+                                    <th style={{ minWidth: '100px' }}>COMPANY</th>
+                                    <th style={{ minWidth: '100px' }}>BANK</th>
+                                    <th style={{ minWidth: '80px' }}>TYPE</th>
+                                    <th style={{ textAlign: 'right', minWidth: '100px' }}>OD LIMIT</th>
+                                    <th style={{ minWidth: '100px' }}>ACC. NAME</th>
+                                    <th style={{ minWidth: '100px' }}>ACC. NO.</th>
+                                    <th style={{ minWidth: '50px' }}>CURRENCY</th>
+                                    <th style={{ textAlign: 'right', minWidth: '100px' }}>BALANCE</th>
+                                    <th style={{ textAlign: 'right', minWidth: '100px' }}>LKR EQUIVALENT</th>
+                                    <th style={{ textAlign: 'right', minWidth: '100px' }}>PREV. DAY BALANCE</th>
+                                    <th style={{ textAlign: 'right', minWidth: '100px' }}>PREV. MONTH CLOSING</th>
+                                    <th style={{ textAlign: 'right', minWidth: '100px' }}>CHANGE (prev. day)</th>
+                                    <th style={{ textAlign: 'right', paddingRight: '24px', minWidth: '130px' }}>CHANGE (prev. month)</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {accountData.map((row, index) => (
-                                    <tr key={index} className="hover-row">
-                                        <td style={{ paddingLeft: '24px' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: row.company.includes('Lion') ? '#10b981' : row.company.includes('Luxury') ? '#ef4444' : '#8b5cf6' }}></div>
-                                                <span style={{ fontWeight: 500 }}>{row.company}</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <div style={{ width: '20px', height: '20px', borderRadius: '4px', backgroundColor: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 600, color: '#9ca3af', border: '1px solid rgba(0,0,0,0.05)' }}>
-                                                    {row.bank.charAt(0)}
+                                {[...accountData]
+                                    .filter(row => {
+                                        const companyMatch = selectedCompany === 'All Companies' || row.company === selectedCompany;
+                                        const bankMatch = selectedBank === 'All Banks' || row.bank === selectedBank;
+                                        const typeMatch = selectedType === 'All Types' || row.accountType === selectedType;
+                                        return companyMatch && bankMatch && typeMatch;
+                                    })
+                                    .sort((a, b) => {
+                                        if (a.company !== b.company) return a.company.localeCompare(b.company);
+                                        if (a.bank !== b.bank) return a.bank.localeCompare(b.bank);
+                                        return (a.accountType || '').localeCompare(b.accountType || '');
+                                    })
+                                    .map((row, index) => (
+                                        <tr key={index} className="hover-row">
+                                            <td>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    <LogoPlaceholder name={row.company} color={row.companyColor} />
+                                                    <span style={{ fontWeight: 500, color: '#000000' }}>{row.company}</span>
                                                 </div>
-                                                <span>{row.bank}</span>
-                                            </div>
-                                        </td>
-                                        <td>{row.name}</td>
-                                        <td style={{ fontFamily: 'monospace', color: '#6b7280', fontSize: '12px' }}>{row.number}</td>
-                                        <td><span className="currency-badge">{row.currency}</span></td>
-                                        <td style={{ textAlign: 'right', fontWeight: 500, fontFamily: 'monospace' }}>{row.balance}</td>
-                                        <td style={{ textAlign: 'right', fontWeight: 500, color: '#10b981', fontFamily: 'monospace' }}>{row.lkr}</td>
-                                        <td style={{ textAlign: 'right', color: '#6b7280', fontFamily: 'monospace' }}>{row.prev}</td>
-                                        <td style={{ textAlign: 'right', paddingRight: '24px' }}>
-                                            <span className={row.changeType === 'positive' ? 'text-green' : row.changeType === 'negative' ? 'text-red' : 'text-gray'} style={{ fontSize: '12px', fontWeight: '500', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
-                                                {row.changeType === 'positive' ? <TrendingUp size={12} /> : row.changeType === 'negative' ? <TrendingDown size={12} /> : null}
-                                                {row.change}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))}
+                                            </td>
+                                            <td>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    <LogoPlaceholder name={row.bank} color={row.bankColor} src={bankLogos[row.bank]} />
+                                                    <span style={{ color: '#000000' }}>{row.bank}</span>
+                                                </div>
+                                            </td>
+                                            <td style={{ color: '#000000' }}>{row.accountType}</td>
+                                            <td style={{ textAlign: 'right', fontFamily: 'monospace', color: row.odLimit === 'N/A' ? '#9ca3af' : '#000000' }}>
+                                                {formatValue(row.odLimit)}
+                                            </td>
+                                            <td style={{ color: '#000000' }}>{row.name}</td>
+                                            <td style={{ textAlign: 'right', fontFamily: 'monospace', color: '#000000', fontSize: '12px' }}>{row.number}</td>
+                                            <td><span className="currency-badge" style={{ color: '#000000' }}>{row.currency}</span></td>
+                                            <td style={{ textAlign: 'right', fontWeight: 500, fontFamily: 'monospace', color: '#000000' }}>{formatValue(row.balance)}</td>
+                                            <td style={{ textAlign: 'right', fontWeight: 500, color: '#000000', fontFamily: 'monospace' }}>{row.lkr.replace('LKR ', '')}</td>
+                                            <td style={{ textAlign: 'right', color: '#000000', fontFamily: 'monospace' }}>{formatValue(row.prevDay)}</td>
+                                            <td style={{ textAlign: 'right', color: '#000000', fontFamily: 'monospace' }}>{formatValue(row.prev)}</td>
+                                            <td style={{ textAlign: 'right' }}>
+                                                <span className={row.changeDayType === 'positive' ? 'text-green' : row.changeDayType === 'negative' ? 'text-red' : ''} style={{ color: row.changeDayType === 'neutral' ? '#000000' : undefined, fontSize: '12px', fontWeight: '500', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontFamily: 'monospace' }}>
+                                                    {row.changeDay.replace(/[A-Z]{3}\s/, '')}
+                                                </span>
+                                            </td>
+                                            <td style={{ textAlign: 'right', paddingRight: '24px' }}>
+                                                <span className={row.changeMonthType === 'positive' ? 'text-green' : row.changeMonthType === 'negative' ? 'text-red' : ''} style={{ color: row.changeMonthType === 'neutral' ? '#000000' : undefined, fontSize: '12px', fontWeight: '500', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontFamily: 'monospace' }}>
+                                                    {row.changeMonth.replace(/[A-Z]{3}\s/, '')}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
                             </tbody>
                         </table>
                     </div>

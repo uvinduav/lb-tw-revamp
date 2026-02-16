@@ -11,13 +11,47 @@ import {
 } from 'chart.js';
 import { Doughnut, Bar } from 'react-chartjs-2';
 
+import bankLogoSc from '../../assets/bank-icons/scbl.png';
+import bankLogoBoc from '../../assets/bank-icons/bocc.png';
+
+const topLabelsPlugin = {
+    id: 'topLabels',
+    afterDatasetsDraw(chart) {
+        if (chart.config.type !== 'bar') return;
+        const { ctx } = chart;
+        ctx.save();
+        chart.data.datasets.forEach((dataset, i) => {
+            chart.getDatasetMeta(i).data.forEach((bar, index) => {
+                const value = dataset.data[index];
+                if (value !== undefined && value !== null) {
+                    ctx.fillStyle = '#64748b';
+                    ctx.font = '500 9px Inter, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    
+                    let label;
+                    if (value > 0) {
+                        label = value.toLocaleString() + 'M';
+                    } else {
+                        label = '0M';
+                    }
+                    
+                    ctx.fillText(label, bar.x, bar.y - 5);
+                }
+            });
+        });
+        ctx.restore();
+    }
+};
+
 ChartJS.register(
     ArcElement,
     Tooltip,
     Legend,
     CategoryScale,
     LinearScale,
-    BarElement
+    BarElement,
+    topLabelsPlugin
 );
 
 const LogoImage = ({ src, name, color, size = 48 }) => {
@@ -37,7 +71,8 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
                     fontSize: size > 20 ? '16px' : '10px',
                     fontWeight: 600,
                     color: color ? 'rgba(0,0,0,0.5)' : '#9ca3af',
-                    border: '1px solid rgba(0,0,0,0.05)'
+                    border: '1px solid rgba(0,0,0,0.05)',
+                    flexShrink: 0
                 }}
             >
                 {name ? name.charAt(0) : 'B'}
@@ -46,39 +81,56 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
     }
 
     return (
-        <img
-            src={src}
-            alt={name}
-            onError={() => setError(true)}
+        <div
             style={{
                 width: `${size}px`,
                 height: `${size}px`,
                 borderRadius: '4px',
-                objectFit: 'cover',
-                border: '1px solid var(--color-border)'
+                backgroundColor: 'white',
+                border: '1px solid var(--color-border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                overflow: 'hidden'
             }}
-        />
+        >
+            <img
+                src={src}
+                alt={name}
+                onError={() => setError(true)}
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    padding: size > 30 ? '4px' : '2px'
+                }}
+            />
+        </div>
     );
 };
+
 
 const DebtDetails = ({ onNavigate }) => {
     // Mock Data
     const summaryData = {
-        totalOutstanding: "Rs 2,585,033,333.32",
+        totalOutstanding: "LKR 2,585,033,333.32",
         wacd: "10.04%",
         totalLoans: 6,
-        shortTermLoans: { count: 3, value: "Rs 2,328,600,000.00" },
-        longTermLoans: { count: 3, value: "Rs 256,433,333.32" }
+        shortTermLoans: { count: 3, value: "LKR 2,328,600,000.00" },
+        longTermLoans: { count: 3, value: "LKR 256,433,333.32" }
     };
 
     const bankDistributionData = {
-        labels: ['Bank of China', 'Standard Chartered', 'New Bank 1'],
+        labels: ['Bank of China', 'Standard Chartered'],
         datasets: [{
-            label: 'Debt',
-            data: [2308.9, 275.0, 1.1],
-            backgroundColor: '#ef4444',
-            borderRadius: 4,
-            barThickness: 60
+            label: 'Debt (Million LKR)',
+            data: [2308, 275],
+            backgroundColor: ['#ef4444', '#3b82f6'],
+            borderRadius: 0,
+            barThickness: 40,
+            minBarLength: 5,
+            hoverBackgroundColor: ['#ef4444dd', '#3b82f6dd']
         }]
     };
 
@@ -96,9 +148,9 @@ const DebtDetails = ({ onNavigate }) => {
         {
             id: 1,
             name: "Bank of China",
-            logo: "bank_china_logo.png",
+            logo: bankLogoBoc,
             color: "#fee2e2",
-            totalOutstanding: "Rs 2,308,933,333.32",
+            totalOutstanding: "LKR 2,308,933,333.32",
             share: "89.3% of total",
             avgRate: "10.00%",
             loanCount: 3,
@@ -145,9 +197,9 @@ const DebtDetails = ({ onNavigate }) => {
         {
             id: 2,
             name: "Standard Chartered",
-            logo: "sc_logo.png",
+            logo: bankLogoSc,
             color: "#dbeafe",
-            totalOutstanding: "Rs 275,000,000.00",
+            totalOutstanding: "LKR 275,000,000.00",
             share: "10.6% of total",
             avgRate: "10.45%",
             loanCount: 2,
@@ -185,105 +237,103 @@ const DebtDetails = ({ onNavigate }) => {
     return (
         <div className="dashboard-main-wrapper" style={{ height: '100%', overflowY: 'auto', padding: '24px' }}>
 
-            {/* Header Section */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-                <div style={{
-                    width: '56px',
-                    height: '56px',
-                    borderRadius: '8px',
-                    backgroundColor: '#fee2e2',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}>
-                    <CreditCard size={28} className="text-red" />
-                </div>
-                <div>
-                    <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
-                        Debt Breakdown by Bank
-                    </h1>
-                    <div style={{ marginTop: '4px' }}>
-                        <span style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>Total Outstanding: </span>
-                        <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.totalOutstanding}</span>
-                    </div>
-                    <div style={{ marginTop: '2px' }}>
-                        <span style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>WACD: </span>
-                        <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.wacd}</span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Summary Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
-                <div className="widget-card" style={{ padding: '16px' }}>
-                    <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Total Loans</div>
-                    <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.totalLoans}</div>
-                </div>
-                <div className="widget-card" style={{ padding: '16px' }}>
-                    <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Short-Term Loans</div>
-                    <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.shortTermLoans.count}</div>
-                    <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>{summaryData.shortTermLoans.value}</div>
-                </div>
-                <div className="widget-card" style={{ padding: '16px' }}>
-                    <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Long-Term Loans</div>
-                    <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.longTermLoans.count}</div>
-                    <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>{summaryData.longTermLoans.value}</div>
-                </div>
-                <div className="widget-card" style={{ padding: '16px' }}>
-                    <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>WACD</div>
-                    <div style={{ fontSize: '18px', fontWeight: 600, color: '#ef4444' }}>{summaryData.wacd}</div>
-                </div>
-            </div>
-
-            {/* Charts Section */}
-            <div style={{ display: 'flex', gap: '24px', marginBottom: '32px' }}>
-                {/* Bank-wise Debt Distribution */}
-                <div className="widget-card" style={{ flex: 1, padding: '16px' }}>
-                    <h3 className="widget-title" style={{ marginBottom: '16px' }}>Bank-wise Debt Distribution (Million LKR)</h3>
-                    <div style={{ height: '200px' }}>
-                        <Bar
-                            data={bankDistributionData}
-                            options={{
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: { legend: { display: false } },
-                                scales: {
-                                    y: { beginAtZero: true, grid: { color: '#f3f4f6' } },
-                                    x: { grid: { display: false } }
-                                }
-                            }}
-                        />
+            <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
+                {/* Header Section */}
+                <div style={{ marginBottom: '24px' }}>
+                    <div>
+                        <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
+                            Debt Breakdown by Bank
+                        </h1>
+                        <div style={{ marginTop: '4px', fontSize: '13px', fontWeight: 400, color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <span>Total Outstanding: {summaryData.totalOutstanding}</span>
+                            <span style={{ color: '#e5e7eb' }}>•</span>
+                            <span>WACD: {summaryData.wacd}</span>
+                        </div>
                     </div>
                 </div>
 
-                {/* Debt by Interest Type */}
-                <div className="widget-card" style={{ flex: 1, padding: '16px' }}>
-                    <h3 className="widget-title" style={{ marginBottom: '16px' }}>Debt by Interest Type</h3>
-                    <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <div style={{ width: '180px', height: '180px' }}>
-                            <Doughnut
-                                data={interestTypeData}
+                {/* Summary Cards */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
+                    <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Total Loans</div>
+                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.totalLoans}</div>
+                    </div>
+                    <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Short-Term Loans</div>
+                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.shortTermLoans.count}</div>
+                        <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>{summaryData.shortTermLoans.value}</div>
+                    </div>
+                    <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Long-Term Loans</div>
+                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.longTermLoans.count}</div>
+                        <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>{summaryData.longTermLoans.value}</div>
+                    </div>
+                    <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>WACD</div>
+                        <div style={{ fontSize: '18px', fontWeight: 600, color: '#ef4444' }}>{summaryData.wacd}</div>
+                    </div>
+                </div>
+
+                {/* Charts Section */}
+                <div style={{ display: 'flex', gap: '24px', marginBottom: '0' }}>
+                    {/* Bank-wise Debt Distribution */}
+                    <div style={{ flex: 1, padding: '16px', backgroundColor: 'white', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                        <h3 className="widget-title" style={{ marginBottom: '16px' }}>Bank-wise Debt Distribution (Million LKR)</h3>
+                        <div style={{ height: '200px' }}>
+                            <Bar
+                                data={bankDistributionData}
+                                plugins={[topLabelsPlugin]}
                                 options={{
-                                    cutout: '0%',
+                                    responsive: true,
+                                    maintainAspectRatio: false,
                                     plugins: { legend: { display: false } },
-                                    maintainAspectRatio: false
+                                    scales: {
+                                        y: { 
+                                            beginAtZero: true, 
+                                            grid: { color: '#f3f4f6' },
+                                            grace: '10%'
+                                        },
+                                        x: { 
+                                            grid: { display: false },
+                                            ticks: {
+                                                autoSkip: false,
+                                                maxRotation: 45,
+                                                minRotation: 45,
+                                                font: { size: 10 }
+                                            }
+                                        }
+                                    }
                                 }}
                             />
                         </div>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '16px' }}>
-                        {interestTypeData.labels.map((label, index) => (
-                            <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <div style={{ width: '12px', height: '8px', backgroundColor: interestTypeData.datasets[0].backgroundColor[index] }}></div>
-                                <span style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>{label}: {interestTypeData.datasets[0].data[index]}%</span>
+
+                    {/* Debt by Interest Type */}
+                    <div style={{ flex: 1, padding: '16px', backgroundColor: 'white', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                        <h3 className="widget-title" style={{ marginBottom: '16px' }}>Debt by Interest Type</h3>
+                        <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ width: '180px', height: '180px' }}>
+                                <Doughnut
+                                    data={interestTypeData}
+                                    options={{
+                                        cutout: '0%',
+                                        plugins: { legend: { display: false } },
+                                        maintainAspectRatio: false
+                                    }}
+                                />
                             </div>
-                        ))}
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '16px' }}>
+                            {interestTypeData.labels.map((label, index) => (
+                                <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <div style={{ width: '12px', height: '8px', backgroundColor: interestTypeData.datasets[0].backgroundColor[index] }}></div>
+                                    <span style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>{label}: {interestTypeData.datasets[0].data[index]}%</span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
-
-            {/* Detailed Breakdown */}
-            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '16px', marginTop: '48px', paddingLeft: '4px' }}>Detailed Breakdown by Bank</h2>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '48px', paddingBottom: '48px' }}>
                 {banks.map((bank) => (
@@ -292,56 +342,72 @@ const DebtDetails = ({ onNavigate }) => {
                         {/* Bank Header Info - Outside Table */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px', paddingLeft: '4px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <LogoImage src={bank.logo} name={bank.name} color={bank.color} size={32} />
+                                <LogoImage src={bank.logo} name={bank.name} color={bank.color} size={40} />
                                 <div>
                                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>{bank.name}</h3>
-                                    <div style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>{bank.loanCount} loans ({bank.loanDesc})</div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+                                        <span>{bank.loanCount} loans ({bank.loanDesc})</span>
+                                        <span style={{ color: '#e5e7eb' }}>•</span>
+                                        <span>{bank.share}</span>
+                                    </div>
                                 </div>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                                <div style={{ fontSize: '17px', fontWeight: 600, color: 'var(--color-text-main)', lineHeight: 1.2 }}>{bank.totalOutstanding}</div>
-                                <div style={{ display: 'flex', gap: '12px', marginTop: '4px', justifyContent: 'flex-end' }}>
-                                    <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>{bank.share}</span>
-                                    <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)', fontWeight: 500 }}>Avg Rate: {bank.avgRate}</span>
+                                <div style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-main)', lineHeight: 1.2 }}>{bank.totalOutstanding}</div>
+                                <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px', fontWeight: 400, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0' }}>
+                                    <span style={{ color: '#9ca3af' }}>Avg Rate: {bank.avgRate}</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Table wrapper - Dashboard Entity Overview Style */}
-                        <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)' }}>
+                        <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)' }}>
                             <table className="data-table" style={{ borderCollapse: 'collapse' }}>
                                 <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
                                     <tr>
-                                        <th style={{ paddingLeft: '24px', width: '25%' }}>LOAN FACILITY</th>
-                                        <th>TYPE</th>
-                                        <th>RATE</th>
-                                        <th>DAILY ACCRUAL</th>
-                                        <th>MATURITY</th>
-                                        <th>FREQUENCY</th>
-                                        <th style={{ textAlign: 'right', paddingRight: '24px' }}>AMOUNT</th>
+                                        <th style={{ whiteSpace: 'nowrap' }}>LOAN FACILITY</th>
+                                        <th style={{ whiteSpace: 'nowrap' }}>TYPE</th>
+                                        <th style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap' }}>RATE</th>
+                                        <th style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap' }}>DAILY ACCRUAL</th>
+                                        <th style={{ whiteSpace: 'nowrap' }}>MATURITY</th>
+                                        <th style={{ whiteSpace: 'nowrap' }}>FREQUENCY</th>
+                                        <th style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap' }}>AMOUNT</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {bank.loans.map((loan) => (
                                         <tr key={loan.id} className="hover-row">
-                                            <td style={{ paddingLeft: '24px' }}>
+                                            <td style={{ whiteSpace: 'nowrap' }}>
                                                 <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)' }}>{loan.name}</div>
                                             </td>
-                                            <td>
-                                                <div style={{ fontSize: '13px', color: 'var(--color-text-main)', cursor: loan.margin ? 'help' : 'default' }} title={loan.margin || ''}>
+                                            <td style={{ whiteSpace: 'nowrap' }}>
+                                                <div style={{ fontSize: '13px', color: 'var(--color-text-main)', cursor: loan.margin ? 'help' : 'default', whiteSpace: 'nowrap' }} title={loan.margin || ''}>
                                                     {loan.type}
                                                 </div>
                                             </td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{loan.rate}</td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{loan.accrual}</td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)' }}>{loan.maturity}</td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)' }}>{loan.frequency}</td>
-                                            <td style={{ textAlign: 'right', paddingRight: '24px' }}>
+                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', fontFamily: 'monospace', textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>{loan.rate}</td>
+                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', fontFamily: 'monospace', textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
+                                                <span style={{ color: '#9ca3af' }}>{loan.accrual.split(' ')[0]}</span>
+                                                <span> {loan.accrual.split(' ')[1]}</span>
+                                            </td>
+                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', whiteSpace: 'nowrap' }}>{loan.maturity}</td>
+                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', whiteSpace: 'nowrap' }}>{loan.frequency}</td>
+                                            <td style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
                                                 <div
-                                                    style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-main)', fontFamily: 'monospace', cursor: loan.isForeign ? 'help' : 'default' }}
+                                                    style={{ 
+                                                        fontSize: '13px', 
+                                                        fontWeight: 400, 
+                                                        color: 'var(--color-text-main)', 
+                                                        fontFamily: 'monospace', 
+                                                        cursor: loan.isForeign ? 'help' : 'default',
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
+                                                        gap: '4px'
+                                                    }}
                                                     title={loan.isForeign ? loan.lkrAmount : ''}
                                                 >
-                                                    {loan.amount}
+                                                    <span style={{ color: '#9ca3af' }}>{loan.amount.split(' ')[0]}</span>
+                                                    <span>{loan.amount.split(' ')[1]}</span>
                                                 </div>
                                             </td>
                                         </tr>
