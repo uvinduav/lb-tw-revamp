@@ -387,7 +387,7 @@ const InvestmentDetails = ({ onNavigate }) => {
                             <table className="data-table" style={{ borderCollapse: 'collapse' }}>
                                 <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
                                     <tr>
-                                        <th style={{ whiteSpace: 'nowrap' }}>REFERENCE</th>
+                                        <th style={{ whiteSpace: 'nowrap' }}>ACC. NO.</th>
                                         <th style={{ whiteSpace: 'nowrap' }}>TYPE</th>
                                         <th style={{ whiteSpace: 'nowrap' }}>RENEWAL</th>
                                         <th style={{ whiteSpace: 'nowrap' }}>START DATE</th>

@@ -35,6 +35,7 @@ import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
 import SlidingPanel from './components/common/SlidingPanel';
 import AlertsPanel from './components/modules/AlertsPanel';
 import TasksPanel from './components/modules/TasksPanel';
+import ScrollToTop from './components/common/ScrollToTop';
 
 function App() {
   const [activePage, setActivePage] = useState('Dashboard');
@@ -195,6 +196,7 @@ function App() {
 
       <AlertsPanel isOpen={isAlertsOpen} onClose={() => setIsAlertsOpen(false)} />
       <TasksPanel isOpen={isTasksOpen} onClose={() => setIsTasksOpen(false)} />
+      <ScrollToTop activePage={activePage} />
     </div>
   );
 }

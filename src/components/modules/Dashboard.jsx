@@ -505,10 +505,10 @@ const Dashboard = ({ onNavigate }) => {
 
   // Foreign Exchange Rates Data
   const exchangeRates = [
-    { id: 1, currency: 'EUR/LKR', name: 'Euro', rate: '300.00', date: 'Dec 12, 2025', cost: 'LKR 30,000,000', costLabel: 'Cost per €100K', flag: 'https://flagcdn.com/w40/eu.png' },
-    { id: 2, currency: 'GBP/LKR', name: 'British Pound', rate: '415.39', date: 'Jan 18, 2026', cost: 'LKR 41,539,000', costLabel: 'Cost per £100K', flag: 'https://flagcdn.com/w40/gb.png' },
-    { id: 3, currency: 'SGD/LKR', name: 'Singapore Dollar', rate: '100.00', date: 'Feb 06, 2026', cost: 'LKR 10,000,000', costLabel: 'Cost per S$100K', flag: 'https://flagcdn.com/w40/sg.png' },
-    { id: 4, currency: 'USD/LKR', name: 'US Dollar', rate: '230.00', date: 'Dec 26, 2025', cost: 'LKR 23,000,000', costLabel: 'Cost per $100K', flag: 'https://flagcdn.com/w40/us.png' },
+    { id: 1, currency: 'EUR/LKR', name: 'Euro', rate: '300.00', prevRate: '300.70', date: 'Dec 12, 2025', cost: 'LKR 30,000,000', flag: 'https://flagcdn.com/w40/eu.png', change: '-0.70', changePercent: '-0.23%' },
+    { id: 2, currency: 'GBP/LKR', name: 'British Pound', rate: '415.39', prevRate: '414.44', date: 'Jan 18, 2026', cost: 'LKR 41,539,000', flag: 'https://flagcdn.com/w40/gb.png', change: '+0.95', changePercent: '+0.23%' },
+    { id: 3, currency: 'SGD/LKR', name: 'Singapore Dollar', rate: '100.00', prevRate: '100.15', date: 'Feb 06, 2026', cost: 'LKR 10,000,000', flag: 'https://flagcdn.com/w40/sg.png', change: '-0.15', changePercent: '-0.15%' },
+    { id: 4, currency: 'USD/LKR', name: 'US Dollar', rate: '230.00', prevRate: '229.55', date: 'Dec 26, 2025', cost: 'LKR 23,000,000', flag: 'https://flagcdn.com/w40/us.png', change: '+0.45', changePercent: '+0.20%' },
   ];
 
   const lineChartOptions = {
@@ -582,6 +582,10 @@ const Dashboard = ({ onNavigate }) => {
 
         {/* Widgets Grid Section */}
         <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
+          <div style={{ marginBottom: '24px', paddingLeft: '4px' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Group Overview</h2>
+            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Consolidated financial performance metrics</p>
+          </div>
           <div id="overview" className="dashboard-grid" style={{ marginBottom: 0 }}>
             {widgets.map((widget, index) => {
               const Icon = widget.icon;
@@ -1036,9 +1040,11 @@ const Dashboard = ({ onNavigate }) => {
               <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
                 <tr>
                   <th style={{ paddingLeft: '24px', width: '20%' }}>CURRENCY (AGAINST LKR)</th>
-                  <th style={{ width: '25%' }}>SELLING RATE</th>
-                  <th style={{ width: '20%' }}>DATE</th>
-                  <th>COST PER 100K</th>
+                  <th style={{ width: '12%' }}>DATE</th>
+                  <th style={{ width: '12%' }}>SELLING RATE</th>
+                  <th style={{ width: '12%' }}>PREV. RATE</th>
+                  <th style={{ width: '15%' }}>COST PER 100K</th>
+                  <th style={{ paddingRight: '24px', textAlign: 'right' }}>CHANGE</th>
                 </tr>
               </thead>
               <tbody>
@@ -1050,12 +1056,39 @@ const Dashboard = ({ onNavigate }) => {
                         <span>{rate.currency.split('/')[0]}</span>
                       </div>
                     </td>
+                    <td style={{ color: 'var(--color-text-secondary)' }}>{rate.date}</td>
                     <td>
                       <div style={{ fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{rate.rate}</div>
                     </td>
-                    <td style={{ color: 'var(--color-text-secondary)' }}>{rate.date}</td>
+                    <td>
+                      <div style={{ fontFamily: 'monospace', color: 'var(--color-text-secondary)' }}>{rate.prevRate}</div>
+                    </td>
                     <td>
                       <div style={{ fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{rate.cost}</div>
+                    </td>
+                    <td style={{ paddingRight: '24px', textAlign: 'right' }}>
+                      {(() => {
+                        const isPos = rate.change.startsWith('+');
+                        const textColor = isPos ? '#ef4444' : '#10b981';
+                        const Icon = isPos ? TrendingUp : TrendingDown;
+                        return (
+                          <div style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '8px'
+                          }}>
+                            <Icon size={14} color={textColor} />
+                            <span style={{
+                              color: textColor,
+                              fontSize: '13px',
+                              fontWeight: '600',
+                              fontFamily: 'monospace'
+                            }}>
+                              {rate.change} ({rate.changePercent})
+                            </span>
+                          </div>
+                        );
+                      })()}
                     </td>
                   </tr>
                 ))}

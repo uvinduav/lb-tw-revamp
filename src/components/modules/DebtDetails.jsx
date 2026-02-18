@@ -126,11 +126,11 @@ const DebtDetails = ({ onNavigate }) => {
         datasets: [{
             label: 'Debt (Million LKR)',
             data: [2308, 275],
-            backgroundColor: ['#ef4444', '#3b82f6'],
+            backgroundColor: ['#B10A32', '#38D200'],
             borderRadius: 0,
             barThickness: 40,
             minBarLength: 5,
-            hoverBackgroundColor: ['#ef4444dd', '#3b82f6dd']
+            hoverBackgroundColor: ['#B10A32dd', '#38D200dd']
         }]
     };
 

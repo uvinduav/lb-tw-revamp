@@ -151,19 +151,21 @@ const CashPositionDetails = () => {
     const chartLabels = ['Standard Chartered', 'Nations Trust Bank', 'Citi Bank', 'Hatton National Bank', 'Bank of China', 'Commercial Bank', 'Deutsche Bank', 'Sampath Bank', 'NDB Bank', 'People\'s Bank', 'DFCC Bank'];
     const chartDataValues = [145000, 28500, 12400, 6700, 4200, 18500, 1200, 9300, 3400, 850, 0];
 
-    const bankColors = [
-        '#3b82f6', // Standard Chartered
-        '#10b981', // Nations Trust Bank
-        '#f59e0b', // Citi Bank
-        '#ef4444', // Hatton National Bank
-        '#8b5cf6', // Bank of China
-        '#ec4899', // Commercial Bank
-        '#06b6d4', // Deutsche Bank
-        '#f97316', // Sampath Bank
-        '#6366f1', // NDB Bank
-        '#14b8a6', // People's Bank
-        '#84cc16'  // DFCC Bank
-    ];
+    const bankColorMap = {
+        'Nations Trust Bank': '#EE018B',
+        'Standard Chartered': '#38D200',
+        'People\'s Bank': '#FDB314',
+        'NDB Bank': '#151515',
+        'Sampath Bank': '#F17116',
+        'Hatton National Bank': '#24ACE6',
+        'Deutsche Bank': '#0018A8',
+        'Citi Bank': '#255BE3',
+        'Bank of China': '#B10A32',
+        'Commercial Bank': '#0075CF',
+        'DFCC Bank': '#ED1C24'
+    };
+
+    const bankColors = chartLabels.map(label => bankColorMap[label] || '#9ca3af');
 
     const bankDistributionData = {
         labels: chartLabels,
@@ -191,7 +193,7 @@ const CashPositionDetails = () => {
             accounts: [
                 {
                     id: 'sc1',
-                    company: "Lion Brewery Sri Lanka",
+                    company: "Lion Brewery Sri Lanka - Salary Payments",
                     companyColor: "#f0fdf4",
                     accountNo: "01854228901",
                     currency: "USD",
@@ -202,7 +204,7 @@ const CashPositionDetails = () => {
                 },
                 {
                     id: 'sc2',
-                    company: "Lion Brewery Sri Lanka",
+                    company: "Lion Brewery Sri Lanka - General Operations",
                     companyColor: "#f0fdf4",
                     accountNo: "01854224201",
                     currency: "USD",
@@ -213,7 +215,7 @@ const CashPositionDetails = () => {
                 },
                 {
                     id: 'sc3',
-                    company: "Lion Brewery Sri Lanka",
+                    company: "Lion Brewery Sri Lanka - Vendor Payments",
                     companyColor: "#f0fdf4",
                     accountNo: "01854224202",
                     currency: "EUR",
@@ -224,7 +226,7 @@ const CashPositionDetails = () => {
                 },
                 {
                     id: 'sc4',
-                    company: "Lion Brewery Sri Lanka",
+                    company: "Lion Brewery Sri Lanka - CAPEX",
                     companyColor: "#f0fdf4",
                     accountNo: "01854228903",
                     currency: "LKR",
@@ -235,7 +237,7 @@ const CashPositionDetails = () => {
                 },
                 {
                     id: 'sc5',
-                    company: "Lion Brewery Sri Lanka",
+                    company: "Lion Brewery Sri Lanka - Loan Servicing",
                     companyColor: "#f0fdf4",
                     accountNo: "01854228901",
                     currency: "LKR",
@@ -263,7 +265,7 @@ const CashPositionDetails = () => {
             accounts: [
                 {
                     id: 'boc1',
-                    company: "Lion Brewery Sri Lanka",
+                    company: "Lion Brewery Sri Lanka - General Operations",
                     companyColor: "#f0fdf4",
                     accountNo: "00109955874",
                     currency: "LKR",
@@ -289,7 +291,7 @@ const CashPositionDetails = () => {
             accounts: [
                 {
                     id: 'comb1',
-                    company: "Millers Brewery Ltd",
+                    company: "Millers Brewery Ltd - Vendor Payments",
                     companyColor: "#eff6ff",
                     accountNo: "1500428010",
                     currency: "LKR",
@@ -300,7 +302,7 @@ const CashPositionDetails = () => {
                 },
                 {
                     id: 'comb2',
-                    company: "Millers Brewery Ltd",
+                    company: "Millers Brewery Ltd - General Operations",
                     companyColor: "#eff6ff",
                     accountNo: "1500420040",
                     currency: "LKR",
@@ -311,7 +313,7 @@ const CashPositionDetails = () => {
                 },
                 {
                     id: 'comb3',
-                    company: "Lion Brewery Sri Lanka",
+                    company: "Lion Brewery Sri Lanka - Salary Payments",
                     companyColor: "#f0fdf4",
                     accountNo: "1500420159",
                     currency: "USD",
@@ -322,7 +324,7 @@ const CashPositionDetails = () => {
                 },
                 {
                     id: 'comb4',
-                    company: "Lion Brewery Sri Lanka",
+                    company: "Lion Brewery Sri Lanka - CAPEX",
                     companyColor: "#f0fdf4",
                     accountNo: "1500420801",
                     currency: "LKR",
@@ -347,7 +349,7 @@ const CashPositionDetails = () => {
             accountCount: 2,
             accountDesc: "2 LKR",
             accounts: [
-                 { id: 'ntb1', company: "Lion Brewery Sri Lanka", companyColor: "#f0fdf4", accountNo: "10023451122", currency: "LKR", type: "Savings", balance: "LKR 28,500,000,000.00", lkrBalance: "LKR 28,500,000,000.00", isForeign: false }
+                  { id: 'ntb1', company: "Lion Brewery Sri Lanka - Loan Servicing", companyColor: "#f0fdf4", accountNo: "10023451122", currency: "LKR", type: "Savings", balance: "LKR 28,500,000,000.00", lkrBalance: "LKR 28,500,000,000.00", isForeign: false }
             ],
             currencyBreakdown: [{ code: 'LKR', amount: '28,500,000,000.00', lkr: '28,500,000,000.00' }]
         },
@@ -361,7 +363,7 @@ const CashPositionDetails = () => {
             accountCount: 1,
             accountDesc: "1 LKR",
             accounts: [
-                 { id: 'hnb1', company: "Lion Brewery Sri Lanka", companyColor: "#f0fdf4", accountNo: "00344553344", currency: "LKR", type: "Current", balance: "LKR 6,700,000,000.00", lkrBalance: "LKR 6,700,000,000.00", isForeign: false }
+                  { id: 'hnb1', company: "Lion Brewery Sri Lanka - General Operations", companyColor: "#f0fdf4", accountNo: "00344553344", currency: "LKR", type: "Current", balance: "LKR 6,700,000,000.00", lkrBalance: "LKR 6,700,000,000.00", isForeign: false }
             ],
             currencyBreakdown: [{ code: 'LKR', amount: '6,700,000,000.00', lkr: '6,700,000,000.00' }]
         },
@@ -376,8 +378,8 @@ const CashPositionDetails = () => {
             accountCount: 2,
             accountDesc: "1 USD, 1 LKR",
             accounts: [
-                 { id: 'citi1', company: "Lion Brewery Sri Lanka", companyColor: "#f0fdf4", accountNo: "82345555566", currency: "USD", type: "Current", balance: "USD 20,000,000.00", lkrBalance: "LKR 6,400,000,000.00", isForeign: true },
-                 { id: 'citi2', company: "Luxury Brands", companyColor: "#fef2f2", accountNo: "82345557788", currency: "LKR", type: "Savings", balance: "LKR 6,000,000,000.00", lkrBalance: "LKR 6,000,000,000.00", isForeign: false }
+                 { id: 'citi1', company: "Lion Brewery Sri Lanka - Vendor Payments", companyColor: "#f0fdf4", accountNo: "82345555566", currency: "USD", type: "Current", balance: "USD 20,000,000.00", lkrBalance: "LKR 6,400,000,000.00", isForeign: true },
+                 { id: 'citi2', company: "Luxury Brands - Salary Payments", companyColor: "#fef2f2", accountNo: "82345557788", currency: "LKR", type: "Savings", balance: "LKR 6,000,000,000.00", lkrBalance: "LKR 6,000,000,000.00", isForeign: false }
             ],
             currencyBreakdown: [{ code: 'USD', amount: '20,000,000.00', lkr: '6,400,000,000.00' }, { code: 'LKR', amount: '6,000,000,000.00', lkr: '6,000,000,000.00' }]
         },
@@ -391,7 +393,7 @@ const CashPositionDetails = () => {
             accountCount: 1,
             accountDesc: "1 LKR",
             accounts: [
-                 { id: 'db1', company: "Lion Brewery Sri Lanka", companyColor: "#f0fdf4", accountNo: "00567889900", currency: "LKR", type: "Current", balance: "LKR 1,200,000,000.00", lkrBalance: "LKR 1,200,000,000.00", isForeign: false }
+                 { id: 'db1', company: "Lion Brewery Sri Lanka - General Operations", companyColor: "#f0fdf4", accountNo: "00567889900", currency: "LKR", type: "Current", balance: "LKR 1,200,000,000.00", lkrBalance: "LKR 1,200,000,000.00", isForeign: false }
             ],
              currencyBreakdown: [{ code: 'LKR', amount: '1,200,000,000.00', lkr: '1,200,000,000.00' }]
         },
@@ -405,7 +407,7 @@ const CashPositionDetails = () => {
             accountCount: 2,
             accountDesc: "2 LKR",
             accounts: [
-                 { id: 'samp1', company: "Pubs'N Places Pvt Ltd", companyColor: "#fff7ed", accountNo: "10024452211", currency: "LKR", type: "Savings", balance: "LKR 9,300,000,000.00", lkrBalance: "LKR 9,300,000,000.00", isForeign: false }
+                 { id: 'samp1', company: "Pubs'N Places Pvt Ltd - CAPEX", companyColor: "#fff7ed", accountNo: "10024452211", currency: "LKR", type: "Savings", balance: "LKR 9,300,000,000.00", lkrBalance: "LKR 9,300,000,000.00", isForeign: false }
             ],
              currencyBreakdown: [{ code: 'LKR', amount: '9,300,000,000.00', lkr: '9,300,000,000.00' }]
         },
@@ -419,7 +421,7 @@ const CashPositionDetails = () => {
             accountCount: 1,
             accountDesc: "1 LKR",
             accounts: [
-                 { id: 'ndb1', company: "Retail Spaces Pvt Ltd", companyColor: "#fefce8", accountNo: "10044554433", currency: "LKR", type: "Current", balance: "LKR 3,400,000,000.00", lkrBalance: "LKR 3,400,000,000.00", isForeign: false }
+                 { id: 'ndb1', company: "Retail Spaces Pvt Ltd - General Operations", companyColor: "#fefce8", accountNo: "10044554433", currency: "LKR", type: "Current", balance: "LKR 3,400,000,000.00", lkrBalance: "LKR 3,400,000,000.00", isForeign: false }
             ],
              currencyBreakdown: [{ code: 'LKR', amount: '3,400,000,000.00', lkr: '3,400,000,000.00' }]
         },
@@ -433,7 +435,7 @@ const CashPositionDetails = () => {
             accountCount: 1,
             accountDesc: "1 LKR",
             accounts: [
-                 { id: 'pb1', company: "Lion Brewery Sri Lanka", companyColor: "#f0fdf4", accountNo: "10066776655", currency: "LKR", type: "Savings", balance: "LKR 850,000,000.00", lkrBalance: "LKR 850,000,000.00", isForeign: false }
+                 { id: 'pb1', company: "Lion Brewery Sri Lanka - Vendor Payments", companyColor: "#f0fdf4", accountNo: "10066776655", currency: "LKR", type: "Savings", balance: "LKR 850,000,000.00", lkrBalance: "LKR 850,000,000.00", isForeign: false }
             ],
              currencyBreakdown: [{ code: 'LKR', amount: '850,000,000.00', lkr: '850,000,000.00' }]
         },
@@ -447,7 +449,7 @@ const CashPositionDetails = () => {
             accountCount: 1,
             accountDesc: "1 LKR",
             accounts: [
-                 { id: 'dfcc1', company: "Luxury Brands", companyColor: "#fef2f2", accountNo: "00889988877", currency: "LKR", type: "Current", balance: "LKR 0.00", lkrBalance: "LKR 0.00", isForeign: false }
+                 { id: 'dfcc1', company: "Luxury Brands - Loan Servicing", companyColor: "#fef2f2", accountNo: "00889988877", currency: "LKR", type: "Current", balance: "LKR 0.00", lkrBalance: "LKR 0.00", isForeign: false }
             ],
              currencyBreakdown: [{ code: 'LKR', amount: '0.00', lkr: '0.00' }]
         }

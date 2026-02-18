@@ -16,8 +16,13 @@ import {
     Info,
     RotateCw,
     Download,
+    Settings,
+    Eye,
+    EyeOff,
+    RotateCcw,
     ChevronDown
 } from 'lucide-react';
+import * as Popover from '@radix-ui/react-popover';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -124,6 +129,40 @@ const CashFlow = ({ onNavigate }) => {
     const [selectedCompany, setSelectedCompany] = useState('All Companies');
     const [selectedBank, setSelectedBank] = useState('All Banks');
     const [selectedType, setSelectedType] = useState('All Types');
+
+    const COLUMN_DEFS = [
+        { id: 'company', label: 'COMPANY' },
+        { id: 'bank', label: 'BANK' },
+        { id: 'type', label: 'TYPE' },
+        { id: 'odLimit', label: 'OD LIMIT' },
+        { id: 'accName', label: 'ACC. NAME' },
+        { id: 'accNo', label: 'ACC. NO.' },
+        { id: 'currency', label: 'CURRENCY' },
+        { id: 'balance', label: 'BALANCE' },
+        { id: 'lkrEquivalent', label: 'LKR EQUIVALENT' },
+        { id: 'prevDay', label: 'PREV. DAY BALANCE' },
+        { id: 'prevMonth', label: 'PREV. MONTH CLOSING' },
+        { id: 'changeDay', label: 'CHANGE (prev. day)' },
+        { id: 'changeMonth', label: 'CHANGE (prev. month)' },
+    ];
+
+    const [visibleColumns, setVisibleColumns] = useState(new Set([
+        'company', 'bank', 'type', 'odLimit', 'accName', 'accNo',
+        'balance', 'prevDay', 'prevMonth', 'changeDay', 'changeMonth'
+    ])); // currency and lkrEquivalent are excluded by default
+    const [isColumnPopoverOpen, setIsColumnPopoverOpen] = useState(false);
+
+    const toggleColumnVisibility = (columnId) => {
+        setVisibleColumns(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(columnId)) {
+                newSet.delete(columnId);
+            } else {
+                newSet.add(columnId);
+            }
+            return newSet;
+        });
+    };
 
     const formatValue = (val) => {
         if (!val || val === 'N/A') return val;
@@ -279,30 +318,28 @@ const CashFlow = ({ onNavigate }) => {
                         </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 1fr) minmax(320px, 1fr) 1fr', gap: '24px', marginBottom: '24px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 1fr) 2fr', gap: '24px', marginBottom: '24px' }}>
                         {/* Total Cash Balance Card */}
                         <div className="widget-card">
                             <div className="widget-header">
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <Wallet size={14} className="text-gray" />
                                     <h3 className="widget-title" style={{ margin: 0 }}>TOTAL CASH BALANCE</h3>
                                 </div>
-                                <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
                             </div>
 
                             <div style={{ marginTop: '0px' }}>
                                 <p className="widget-label">As of February 12, 2026</p>
                                 <div className="widget-value-row" style={{ margin: '8px 0' }}>
-                                    <span className="widget-value-xl text-black">2,407.79 Mns</span>
+                                    <span className="widget-value text-black">2,407.79M</span>
                                     <span className="widget-label" style={{ marginBottom: '4px' }}>LKR</span>
                                 </div>
 
-                                <div style={{ borderTop: '1px solid #f3f4f6', paddingTop: '12px', marginTop: '12px' }}>
+                                <div style={{ borderTop: '1px solid #f3f4f6', paddingTop: '14px', marginTop: '14px' }}>
                                     <p className="widget-label" style={{ marginBottom: '4px' }}>Daily Movement (vs Yesterday)</p>
                                     <div className="widget-value-row">
-                                        <span className="widget-value text-black" style={{ fontSize: '16px' }}>~945.00 Mns</span>
-                                        <span className="widget-change text-black">+64.60%</span>
-                                        <TrendingUp size={14} className="text-black" />
+                                        <span className="text-green" style={{ fontSize: '14px', fontWeight: 500 }}>~945.00M</span>
+                                        <span className="widget-change text-green">+64.60%</span>
+                                        <TrendingUp size={14} className="text-green" />
                                     </div>
                                 </div>
                             </div>
@@ -312,10 +349,8 @@ const CashFlow = ({ onNavigate }) => {
                         <div className="widget-card">
                             <div className="widget-header">
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <Calendar size={14} className="text-gray" />
                                     <h3 className="widget-title" style={{ margin: 0 }}>PREVIOUS MONTH CLOSING</h3>
                                 </div>
-                                <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
                             </div>
 
                             <div style={{ marginTop: '8px' }}>
@@ -330,11 +365,11 @@ const CashFlow = ({ onNavigate }) => {
                                             <td className="text-black" style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>LKR 2,407.79M</td>
                                         </tr>
                                         <tr>
-                                            <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6' }}>Month Change</td>
+                                            <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6' }}>Net Monthly Cash Position</td>
                                             <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
-                                                    <span className="text-black">+LKR 2,002.08M</span>
-                                                    <span className="text-black" style={{ fontSize: '11px' }}>+493.46%</span>
+                                                    <span className="text-green">+LKR 2,002.08M</span>
+                                                    <span className="text-green" style={{ fontSize: '11px' }}>+493.46%</span>
                                                 </div>
                                             </td>
                                         </tr>
@@ -342,52 +377,13 @@ const CashFlow = ({ onNavigate }) => {
                                             <td style={{ padding: '6px 0' }}>Daily Variance</td>
                                             <td style={{ padding: '6px 0', textAlign: 'right' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
-                                                    <span className="text-black">+LKR 945.00M</span>
-                                                    <span className="text-black" style={{ fontSize: '11px' }}>+64.60%</span>
+                                                    <span className="text-green">+LKR 945.00M</span>
+                                                    <span className="text-green" style={{ fontSize: '11px' }}>+64.60%</span>
                                                 </div>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
-                        </div>
-
-                        {/* Small Insight Widgets Column */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                            <div className="widget-card" style={{ flex: 1 }}>
-                                <div className="widget-header">
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                        <TrendingUp size={14} className="text-black" />
-                                        <h3 className="widget-title" style={{ margin: 0 }}>MONTHLY GROWTH</h3>
-                                    </div>
-                                    <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
-                                </div>
-                                <div style={{ marginTop: '8px' }}>
-                                    <div className="widget-value-row">
-                                        <span className="widget-value text-black">+493.46%</span>
-                                    </div>
-                                    <p className="widget-subtext">
-                                        +LKR 2,002.08M this month
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="widget-card" style={{ flex: 1 }}>
-                                <div className="widget-header">
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                        <Globe size={14} className="text-primary" />
-                                        <h3 className="widget-title" style={{ margin: 0 }}>PORTFOLIO SCOPE</h3>
-                                    </div>
-                                    <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
-                                </div>
-                                <div style={{ marginTop: '8px' }}>
-                                    <div className="widget-value-row">
-                                        <span className="widget-value">26 Accounts</span>
-                                    </div>
-                                    <p className="widget-subtext">
-                                        Multi-currency (3 Currencies)
-                                    </p>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -437,6 +433,141 @@ const CashFlow = ({ onNavigate }) => {
                                 </select>
                                 <ChevronDown size={14} className="text-gray select-arrow" />
                             </div>
+
+                            {/* Column Visibility Popover */}
+                            <Popover.Root open={isColumnPopoverOpen} onOpenChange={setIsColumnPopoverOpen}>
+                                <Popover.Trigger asChild>
+                                    <button
+                                        className="filter-dropdown-container"
+                                        title="View options"
+                                        style={{ height: '36px', width: '36px', padding: 0, justifyContent: 'center', zIndex: 20, position: 'relative', cursor: 'pointer' }}
+                                    >
+                                        {visibleColumns.size === 0 ? <EyeOff size={16} className="text-gray" /> : <Eye size={16} className="text-gray" />}
+                                    </button>
+                                </Popover.Trigger>
+                                <Popover.Portal>
+                                    <Popover.Content className="popover-content" align="end" sideOffset={5} style={{
+                                        backgroundColor: 'white',
+                                        borderRadius: '8px',
+                                        boxShadow: '0 10px 38px -10px rgba(22, 23, 24, 0.35), 0 10px 20px -15px rgba(22, 23, 24, 0.2)',
+                                        width: '280px',
+                                        zIndex: 2000,
+                                        border: '1px solid var(--color-border)',
+                                        overflow: 'hidden',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        padding: 0
+                                    }}>
+                                        <div style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            padding: '16px 16px 12px',
+                                            borderBottom: '1px solid var(--color-border)'
+                                        }}>
+                                            <span style={{ fontWeight: 600, fontSize: '14px', color: 'var(--color-text-main)' }}>View options</span>
+                                            <button
+                                                onClick={() => setVisibleColumns(new Set(COLUMN_DEFS.map(c => c.id).filter(id => id !== 'currency' && id !== 'lkrEquivalent')))}
+                                                title="Reset to Default"
+                                                style={{
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    color: 'var(--color-text-secondary)',
+                                                    cursor: 'pointer',
+                                                    padding: '4px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    borderRadius: '4px'
+                                                }}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-secondary)'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                            >
+                                                <RotateCcw size={14} />
+                                            </button>
+                                        </div>
+
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            maxHeight: '300px',
+                                            overflowY: 'auto',
+                                            padding: '0'
+                                        }}>
+                                            {COLUMN_DEFS.map((col, index) => {
+                                                const isVisible = visibleColumns.has(col.id);
+                                                const isLast = index === COLUMN_DEFS.length - 1;
+                                                return (
+                                                    <label key={col.id} style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'space-between',
+                                                        padding: '10px 16px',
+                                                        cursor: 'pointer',
+                                                        fontSize: '13px',
+                                                        transition: 'background-color 0.2s',
+                                                        borderBottom: isLast ? 'none' : '1px solid var(--color-border)'
+                                                    }}
+                                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-subtle)'}
+                                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                    >
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                            <span style={{
+                                                                color: isVisible ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+                                                                display: 'flex',
+                                                                alignItems: 'center'
+                                                            }}>
+                                                                {isVisible ? <Eye size={14} /> : <EyeOff size={14} />}
+                                                            </span>
+                                                            <span style={{
+                                                                color: isVisible ? 'var(--color-text-main)' : 'var(--color-text-secondary)'
+                                                            }}>{col.label}</span>
+                                                        </div>
+
+                                                        {/* Custom Toggle Switch */}
+                                                        <div style={{ position: 'relative', width: '32px', height: '18px' }}>
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={isVisible}
+                                                                onChange={() => toggleColumnVisibility(col.id)}
+                                                                style={{
+                                                                    opacity: 0,
+                                                                    width: 0,
+                                                                    height: 0
+                                                                }}
+                                                            />
+                                                            <div style={{
+                                                                position: 'absolute',
+                                                                cursor: 'pointer',
+                                                                top: 0,
+                                                                left: 0,
+                                                                right: 0,
+                                                                bottom: 0,
+                                                                backgroundColor: isVisible ? 'var(--color-primary)' : '#ccc',
+                                                                transition: '.4s',
+                                                                borderRadius: '34px'
+                                                            }}>
+                                                                <div style={{
+                                                                    position: 'absolute',
+                                                                    content: '',
+                                                                    height: '14px',
+                                                                    width: '14px',
+                                                                    left: isVisible ? '16px' : '2px',
+                                                                    bottom: '2px',
+                                                                    backgroundColor: 'white',
+                                                                    transition: '.4s',
+                                                                    borderRadius: '50%'
+                                                                }}></div>
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                );
+                                            })}
+                                        </div>
+                                        <Popover.Arrow className="popover-arrow" style={{ fill: 'white' }} />
+                                    </Popover.Content>
+                                </Popover.Portal>
+                            </Popover.Root>
                         </div>
                     </div>
 
@@ -444,19 +575,19 @@ const CashFlow = ({ onNavigate }) => {
                         <table className="data-table min-w-800">
                             <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
                                 <tr>
-                                    <th style={{ minWidth: '100px' }}>COMPANY</th>
-                                    <th style={{ minWidth: '100px' }}>BANK</th>
-                                    <th style={{ minWidth: '80px' }}>TYPE</th>
-                                    <th style={{ textAlign: 'right', minWidth: '100px' }}>OD LIMIT</th>
-                                    <th style={{ minWidth: '100px' }}>ACC. NAME</th>
-                                    <th style={{ minWidth: '100px' }}>ACC. NO.</th>
-                                    <th style={{ minWidth: '50px' }}>CURRENCY</th>
-                                    <th style={{ textAlign: 'right', minWidth: '100px' }}>BALANCE</th>
-                                    <th style={{ textAlign: 'right', minWidth: '100px' }}>LKR EQUIVALENT</th>
-                                    <th style={{ textAlign: 'right', minWidth: '100px' }}>PREV. DAY BALANCE</th>
-                                    <th style={{ textAlign: 'right', minWidth: '100px' }}>PREV. MONTH CLOSING</th>
-                                    <th style={{ textAlign: 'right', minWidth: '100px' }}>CHANGE (prev. day)</th>
-                                    <th style={{ textAlign: 'right', paddingRight: '24px', minWidth: '130px' }}>CHANGE (prev. month)</th>
+                                    {visibleColumns.has('company') && <th style={{ minWidth: '180px', paddingLeft: '16px' }}>COMPANY</th>}
+                                    {visibleColumns.has('bank') && <th style={{ minWidth: '120px', paddingLeft: '20px', paddingRight: '20px' }}>BANK</th>}
+                                    {visibleColumns.has('type') && <th style={{ minWidth: '80px', paddingLeft: '20px', paddingRight: '20px' }}>TYPE</th>}
+                                    {visibleColumns.has('odLimit') && <th style={{ textAlign: 'right', minWidth: '100px', paddingLeft: '20px', paddingRight: '20px' }}>OD LIMIT</th>}
+                                    {visibleColumns.has('accName') && <th style={{ minWidth: '140px', paddingLeft: '20px', paddingRight: '20px' }}>ACC. NAME</th>}
+                                    {visibleColumns.has('accNo') && <th style={{ minWidth: '120px', paddingLeft: '20px', paddingRight: '20px' }}>ACC. NO.</th>}
+                                    {visibleColumns.has('currency') && <th style={{ minWidth: '80px', paddingLeft: '20px', paddingRight: '20px' }}>CURRENCY</th>}
+                                    {visibleColumns.has('balance') && <th style={{ textAlign: 'right', minWidth: '120px', paddingLeft: '20px', paddingRight: '20px' }}>BALANCE</th>}
+                                    {visibleColumns.has('lkrEquivalent') && <th style={{ textAlign: 'right', minWidth: '140px', paddingLeft: '20px', paddingRight: '20px' }}>LKR EQUIVALENT</th>}
+                                    {visibleColumns.has('prevDay') && <th style={{ textAlign: 'right', minWidth: '140px', paddingLeft: '20px', paddingRight: '20px' }}>PREV. DAY BALANCE</th>}
+                                    {visibleColumns.has('prevMonth') && <th style={{ textAlign: 'right', minWidth: '160px', paddingLeft: '20px', paddingRight: '20px' }}>PREV. MONTH CLOSING</th>}
+                                    {visibleColumns.has('changeDay') && <th style={{ textAlign: 'right', minWidth: '130px', paddingLeft: '20px', paddingRight: '20px' }}>CHANGE (prev. day)</th>}
+                                    {visibleColumns.has('changeMonth') && <th style={{ textAlign: 'right', paddingRight: '24px', minWidth: '150px', paddingLeft: '20px' }}>CHANGE (prev. month)</th>}
                                 </tr>
                             </thead>
                             <tbody>
@@ -474,39 +605,49 @@ const CashFlow = ({ onNavigate }) => {
                                     })
                                     .map((row, index) => (
                                         <tr key={index} className="hover-row">
-                                            <td>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                    <LogoPlaceholder name={row.company} color={row.companyColor} />
-                                                    <span style={{ fontWeight: 500, color: '#000000' }}>{row.company}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                    <LogoPlaceholder name={row.bank} color={row.bankColor} src={bankLogos[row.bank]} />
-                                                    <span style={{ color: '#000000' }}>{row.bank}</span>
-                                                </div>
-                                            </td>
-                                            <td style={{ color: '#000000' }}>{row.accountType}</td>
-                                            <td style={{ textAlign: 'right', fontFamily: 'monospace', color: row.odLimit === 'N/A' ? '#9ca3af' : '#000000' }}>
-                                                {formatValue(row.odLimit)}
-                                            </td>
-                                            <td style={{ color: '#000000' }}>{row.name}</td>
-                                            <td style={{ textAlign: 'right', fontFamily: 'monospace', color: '#000000', fontSize: '12px' }}>{row.number}</td>
-                                            <td><span className="currency-badge" style={{ color: '#000000' }}>{row.currency}</span></td>
-                                            <td style={{ textAlign: 'right', fontWeight: 500, fontFamily: 'monospace', color: '#000000' }}>{formatValue(row.balance)}</td>
-                                            <td style={{ textAlign: 'right', fontWeight: 500, color: '#000000', fontFamily: 'monospace' }}>{row.lkr.replace('LKR ', '')}</td>
-                                            <td style={{ textAlign: 'right', color: '#000000', fontFamily: 'monospace' }}>{formatValue(row.prevDay)}</td>
-                                            <td style={{ textAlign: 'right', color: '#000000', fontFamily: 'monospace' }}>{formatValue(row.prev)}</td>
-                                            <td style={{ textAlign: 'right' }}>
-                                                <span className={row.changeDayType === 'positive' ? 'text-green' : row.changeDayType === 'negative' ? 'text-red' : ''} style={{ color: row.changeDayType === 'neutral' ? '#000000' : undefined, fontSize: '12px', fontWeight: '500', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontFamily: 'monospace' }}>
-                                                    {row.changeDay.replace(/[A-Z]{3}\s/, '')}
-                                                </span>
-                                            </td>
-                                            <td style={{ textAlign: 'right', paddingRight: '24px' }}>
-                                                <span className={row.changeMonthType === 'positive' ? 'text-green' : row.changeMonthType === 'negative' ? 'text-red' : ''} style={{ color: row.changeMonthType === 'neutral' ? '#000000' : undefined, fontSize: '12px', fontWeight: '500', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontFamily: 'monospace' }}>
-                                                    {row.changeMonth.replace(/[A-Z]{3}\s/, '')}
-                                                </span>
-                                            </td>
+                                            {visibleColumns.has('company') && (
+                                                <td style={{ maxWidth: 'none', overflow: 'visible', textOverflow: 'clip', paddingLeft: '16px' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                        <LogoPlaceholder name={row.company} color={row.companyColor} />
+                                                        <span style={{ fontWeight: 500, color: '#000000', whiteSpace: 'nowrap' }}>{row.company}</span>
+                                                    </div>
+                                                </td>
+                                            )}
+                                            {visibleColumns.has('bank') && (
+                                                <td style={{ paddingLeft: '20px', paddingRight: '20px' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                        <LogoPlaceholder name={row.bank} color={row.bankColor} src={bankLogos[row.bank]} />
+                                                        <span style={{ color: '#000000' }}>{row.bank}</span>
+                                                    </div>
+                                                </td>
+                                            )}
+                                            {visibleColumns.has('type') && <td style={{ color: '#000000', paddingLeft: '20px', paddingRight: '20px' }}>{row.accountType}</td>}
+                                            {visibleColumns.has('odLimit') && (
+                                                <td style={{ textAlign: 'right', fontFamily: 'monospace', color: row.odLimit === 'N/A' ? '#9ca3af' : '#000000', paddingLeft: '20px', paddingRight: '20px' }}>
+                                                    {formatValue(row.odLimit)}
+                                                </td>
+                                            )}
+                                            {visibleColumns.has('accName') && <td style={{ color: '#000000', paddingLeft: '20px', paddingRight: '20px' }}>{row.name}</td>}
+                                            {visibleColumns.has('accNo') && <td style={{ textAlign: 'left', fontFamily: 'monospace', color: '#000000', fontSize: '12px', paddingLeft: '20px', paddingRight: '20px' }}>{row.number}</td>}
+                                            {visibleColumns.has('currency') && <td style={{ paddingLeft: '20px', paddingRight: '20px' }}><span className="currency-badge" style={{ color: '#000000' }}>{row.currency}</span></td>}
+                                            {visibleColumns.has('balance') && <td style={{ textAlign: 'right', fontWeight: 500, fontFamily: 'monospace', color: '#000000', paddingLeft: '20px', paddingRight: '20px' }}>{formatValue(row.balance)}</td>}
+                                            {visibleColumns.has('lkrEquivalent') && <td style={{ textAlign: 'right', fontWeight: 500, color: '#000000', fontFamily: 'monospace', paddingLeft: '20px', paddingRight: '20px' }}>{row.lkr.replace('LKR ', '')}</td>}
+                                            {visibleColumns.has('prevDay') && <td style={{ textAlign: 'right', color: '#000000', fontFamily: 'monospace', paddingLeft: '20px', paddingRight: '20px' }}>{formatValue(row.prevDay)}</td>}
+                                            {visibleColumns.has('prevMonth') && <td style={{ textAlign: 'right', color: '#000000', fontFamily: 'monospace', paddingLeft: '20px', paddingRight: '20px' }}>{formatValue(row.prev)}</td>}
+                                            {visibleColumns.has('changeDay') && (
+                                                <td style={{ textAlign: 'right', paddingLeft: '20px', paddingRight: '20px' }}>
+                                                    <span className={row.changeDayType === 'positive' ? 'text-green' : row.changeDayType === 'negative' ? 'text-red' : ''} style={{ color: row.changeDayType === 'neutral' ? '#000000' : undefined, fontSize: '12px', fontWeight: '500', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontFamily: 'monospace' }}>
+                                                        {row.changeDay.replace(/[A-Z]{3}\s/, '')}
+                                                    </span>
+                                                </td>
+                                            )}
+                                            {visibleColumns.has('changeMonth') && (
+                                                <td style={{ textAlign: 'right', paddingRight: '20px', paddingLeft: '20px' }}>
+                                                    <span className={row.changeMonthType === 'positive' ? 'text-green' : row.changeMonthType === 'negative' ? 'text-red' : ''} style={{ color: row.changeMonthType === 'neutral' ? '#000000' : undefined, fontSize: '12px', fontWeight: '500', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontFamily: 'monospace' }}>
+                                                        {row.changeMonth.replace(/[A-Z]{3}\s/, '')}
+                                                    </span>
+                                                </td>
+                                            )}
                                         </tr>
                                     ))}
                             </tbody>
