@@ -146,40 +146,43 @@ const AccountDetails = ({ account, bank, entity, onBack }) => {
         <div className="dashboard-main-wrapper" style={{ height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
             <div className="dashboard-container" style={{ padding: '24px' }}>
 
-                {/* Header */}
-                <div style={{ marginBottom: '24px' }}>
-                    <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
-                        {accountInfo.accountNumber}
-                    </h1>
-                    <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
-                        {bank} • {accountInfo.type}
+                {/* Header & Widgets Section */}
+                <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
+                    {/* Header */}
+                    <div style={{ marginBottom: '24px' }}>
+                        <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
+                            {accountInfo.accountNumber}
+                        </h1>
+                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
+                            {bank} • {accountInfo.type}
+                        </div>
                     </div>
-                </div>
 
-                {/* Top Widgets Row */}
-                <div className="dashboard-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
-                    <AccountWidget
-                        title="Current Balance"
-                        value={accountInfo.balance}
-                    />
-                    <AccountWidget
-                        title="30-Day Average"
-                        value={accountInfo.avgBalance}
-                        subtext="0.0% variance"
-                        subtextClass="text-green"
-                    />
-                    <AccountWidget
-                        title="7-Day Change"
-                        value={accountInfo.change7d}
-                        subtext="LKR 4,500,000.00"
-                        subtextClass="text-green"
-                        icon={TrendingUp}
-                    />
-                    <AccountWidget
-                        title="Account Status"
-                        value={accountInfo.status}
-                        valueClass="text-green"
-                    />
+                    {/* Top Widgets Row */}
+                    <div className="dashboard-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: 0 }}>
+                        <AccountWidget
+                            title="Current Balance"
+                            value={accountInfo.balance}
+                        />
+                        <AccountWidget
+                            title="30-Day Average"
+                            value={accountInfo.avgBalance}
+                            subtext="0.0% variance"
+                            subtextClass="text-green"
+                        />
+                        <AccountWidget
+                            title="7-Day Change"
+                            value={accountInfo.change7d}
+                            subtext="LKR 4,500,000.00"
+                            subtextClass="text-green"
+                            icon={TrendingUp}
+                        />
+                        <AccountWidget
+                            title="Account Status"
+                            value={accountInfo.status}
+                            valueClass="text-green"
+                        />
+                    </div>
                 </div>
 
                 {/* Content Row: Side-by-Side Info and Chart */}

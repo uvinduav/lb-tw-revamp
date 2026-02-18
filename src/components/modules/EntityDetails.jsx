@@ -133,114 +133,117 @@ const EntityDetails = ({ entity, onNavigate }) => {
 
             <div className="dashboard-container" style={{ padding: '24px' }}>
 
-                {/* Entity Header Info */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                        <LogoImage src={entity.logo} name={entity.name} color={entity.color} size={48} />
-                        <div>
-                            <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
-                                {entity.name}
-                            </h1>
-                            <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-                                <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <Building2 size={14} /> {entity.banks} Banks
-                                </span>
-                                <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <Wallet size={14} /> {entity.accounts} Accounts
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                {/* Summary Widgets - 4 Columns */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: '24px' }}>
-                    {summaryWidgets.map((widget, index) => {
-                        const Icon = widget.icon;
-                        return (
-                            <div key={index} className="widget-card">
-                                <div className="widget-header">
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                        <h3 className="widget-title" style={{ margin: 0 }}>{widget.title}</h3>
-                                    </div>
-                                </div>
-                                <div style={{ marginTop: '12px' }}>
-                                    <div className="widget-value-row">
-                                        <span className="widget-value">{widget.value}</span>
-                                    </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-                                        <span className={`widget-change ${widget.changeType === 'positive' ? 'text-green' : 'text-red'}`} style={{ fontSize: '12px', display: 'flex', alignItems: 'center' }}>
-                                            {widget.changeType === 'positive' ? <TrendingUp size={12} style={{ marginRight: '4px' }} /> : <TrendingDown size={12} style={{ marginRight: '4px' }} />}
-                                            {widget.change}
-                                        </span>
-                                        <span style={{ fontSize: '12px', color: '#9ca3af' }}>vs last month</span>
-                                    </div>
+                {/* Header, Summary & Chart Section */}
+                <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
+                    {/* Entity Header Info */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                            <LogoImage src={entity.logo} name={entity.name} color={entity.color} size={48} />
+                            <div>
+                                <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
+                                    {entity.name}
+                                </h1>
+                                <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <Building2 size={14} /> {entity.banks} Banks
+                                    </span>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <Wallet size={14} /> {entity.accounts} Accounts
+                                    </span>
                                 </div>
                             </div>
-                        )
-                    })}
-                </div>
-
-                {/* Currency Distribution - Dashboard Style */}
-                <div className="widget-card" style={{ marginBottom: '24px' }}>
-                    <div className="widget-header">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <h3 className="widget-title" style={{ margin: 0 }}>Currency Distribution</h3>
                         </div>
-                        <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
+
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '48px', padding: '16px 0' }}>
-                        {/* Left: Chart */}
-                        <div style={{ width: '150px', height: '150px', position: 'relative', flexShrink: 0 }}>
-                            <Doughnut
-                                data={currencyDistributionData}
-                                options={{
-                                    cutout: '0%', // Full pie as per dashboard images
-                                    plugins: { legend: { display: false } },
-                                    maintainAspectRatio: false
-                                }}
-                            />
+                    {/* Summary Widgets - 4 Columns */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: '24px' }}>
+                        {summaryWidgets.map((widget, index) => {
+                            const Icon = widget.icon;
+                            return (
+                                <div key={index} className="widget-card">
+                                    <div className="widget-header">
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <h3 className="widget-title" style={{ margin: 0 }}>{widget.title}</h3>
+                                        </div>
+                                    </div>
+                                    <div style={{ marginTop: '12px' }}>
+                                        <div className="widget-value-row">
+                                            <span className="widget-value">{widget.value}</span>
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                                            <span className={`widget-change ${widget.changeType === 'positive' ? 'text-green' : 'text-red'}`} style={{ fontSize: '12px', display: 'flex', alignItems: 'center' }}>
+                                                {widget.changeType === 'positive' ? <TrendingUp size={12} style={{ marginRight: '4px' }} /> : <TrendingDown size={12} style={{ marginRight: '4px' }} />}
+                                                {widget.change}
+                                            </span>
+                                            <span style={{ fontSize: '12px', color: '#9ca3af' }}>vs last month</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+
+                    {/* Currency Distribution - Dashboard Style */}
+                    <div className="widget-card" style={{ marginBottom: 0 }}>
+                        <div className="widget-header">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <h3 className="widget-title" style={{ margin: 0 }}>Currency Distribution</h3>
+                            </div>
+                            <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
                         </div>
 
-                        {/* Right: Data Table */}
-                        <div style={{ flex: 1 }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ borderBottom: '1px solid var(--color-border)', height: '32px' }}>
-                                        <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>CURRENCY</th>
-                                        <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>AMOUNT</th>
-                                        <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>LKR EQUIVALENT</th>
-                                        <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>SHARE</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {[
-                                        { color: '#3b82f6', currency: 'LKR', amount: '954,945,469.80', lkr: 'Rs 954,945,469.80', share: '75.0%' },
-                                        { color: '#10b981', currency: 'USD', amount: '1,200,000.00', lkr: 'Rs 280,000,000.00', share: '20.0%' },
-                                        { color: '#f59e0b', currency: 'EUR', amount: '240,000.00', lkr: 'Rs 72,000,000.00', share: '5.0%' }
-                                    ].map((item, index, array) => (
-                                        <tr key={index} style={{ borderBottom: index < array.length - 1 ? '1px solid #f3f4f6' : 'none', height: '40px' }}>
-                                            <td>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: item.color }}></div>
-                                                    <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)' }}>{item.currency}</span>
-                                                </div>
-                                            </td>
-                                            <td style={{ textAlign: 'right' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{item.currency} {item.amount}</div>
-                                            </td>
-                                            <td style={{ textAlign: 'right' }}>
-                                                <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>{item.lkr}</div>
-                                            </td>
-                                            <td style={{ textAlign: 'right' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{item.share}</div>
-                                            </td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '48px', padding: '16px 0' }}>
+                            {/* Left: Chart */}
+                            <div style={{ width: '150px', height: '150px', position: 'relative', flexShrink: 0 }}>
+                                <Doughnut
+                                    data={currencyDistributionData}
+                                    options={{
+                                        cutout: '0%', // Full pie as per dashboard images
+                                        plugins: { legend: { display: false } },
+                                        maintainAspectRatio: false
+                                    }}
+                                />
+                            </div>
+
+                            {/* Right: Data Table */}
+                            <div style={{ flex: 1 }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead>
+                                        <tr style={{ borderBottom: '1px solid var(--color-border)', height: '32px' }}>
+                                            <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>CURRENCY</th>
+                                            <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>AMOUNT</th>
+                                            <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>LKR EQUIVALENT</th>
+                                            <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>SHARE</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {[
+                                            { color: '#3b82f6', currency: 'LKR', amount: '954,945,469.80', lkr: 'Rs 954,945,469.80', share: '75.0%' },
+                                            { color: '#10b981', currency: 'USD', amount: '1,200,000.00', lkr: 'Rs 280,000,000.00', share: '20.0%' },
+                                            { color: '#f59e0b', currency: 'EUR', amount: '240,000.00', lkr: 'Rs 72,000,000.00', share: '5.0%' }
+                                        ].map((item, index, array) => (
+                                            <tr key={index} style={{ borderBottom: index < array.length - 1 ? '1px solid #f3f4f6' : 'none', height: '40px' }}>
+                                                <td>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                        <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: item.color }}></div>
+                                                        <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)' }}>{item.currency}</span>
+                                                    </div>
+                                                </td>
+                                                <td style={{ textAlign: 'right' }}>
+                                                    <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{item.currency} {item.amount}</div>
+                                                </td>
+                                                <td style={{ textAlign: 'right' }}>
+                                                    <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>{item.lkr}</div>
+                                                </td>
+                                                <td style={{ textAlign: 'right' }}>
+                                                    <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{item.share}</div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

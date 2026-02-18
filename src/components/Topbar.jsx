@@ -17,6 +17,17 @@ import Popover from './common/Popover';
 const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, showForward, onForward, breadcrumb, onNavigate, onAlertsClick, onTasksClick }) => {
   const [notificationsAnchor, setNotificationsAnchor] = useState(null);
   const [userMenuAnchor, setUserMenuAnchor] = useState(null);
+  const [shouldWiggle, setShouldWiggle] = useState(false);
+
+  React.useEffect(() => {
+    // Check if alert count > 0 (hardcoded 1 for now)
+    const alertCount = 1; 
+    if (alertCount > 0) {
+      setShouldWiggle(true);
+      const timer = setTimeout(() => setShouldWiggle(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const handleNotificationsClick = (event) => {
     setNotificationsAnchor(notificationsAnchor ? null : event.currentTarget);
@@ -107,7 +118,7 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, sh
       </div>
 
       <div className="topbar-right-elements">
-        <div className="topbar-alert-pill" onClick={onAlertsClick}>
+        <div className={`topbar-alert-pill ${shouldWiggle ? 'wiggle' : ''}`} onClick={onAlertsClick}>
           <MessageSquareWarning size={14} />
           <span>1 Alerts</span>
         </div>

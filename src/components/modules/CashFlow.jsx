@@ -253,156 +253,157 @@ const CashFlow = ({ onNavigate }) => {
 
             <div className="dashboard-container">
 
-                {/* Header Section */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
-                    <div>
-                        <h1 style={{ fontSize: '20px', fontWeight: '600', color: '#111827', margin: '0 0 4px 0' }}>Daily Cash Position</h1>
-                        <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>Real-time account-level cash positions with daily tracking and variance analysis</p>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div className="filter-dropdown-container">
-                            <Filter size={14} className="text-gray" />
-                            <select
-                                value={selectedCompany}
-                                onChange={(e) => setSelectedCompany(e.target.value)}
-                                className="filter-select"
-                            >
-                                {companies.map(c => <option key={c} value={c}>{c}</option>)}
-                            </select>
-                            <ChevronDown size={14} className="text-gray select-arrow" />
+                {/* Header, Summary & Chart Section */}
+                <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
+                    {/* Header Section */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+                        <div>
+                            <h1 style={{ fontSize: '20px', fontWeight: '600', color: '#111827', margin: '0 0 4px 0' }}>Daily Cash Position</h1>
+                            <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>Real-time account-level cash positions with daily tracking and variance analysis</p>
                         </div>
-                        <button className="download-btn" title="Download Report">
-                            <Download size={14} />
-                        </button>
-                    </div>
-                </div>
-
-                {/* Summary Cards Row */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 1fr) minmax(320px, 1fr) 1fr', gap: '24px', marginBottom: '24px' }}>
-
-                    {/* Total Cash Balance Card */}
-                    <div className="widget-card">
-                        <div className="widget-header">
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <Wallet size={14} className="text-gray" />
-                                <h3 className="widget-title" style={{ margin: 0 }}>TOTAL CASH BALANCE</h3>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div className="filter-dropdown-container">
+                                <Filter size={14} className="text-gray" />
+                                <select
+                                    value={selectedCompany}
+                                    onChange={(e) => setSelectedCompany(e.target.value)}
+                                    className="filter-select"
+                                >
+                                    {companies.map(c => <option key={c} value={c}>{c}</option>)}
+                                </select>
+                                <ChevronDown size={14} className="text-gray select-arrow" />
                             </div>
-                            <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
-                        </div>
-
-                        <div style={{ marginTop: '0px' }}>
-                            <p className="widget-label">As of February 12, 2026</p>
-                            <div className="widget-value-row" style={{ margin: '8px 0' }}>
-                                <span className="widget-value-xl text-green">2,407.79 Mns</span>
-                                <span className="widget-label" style={{ marginBottom: '4px' }}>LKR</span>
-                            </div>
-
-                            <div style={{ borderTop: '1px solid #f3f4f6', paddingTop: '12px', marginTop: '12px' }}>
-                                <p className="widget-label" style={{ marginBottom: '4px' }}>Daily Movement (vs Yesterday)</p>
-                                <div className="widget-value-row">
-                                    <span className="widget-value text-green" style={{ fontSize: '16px' }}>~945.00 Mns</span>
-                                    <span className="widget-change text-green">+64.60%</span>
-                                    <TrendingUp size={14} className="text-green" />
-                                </div>
-                            </div>
+                            <button className="download-btn" title="Download Report">
+                                <Download size={14} />
+                            </button>
                         </div>
                     </div>
 
-                    {/* Previous Month Closing Card */}
-                    <div className="widget-card">
-                        <div className="widget-header">
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <Calendar size={14} className="text-gray" />
-                                <h3 className="widget-title" style={{ margin: 0 }}>PREVIOUS MONTH CLOSING</h3>
-                            </div>
-                            <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
-                        </div>
-
-                        <div style={{ marginTop: '8px' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', fontWeight: '400', color: '#111827' }}>
-                                <tbody>
-                                    <tr>
-                                        <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6' }}>Closing Balance (Jan 2026)</td>
-                                        <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>LKR 405.72M</td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6' }}>Current Balance</td>
-                                        <td className="text-green" style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>LKR 2,407.79M</td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6' }}>Month Change</td>
-                                        <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
-                                                <span className="text-green">+LKR 2,002.08M</span>
-                                                <span className="text-green" style={{ fontSize: '11px' }}>+493.46%</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{ padding: '6px 0' }}>Daily Variance</td>
-                                        <td style={{ padding: '6px 0', textAlign: 'right' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
-                                                <span className="text-green">+LKR 945.00M</span>
-                                                <span className="text-green" style={{ fontSize: '11px' }}>+64.60%</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    {/* Small Insight Widgets Column */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                        <div className="widget-card" style={{ flex: 1 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 1fr) minmax(320px, 1fr) 1fr', gap: '24px', marginBottom: '24px' }}>
+                        {/* Total Cash Balance Card */}
+                        <div className="widget-card">
                             <div className="widget-header">
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <TrendingUp size={14} className="text-green" />
-                                    <h3 className="widget-title" style={{ margin: 0 }}>MONTHLY GROWTH</h3>
+                                    <Wallet size={14} className="text-gray" />
+                                    <h3 className="widget-title" style={{ margin: 0 }}>TOTAL CASH BALANCE</h3>
                                 </div>
                                 <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
                             </div>
-                            <div style={{ marginTop: '8px' }}>
-                                <div className="widget-value-row">
-                                    <span className="widget-value text-green">+493.46%</span>
+
+                            <div style={{ marginTop: '0px' }}>
+                                <p className="widget-label">As of February 12, 2026</p>
+                                <div className="widget-value-row" style={{ margin: '8px 0' }}>
+                                    <span className="widget-value-xl text-black">2,407.79 Mns</span>
+                                    <span className="widget-label" style={{ marginBottom: '4px' }}>LKR</span>
                                 </div>
-                                <p className="widget-subtext">
-                                    +LKR 2,002.08M this month
-                                </p>
+
+                                <div style={{ borderTop: '1px solid #f3f4f6', paddingTop: '12px', marginTop: '12px' }}>
+                                    <p className="widget-label" style={{ marginBottom: '4px' }}>Daily Movement (vs Yesterday)</p>
+                                    <div className="widget-value-row">
+                                        <span className="widget-value text-black" style={{ fontSize: '16px' }}>~945.00 Mns</span>
+                                        <span className="widget-change text-black">+64.60%</span>
+                                        <TrendingUp size={14} className="text-black" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="widget-card" style={{ flex: 1 }}>
+                        {/* Previous Month Closing Card */}
+                        <div className="widget-card">
                             <div className="widget-header">
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <Globe size={14} className="text-primary" />
-                                    <h3 className="widget-title" style={{ margin: 0 }}>PORTFOLIO SCOPE</h3>
+                                    <Calendar size={14} className="text-gray" />
+                                    <h3 className="widget-title" style={{ margin: 0 }}>PREVIOUS MONTH CLOSING</h3>
                                 </div>
                                 <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
                             </div>
+
                             <div style={{ marginTop: '8px' }}>
-                                <div className="widget-value-row">
-                                    <span className="widget-value">26 Accounts</span>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', fontWeight: '400', color: '#111827' }}>
+                                    <tbody>
+                                        <tr>
+                                            <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6' }}>Closing Balance (Jan 2026)</td>
+                                            <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>LKR 405.72M</td>
+                                        </tr>
+                                        <tr>
+                                            <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6' }}>Current Balance</td>
+                                            <td className="text-black" style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>LKR 2,407.79M</td>
+                                        </tr>
+                                        <tr>
+                                            <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6' }}>Month Change</td>
+                                            <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
+                                                    <span className="text-black">+LKR 2,002.08M</span>
+                                                    <span className="text-black" style={{ fontSize: '11px' }}>+493.46%</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style={{ padding: '6px 0' }}>Daily Variance</td>
+                                            <td style={{ padding: '6px 0', textAlign: 'right' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
+                                                    <span className="text-black">+LKR 945.00M</span>
+                                                    <span className="text-black" style={{ fontSize: '11px' }}>+64.60%</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        {/* Small Insight Widgets Column */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                            <div className="widget-card" style={{ flex: 1 }}>
+                                <div className="widget-header">
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <TrendingUp size={14} className="text-black" />
+                                        <h3 className="widget-title" style={{ margin: 0 }}>MONTHLY GROWTH</h3>
+                                    </div>
+                                    <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
                                 </div>
-                                <p className="widget-subtext">
-                                    Multi-currency (3 Currencies)
-                                </p>
+                                <div style={{ marginTop: '8px' }}>
+                                    <div className="widget-value-row">
+                                        <span className="widget-value text-black">+493.46%</span>
+                                    </div>
+                                    <p className="widget-subtext">
+                                        +LKR 2,002.08M this month
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="widget-card" style={{ flex: 1 }}>
+                                <div className="widget-header">
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <Globe size={14} className="text-primary" />
+                                        <h3 className="widget-title" style={{ margin: 0 }}>PORTFOLIO SCOPE</h3>
+                                    </div>
+                                    <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
+                                </div>
+                                <div style={{ marginTop: '8px' }}>
+                                    <div className="widget-value-row">
+                                        <span className="widget-value">26 Accounts</span>
+                                    </div>
+                                    <p className="widget-subtext">
+                                        Multi-currency (3 Currencies)
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                {/* 30-Day Trend Chart */}
-                <div className="widget-card" style={{ marginBottom: '24px', padding: '24px' }}>
-                    <div className="widget-header" style={{ marginBottom: '16px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <LineChart size={16} className="text-gray" />
-                            <h3 className="widget-title" style={{ margin: 0 }}>30-DAY CASH POSITION TREND</h3>
+                    {/* 30-Day Trend Chart */}
+                    <div className="widget-card" style={{ marginBottom: 0, padding: '24px' }}>
+                        <div className="widget-header" style={{ marginBottom: '16px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <LineChart size={16} className="text-gray" />
+                                <h3 className="widget-title" style={{ margin: 0 }}>30-DAY CASH POSITION TREND</h3>
+                            </div>
+                            <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>Rolling 30-day view: Jan 14 - Feb 12, 2026</p>
                         </div>
-                        <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>Rolling 30-day view: Jan 14 - Feb 12, 2026</p>
-                    </div>
-                    <div style={{ height: '280px' }}>
-                        <Line data={trendData} options={chartOptions} />
+                        <div style={{ height: '280px' }}>
+                            <Line data={trendData} options={chartOptions} />
+                        </div>
                     </div>
                 </div>
 

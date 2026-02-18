@@ -359,64 +359,67 @@ const BankDetails = ({ entity, bank, onBack, onNavigate }) => {
 
             <div className="dashboard-container" style={{ padding: '24px' }}>
 
-                {/* Header Info */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-                    <LogoImage src={bankLogos[bank]} name={bank} size={48} />
-                    <div>
-                        <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
-                            {bank}
-                        </h1>
-                        <div style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-                            {entity.name}
+                {/* Header & Summary Section */}
+                <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
+                    {/* Header Info */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+                        <LogoImage src={bankLogos[bank]} name={bank} size={48} />
+                        <div>
+                            <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
+                                {bank}
+                            </h1>
+                            <div style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+                                {entity.name}
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Summary Widgets Grid */}
-                <div className="dashboard-grid">
-                    {summaryData.map((item, index) => (
-                        <SummaryWidget
-                            key={index}
-                            title={item.title}
-                            value={item.value}
-                            subtext={`Click to view details \u2192`}
-                            icon={item.icon}
-                            onClick={() => scrollToSection(item.target)}
-                        />
-                    ))}
-                </div>
+                    {/* Summary Widgets Grid */}
+                    <div className="dashboard-grid" style={{ marginBottom: '32px' }}>
+                        {summaryData.map((item, index) => (
+                            <SummaryWidget
+                                key={index}
+                                title={item.title}
+                                value={item.value}
+                                subtext={`Click to view details \u2192`}
+                                icon={item.icon}
+                                onClick={() => scrollToSection(item.target)}
+                            />
+                        ))}
+                    </div>
 
-                {/* Charts Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', marginBottom: '32px', width: '100%' }}>
-                    <div style={{ height: '100%' }}>
-                        <ChartCard
-                            title="Investment Breakdown"
-                            chartData={investmentData}
-                            details={investmentDetails}
-                        />
-                    </div>
-                    <div style={{ height: '100%' }}>
-                        <ChartCard
-                            title="FD Maturity - All Currencies"
-                            chartData={fdMaturityData}
-                            details={fdMaturityDetails}
-                        />
-                    </div>
-                    <div style={{ height: '100%' }}>
-                        <ChartCard
-                            title="LKR FD Maturity"
-                            chartData={lkrFdMaturityData}
-                            details={lkrFdMaturityDetails}
-                        />
-                    </div>
-                    <div style={{ height: '100%' }}>
-                        <ChartCard
-                            title="Foreign Currency Overview"
-                            chartType="bar"
-                            chartData={forexData}
-                            details={forexDetails}
-                            columns={true}
-                        />
+                    {/* Charts Grid */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', width: '100%', marginBottom: 0 }}>
+                        <div style={{ height: '100%' }}>
+                            <ChartCard
+                                title="Investment Breakdown"
+                                chartData={investmentData}
+                                details={investmentDetails}
+                            />
+                        </div>
+                        <div style={{ height: '100%' }}>
+                            <ChartCard
+                                title="FD Maturity - All Currencies"
+                                chartData={fdMaturityData}
+                                details={fdMaturityDetails}
+                            />
+                        </div>
+                        <div style={{ height: '100%' }}>
+                            <ChartCard
+                                title="LKR FD Maturity"
+                                chartData={lkrFdMaturityData}
+                                details={lkrFdMaturityDetails}
+                            />
+                        </div>
+                        <div style={{ height: '100%' }}>
+                            <ChartCard
+                                title="Foreign Currency Overview"
+                                chartType="bar"
+                                chartData={forexData}
+                                details={forexDetails}
+                                columns={true}
+                            />
+                        </div>
                     </div>
                 </div>
 

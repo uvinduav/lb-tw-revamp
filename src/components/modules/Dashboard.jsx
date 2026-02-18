@@ -580,50 +580,52 @@ const Dashboard = ({ onNavigate }) => {
 
       <div className="dashboard-container" onScroll={handleScroll}>
 
-        {/* Widgets Grid */}
-        <div id="overview" className="dashboard-grid">
-          {widgets.map((widget, index) => {
-            const Icon = widget.icon;
-            return (
-              <div
-                key={index}
-                className={`widget-card ${widget.onClick ? 'clickable' : ''}`}
-                onClick={widget.onClick}
-                style={widget.onClick ? { cursor: 'pointer' } : {}}
-              >
-                <div className="widget-header">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    {Icon && <Icon size={14} className="text-gray" />}
-                    <h3 className="widget-title" style={{ margin: 0 }}>{widget.title}</h3>
+        {/* Widgets Grid Section */}
+        <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
+          <div id="overview" className="dashboard-grid" style={{ marginBottom: 0 }}>
+            {widgets.map((widget, index) => {
+              const Icon = widget.icon;
+              return (
+                <div
+                  key={index}
+                  className={`widget-card ${widget.onClick ? 'clickable' : ''}`}
+                  onClick={widget.onClick}
+                  style={widget.onClick ? { cursor: 'pointer' } : {}}
+                >
+                  <div className="widget-header">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      {Icon && <Icon size={14} className="text-gray" />}
+                      <h3 className="widget-title" style={{ margin: 0 }}>{widget.title}</h3>
+                    </div>
                   </div>
-                </div>
 
-                <div style={{ marginTop: '0px' }}>
-                  <div className="widget-value-row">
-                    <span className={`widget-value ${isNegative(widget.value) ? 'text-red' : ''}`}>
-                      {widget.value}
-                    </span>
-                    {widget.change && (
-                      <span className={`widget-change ${widget.changeType === 'positive' ? 'text-green' :
-                        widget.changeType === 'negative' ? 'text-red' : 'text-gray'
-                        }`}>
-                        {widget.change}
+                  <div style={{ marginTop: '0px' }}>
+                    <div className="widget-value-row">
+                      <span className={`widget-value ${isNegative(widget.value) ? 'text-red' : ''}`}>
+                        {widget.value}
                       </span>
+                      {widget.change && (
+                        <span className={`widget-change ${widget.changeType === 'positive' ? 'text-green' :
+                          widget.changeType === 'negative' ? 'text-red' : 'text-gray'
+                          }`}>
+                          {widget.change}
+                        </span>
+                      )}
+                    </div>
+                    {widget.onClick ? (
+                      <div style={{ marginTop: '4px' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 500, color: '#3b82f6' }}>View more</span>
+                      </div>
+                    ) : (
+                      <p className="widget-subtext">
+                        {widget.subtext}
+                      </p>
                     )}
                   </div>
-                  {widget.onClick ? (
-                    <div style={{ marginTop: '4px' }}>
-                      <span style={{ fontSize: '11px', fontWeight: 500, color: '#3b82f6' }}>View more</span>
-                    </div>
-                  ) : (
-                    <p className="widget-subtext">
-                      {widget.subtext}
-                    </p>
-                  )}
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         {/* Entity Overview Section */}

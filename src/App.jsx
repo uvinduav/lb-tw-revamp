@@ -34,6 +34,7 @@ import InvestmentDetails from './components/modules/InvestmentDetails';
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
 import SlidingPanel from './components/common/SlidingPanel';
 import AlertsPanel from './components/modules/AlertsPanel';
+import TasksPanel from './components/modules/TasksPanel';
 
 function App() {
   const [activePage, setActivePage] = useState('Dashboard');
@@ -193,10 +194,7 @@ function App() {
       </div>
 
       <AlertsPanel isOpen={isAlertsOpen} onClose={() => setIsAlertsOpen(false)} />
-      
-      <SlidingPanel isOpen={isTasksOpen} onClose={() => setIsTasksOpen(false)} title="Tasks">
-        <div style={{ padding: '24px', color: '#666' }}>Tasks panel content coming soon...</div>
-      </SlidingPanel>
+      <TasksPanel isOpen={isTasksOpen} onClose={() => setIsTasksOpen(false)} />
     </div>
   );
 }
