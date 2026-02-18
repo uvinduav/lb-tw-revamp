@@ -563,14 +563,16 @@ const Dashboard = ({ onNavigate }) => {
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
-              <button
-                key={tab.id}
-                className={`tab-item ${activeTab === tab.id ? 'active' : ''}`}
-                onClick={() => scrollToSection(tab.id)}
-              >
-                {Icon && <Icon size={14} />}
-                {tab.label}
-              </button>
+              <React.Fragment key={tab.id}>
+                {tab.id === 'cash-flow' && <div className="vertical-divider" style={{ margin: '0 8px', alignSelf: 'center' }} />}
+                <button
+                  className={`tab-item ${activeTab === tab.id ? 'active' : ''}`}
+                  onClick={() => scrollToSection(tab.id)}
+                >
+                  {Icon && <Icon size={14} />}
+                  {tab.label}
+                </button>
+              </React.Fragment>
             );
           })}
         </div>

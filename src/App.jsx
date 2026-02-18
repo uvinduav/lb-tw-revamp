@@ -32,12 +32,18 @@ import CashPositionDetails from './components/modules/CashPositionDetails';
 import InvestmentDetails from './components/modules/InvestmentDetails';
 
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
+import SlidingPanel from './components/common/SlidingPanel';
+import AlertsPanel from './components/modules/AlertsPanel';
 
 function App() {
   const [activePage, setActivePage] = useState('Dashboard');
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [selectedBank, setSelectedBank] = useState(null);
   const [selectedAccount, setSelectedAccount] = useState(null);
+
+  // Panel State
+  const [isAlertsOpen, setIsAlertsOpen] = useState(false);
+  const [isTasksOpen, setIsTasksOpen] = useState(false);
 
   // History state for chronological navigation
   const [history, setHistory] = useState([{ page: 'Dashboard', entity: null, bank: null, account: null }]);
@@ -180,9 +186,17 @@ function App() {
                       activePage === 'Investment Details' ? 'Dashboard > Investment Details' :
                         activePage
           }
+          onAlertsClick={() => setIsAlertsOpen(true)}
+          onTasksClick={() => setIsTasksOpen(true)}
         />
         {renderPage()}
       </div>
+
+      <AlertsPanel isOpen={isAlertsOpen} onClose={() => setIsAlertsOpen(false)} />
+      
+      <SlidingPanel isOpen={isTasksOpen} onClose={() => setIsTasksOpen(false)} title="Tasks">
+        <div style={{ padding: '24px', color: '#666' }}>Tasks panel content coming soon...</div>
+      </SlidingPanel>
     </div>
   );
 }

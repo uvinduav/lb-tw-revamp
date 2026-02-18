@@ -27,6 +27,32 @@ import {
 } from 'chart.js';
 import { Doughnut, Bar } from 'react-chartjs-2';
 
+import bankLogoSc from '../../assets/bank-icons/scbl.png';
+import bankLogoNtb from '../../assets/bank-icons/ntb.png';
+import bankLogoCiti from '../../assets/bank-icons/citi.png';
+import bankLogoHnb from '../../assets/bank-icons/hnb.png';
+import bankLogoBoc from '../../assets/bank-icons/bocc.png';
+import bankLogoCom from '../../assets/bank-icons/comb.png';
+import bankLogoDeut from '../../assets/bank-icons/deut.png';
+import bankLogoSamp from '../../assets/bank-icons/sampath.png';
+import bankLogoNdb from '../../assets/bank-icons/ndb.png';
+import bankLogoPb from '../../assets/bank-icons/pb.png';
+import bankLogoDfcc from '../../assets/bank-icons/dfcc.png';
+
+const bankLogos = {
+    'Standard Chartered': bankLogoSc,
+    'Nations Trust Bank': bankLogoNtb,
+    'Citi Bank': bankLogoCiti,
+    'Hatton National Bank': bankLogoHnb,
+    'Bank of China': bankLogoBoc,
+    'Commercial Bank': bankLogoCom,
+    'Deutsche Bank': bankLogoDeut,
+    'Sampath Bank': bankLogoSamp,
+    'NDB Bank': bankLogoNdb,
+    'People\'s Bank': bankLogoPb,
+    'DFCC Bank': bankLogoDfcc
+};
+
 ChartJS.register(
     ArcElement,
     Tooltip,
@@ -81,14 +107,10 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
 };
 
 // Reusable Top Row Summary Card
-const SummaryWidget = ({ title, value, subtext, icon: Icon, onClick }) => (
+const SummaryWidget = ({ title, value, subtext, onClick }) => (
     <div className="widget-card" onClick={onClick} style={{ cursor: 'pointer' }}>
         <div className="widget-header">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                {Icon && <Icon size={14} className="text-gray" />}
-                <h3 className="widget-title" style={{ margin: 0 }}>{title}</h3>
-            </div>
-            <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
+            <h3 className="widget-title" style={{ margin: 0 }}>{title}</h3>
         </div>
 
         <div style={{ marginTop: '0px' }}>
@@ -152,10 +174,9 @@ const ChartCard = (props) => {
     };
 
     return (
-        <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <h3 className="widget-title" style={{ margin: 0 }}>{title}</h3>
-                <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
             </div>
 
             <div style={{ flex: 1, display: 'flex', gap: '32px', alignItems: 'flex-start', flexDirection: chartType === 'bar' ? 'column' : 'row' }}>
@@ -340,7 +361,7 @@ const BankDetails = ({ entity, bank, onBack, onNavigate }) => {
 
                 {/* Header Info */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-                    <LogoImage name={bank} size={48} />
+                    <LogoImage src={bankLogos[bank]} name={bank} size={48} />
                     <div>
                         <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
                             {bank}
@@ -408,7 +429,7 @@ const BankDetails = ({ entity, bank, onBack, onNavigate }) => {
                         <table className="data-table" style={{ minWidth: '100%' }}>
                             <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
                                 <tr>
-                                    <th style={{ paddingLeft: '24px' }}>ACCOUNT NUMBER</th>
+                                    <th>ACCOUNT NUMBER</th>
                                     <th>ACCOUNT NAME</th>
                                     <th>TYPE</th>
                                     <th>CURRENCY</th>
@@ -423,7 +444,7 @@ const BankDetails = ({ entity, bank, onBack, onNavigate }) => {
                                         onClick={() => onNavigate && onNavigate('Account Details', entity, bank, acc)}
                                         style={{ cursor: 'pointer' }}
                                     >
-                                        <td style={{ paddingLeft: '24px', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{acc.accountNo}</td>
+                                        <td style={{ fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{acc.accountNo}</td>
                                         <td style={{ color: 'var(--color-text-main)' }}>{acc.name}</td>
                                         <td style={{ color: 'var(--color-text-main)' }}>{acc.type}</td>
                                         <td><span className="currency-badge">{acc.currency}</span></td>
@@ -444,7 +465,7 @@ const BankDetails = ({ entity, bank, onBack, onNavigate }) => {
                         <table className="data-table" style={{ minWidth: '100%' }}>
                             <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
                                 <tr>
-                                    <th style={{ paddingLeft: '24px' }}>TYPE</th>
+                                    <th>TYPE</th>
                                     <th style={{ textAlign: 'right' }}>AMOUNT</th>
                                     <th style={{ textAlign: 'right' }}>OUTSTANDING</th>
                                     <th style={{ textAlign: 'right' }}>INTEREST RATE</th>
@@ -454,7 +475,7 @@ const BankDetails = ({ entity, bank, onBack, onNavigate }) => {
                             <tbody>
                                 {loanFacilities.map((loan, idx) => (
                                     <tr key={idx} className="hover-row">
-                                        <td style={{ paddingLeft: '24px', color: 'var(--color-text-main)' }}>{loan.type}</td>
+                                        <td style={{ color: 'var(--color-text-main)' }}>{loan.type}</td>
                                         <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{loan.amount}</td>
                                         <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 500, color: 'var(--color-text-main)' }}>{loan.outstanding}</td>
                                         <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{loan.rate}</td>
@@ -475,7 +496,7 @@ const BankDetails = ({ entity, bank, onBack, onNavigate }) => {
                         <table className="data-table" style={{ minWidth: '100%' }}>
                             <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
                                 <tr>
-                                    <th style={{ paddingLeft: '24px' }}>FD NUMBER</th>
+                                    <th>FD NUMBER</th>
                                     <th style={{ textAlign: 'right' }}>AMOUNT</th>
                                     <th style={{ textAlign: 'right' }}>INTEREST RATE</th>
                                     <th style={{ textAlign: 'right' }}>MATURITY DATE</th>
@@ -485,7 +506,7 @@ const BankDetails = ({ entity, bank, onBack, onNavigate }) => {
                             <tbody>
                                 {fixedDeposits.map((fd, idx) => (
                                     <tr key={idx} className="hover-row">
-                                        <td style={{ paddingLeft: '24px', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{fd.fdNo}</td>
+                                        <td style={{ fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{fd.fdNo}</td>
                                         <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 500, color: 'var(--color-text-main)' }}>{fd.amount}</td>
                                         <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{fd.rate}</td>
                                         <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{fd.maturity}</td>

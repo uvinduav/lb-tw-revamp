@@ -115,10 +115,11 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
 const InvestmentDetails = ({ onNavigate }) => {
     // Mock Data
     const summaryData = {
-        totalInvestments: "Rs 11,488,720,084.07",
-        avgReturn: "10.04%",
-        activeFDs: 20,
-        maturingSoon: 5
+        totalInvestments: "Rs 11,453,278,578.97",
+        activeFDs: 17,
+        totalPrincipal: "Rs 10,346,720,084.07",
+        interestEarned: "Rs 1,106,558,494.90",
+        wair: "9.52%"
     };
 
     const categoryDistributionData = {
@@ -302,19 +303,19 @@ const InvestmentDetails = ({ onNavigate }) => {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
                     <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
                         <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Active FDs</div>
-                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.activeFDs}</div>
+                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'black' }}>{summaryData.activeFDs}</div>
                     </div>
                     <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Maturing (30 Days)</div>
-                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.maturingSoon}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Total Principal</div>
+                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'black' }}>{summaryData.totalPrincipal}</div>
                     </div>
                     <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Avg Return Rate</div>
-                        <div style={{ fontSize: '18px', fontWeight: 600, color: '#10b981' }}>{summaryData.avgReturn}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Interest Earned</div>
+                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'black' }}>{summaryData.interestEarned}</div>
                     </div>
                     <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>YTD Interest</div>
-                        <div style={{ fontSize: '18px', fontWeight: 600, color: '#10b981' }}>+Rs 235M</div>
+                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>WAIR</div>
+                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'black' }}>{summaryData.wair}</div>
                     </div>
                 </div>
 

@@ -10,6 +10,10 @@ import {
     TrendingDown,
     LineChart
 } from 'lucide-react';
+import bankLogoCom from '../../assets/bank-icons/comb.png';
+import bankLogoHnb from '../../assets/bank-icons/hnb.png';
+import bankLogoSc from '../../assets/bank-icons/scbl.png';
+import bankLogoSamp from '../../assets/bank-icons/sampath.png';
 import {
     Chart as ChartJS,
     ArcElement,
@@ -106,10 +110,10 @@ const EntityDetails = ({ entity, onNavigate }) => {
 
     // Mock Account Data - Summary by Bank
     const accountData = [
-        { bank: 'Commercial Bank', counts: 3, savings: 'Rs 150.00M', current: 'Rs 300.00M', fd: 'Rs 0.00M', stl: 'Rs 1,000.00M', ltl: 'Rs 0.00M', total: 'Rs 1,450.00M' },
-        { bank: 'Hatton National Bank', counts: 2, savings: 'Rs 138.72M', current: 'Rs 205.35M', fd: 'Rs 0.00M', stl: 'Rs 0.00M', ltl: 'Rs 6.00M', total: 'Rs 350.07M' },
-        { bank: 'Standard Chartered', counts: 4, savings: 'Rs 0.00M', current: 'Rs 0.00M', fd: 'Rs 20,000.00M', stl: 'Rs 0.00M', ltl: 'Rs 0.00M', total: 'Rs 20,000.00M' },
-        { bank: 'Sampath Bank', counts: 1, savings: 'Rs 0.00M', current: 'Rs 0.00M', fd: 'Rs 16,031.31M', stl: 'Rs 1,303.60M', ltl: 'Rs 0.00M', total: 'Rs 17,334.91M' },
+        { bank: 'Commercial Bank', logo: bankLogoCom, counts: 3, savings: 'Rs 150.00M', current: 'Rs 300.00M', fd: 'Rs 0.00M', stl: 'Rs 1,000.00M', ltl: 'Rs 0.00M', total: 'Rs 1,450.00M' },
+        { bank: 'Hatton National Bank', logo: bankLogoHnb, counts: 2, savings: 'Rs 138.72M', current: 'Rs 205.35M', fd: 'Rs 0.00M', stl: 'Rs 0.00M', ltl: 'Rs 6.00M', total: 'Rs 350.07M' },
+        { bank: 'Standard Chartered', logo: bankLogoSc, counts: 4, savings: 'Rs 0.00M', current: 'Rs 0.00M', fd: 'Rs 20,000.00M', stl: 'Rs 0.00M', ltl: 'Rs 0.00M', total: 'Rs 20,000.00M' },
+        { bank: 'Sampath Bank', logo: bankLogoSamp, counts: 1, savings: 'Rs 0.00M', current: 'Rs 0.00M', fd: 'Rs 16,031.31M', stl: 'Rs 1,303.60M', ltl: 'Rs 0.00M', total: 'Rs 17,334.91M' },
     ];
 
     // Mock Chart Data
@@ -158,7 +162,6 @@ const EntityDetails = ({ entity, onNavigate }) => {
                             <div key={index} className="widget-card">
                                 <div className="widget-header">
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                        {Icon && <Icon size={14} className="text-gray" />}
                                         <h3 className="widget-title" style={{ margin: 0 }}>{widget.title}</h3>
                                     </div>
                                 </div>
@@ -183,7 +186,6 @@ const EntityDetails = ({ entity, onNavigate }) => {
                 <div className="widget-card" style={{ marginBottom: '24px' }}>
                     <div className="widget-header">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <TrendingUp size={14} className="text-gray" />
                             <h3 className="widget-title" style={{ margin: 0 }}>Currency Distribution</h3>
                         </div>
                         <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
@@ -233,7 +235,7 @@ const EntityDetails = ({ entity, onNavigate }) => {
                                                 <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>{item.lkr}</div>
                                             </td>
                                             <td style={{ textAlign: 'right' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{item.share}</div>
+                                                <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{item.share}</div>
                                             </td>
                                         </tr>
                                     ))}
@@ -269,12 +271,12 @@ const EntityDetails = ({ entity, onNavigate }) => {
                                     <tr key={idx} className="hover-row" onClick={() => onNavigate && onNavigate('Bank Details', entity, account.bank)}>
                                         <td style={{ paddingLeft: '24px' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <LogoImage name={account.bank} size={24} />
+                                                <LogoImage src={account.logo} name={account.bank} size={24} />
                                                 <span style={{ fontWeight: 500 }}>{account.bank}</span>
                                             </div>
                                         </td>
                                         <td style={{ color: 'var(--color-text-main)', textAlign: 'center' }}>{account.counts}</td>
-                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 600, color: 'var(--color-text-main)' }}>{account.total}</td>
+                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 400, color: 'var(--color-text-main)' }}>{account.total}</td>
                                         <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{account.savings}</td>
                                         <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{account.current}</td>
                                         <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{account.fd}</td>
