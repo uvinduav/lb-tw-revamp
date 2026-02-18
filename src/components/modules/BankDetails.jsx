@@ -126,7 +126,7 @@ const SummaryWidget = ({ title, value, subtext, onClick }) => (
 
 // Reusable Chart Card Component
 const ChartCard = (props) => {
-    const { title, subtext, chartData, details, columns, chartType = 'doughnut', icon: Icon } = props;
+    const { title, chartData, details, columns, chartType = 'doughnut', icon: Icon } = props;
 
     const doughnutOptions = {
         cutout: '0%',
@@ -240,7 +240,7 @@ const ChartCard = (props) => {
 };
 
 
-const BankDetails = ({ entity, bank, onBack, onNavigate }) => {
+const BankDetails = ({ entity, bank, onNavigate }) => {
     if (!entity || !bank) return null;
 
     const scrollToSection = (id) => {

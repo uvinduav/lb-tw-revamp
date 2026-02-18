@@ -132,7 +132,7 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, sh
 
         <div style={{ position: 'relative' }}>
           <div 
-            className={`topbar-icon-box ${Boolean(notificationsAnchor) ? 'active' : ''}`}
+            className={`topbar-icon-box ${notificationsAnchor ? 'active' : ''}`}
             onClick={handleNotificationsClick}
           >
             <Bell size={16} />
@@ -182,7 +182,7 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, sh
 
         <div style={{ position: 'relative' }}>
           <div 
-            className={`user-profile ${Boolean(userMenuAnchor) ? 'active' : ''}`}
+            className={`user-profile ${userMenuAnchor ? 'active' : ''}`}
             onClick={handleUserMenuClick}
           >
             <User size={16} />

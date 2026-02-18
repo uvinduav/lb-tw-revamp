@@ -56,7 +56,7 @@ const AccountWidget = ({ title, value, subtext, subtextClass, valueClass, icon: 
     </div>
 );
 
-const AccountDetails = ({ account, bank, entity, onBack }) => {
+const AccountDetails = ({ account, bank }) => {
     if (!account) return null;
 
     // --- Mock Data ---

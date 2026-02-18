@@ -111,7 +111,7 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
 };
 
 
-const DebtDetails = ({ onNavigate }) => {
+const DebtDetails = () => {
     // Mock Data
     const summaryData = {
         totalOutstanding: "LKR 2,585,033,333.32",

@@ -112,7 +112,7 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
 };
 
 
-const InvestmentDetails = ({ onNavigate }) => {
+const InvestmentDetails = () => {
     // Mock Data
     const summaryData = {
         totalInvestments: "Rs 11,453,278,578.97",
