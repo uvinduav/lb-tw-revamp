@@ -28,14 +28,14 @@ const topLabelsPlugin = {
                     ctx.font = '500 9px Inter, sans-serif';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'bottom';
-                    
+
                     let label;
                     if (value > 0) {
                         label = value.toLocaleString() + 'M';
                     } else {
                         label = '0M';
                     }
-                    
+
                     ctx.fillText(label, bar.x, bar.y - 5);
                 }
             });
@@ -135,10 +135,10 @@ const DebtDetails = () => {
     };
 
     const interestTypeData = {
-        labels: ['Fixed', 'Floating', 'Hybrid'],
+        labels: ['Fixed', 'Floating'],
         datasets: [{
-            data: [89.9, 10.0, 0.0],
-            backgroundColor: ['#3b82f6', '#f97316', '#a855f7'],
+            data: [90.0, 10.0],
+            backgroundColor: ['#3b82f6', '#f97316'],
             borderWidth: 2,
             borderColor: '#ffffff'
         }]
@@ -287,13 +287,26 @@ const DebtDetails = () => {
                                     responsive: true,
                                     maintainAspectRatio: false,
                                     plugins: { legend: { display: false } },
+                                    onClick: (event, elements) => {
+                                        if (elements.length > 0) {
+                                            const index = elements[0].index;
+                                            const bankId = banks[index].id;
+                                            const element = document.getElementById(`bank-section-${bankId}`);
+                                            if (element) {
+                                                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                            }
+                                        }
+                                    },
+                                    onHover: (event, chartElement) => {
+                                        event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                                    },
                                     scales: {
-                                        y: { 
-                                            beginAtZero: true, 
+                                        y: {
+                                            beginAtZero: true,
                                             grid: { color: '#f3f4f6' },
                                             grace: '10%'
                                         },
-                                        x: { 
+                                        x: {
                                             grid: { display: false },
                                             ticks: {
                                                 autoSkip: false,
@@ -337,7 +350,7 @@ const DebtDetails = () => {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '48px', paddingBottom: '48px' }}>
                 {banks.map((bank) => (
-                    <div key={bank.id}>
+                    <div key={bank.id} id={`bank-section-${bank.id}`}>
 
                         {/* Bank Header Info - Outside Table */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px', paddingLeft: '4px' }}>
@@ -394,11 +407,11 @@ const DebtDetails = () => {
                                             <td style={{ fontSize: '13px', color: 'var(--color-text-main)', whiteSpace: 'nowrap' }}>{loan.frequency}</td>
                                             <td style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
                                                 <div
-                                                    style={{ 
-                                                        fontSize: '13px', 
-                                                        fontWeight: 400, 
-                                                        color: 'var(--color-text-main)', 
-                                                        fontFamily: 'monospace', 
+                                                    style={{
+                                                        fontSize: '13px',
+                                                        fontWeight: 400,
+                                                        color: 'var(--color-text-main)',
+                                                        fontFamily: 'monospace',
                                                         cursor: loan.isForeign ? 'help' : 'default',
                                                         display: 'inline-flex',
                                                         alignItems: 'center',

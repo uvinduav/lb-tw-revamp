@@ -4,10 +4,8 @@ import {
     Wallet,
     CreditCard,
     Activity,
-    TrendingUp,
     Download,
     RotateCw,
-    TrendingDown,
     LineChart
 } from 'lucide-react';
 import bankLogoCom from '../../assets/bank-icons/comb.png';
@@ -171,13 +169,7 @@ const EntityDetails = ({ entity, onNavigate }) => {
                                         <div className="widget-value-row">
                                             <span className="widget-value">{widget.value}</span>
                                         </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-                                            <span className={`widget-change ${widget.changeType === 'positive' ? 'text-green' : 'text-red'}`} style={{ fontSize: '12px', display: 'flex', alignItems: 'center' }}>
-                                                {widget.changeType === 'positive' ? <TrendingUp size={12} style={{ marginRight: '4px' }} /> : <TrendingDown size={12} style={{ marginRight: '4px' }} />}
-                                                {widget.change}
-                                            </span>
-                                            <span style={{ fontSize: '12px', color: '#9ca3af' }}>vs last month</span>
-                                        </div>
+
                                     </div>
                                 </div>
                             )

@@ -198,11 +198,24 @@ const ChartCard = (props) => {
                 {details && chartType !== 'bar' && (
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         {details.map((item, idx) => (
-                            <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '13px' }}>
+                            <div key={idx} style={{
+                                display: 'grid',
+                                gridTemplateColumns: item.count !== undefined ? '1.5fr auto 1.5fr' : '1fr 1fr',
+                                alignItems: 'center',
+                                gap: '8px',
+                                fontSize: '13px'
+                            }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: item.color }}></div>
                                     <span style={{ color: 'var(--color-text-secondary)', fontWeight: 400 }}>{item.label}</span>
                                 </div>
+
+                                {item.count !== undefined && (
+                                    <div style={{ textAlign: 'center', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>
+                                        {item.count}
+                                    </div>
+                                )}
+
                                 <div style={{ textAlign: 'right' }}>
                                     <div style={{ fontWeight: 500, color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{item.value}</div>
                                     {item.subtext && <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>{item.subtext}</div>}
@@ -216,20 +229,31 @@ const ChartCard = (props) => {
             {/* Bottom Section for Bar Chart (Data Table style) */}
             {chartType === 'bar' && columns && (
                 <div style={{ marginTop: '20px', borderTop: '1px solid #f3f4f6', paddingTop: '16px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '8px', marginBottom: '12px', paddingBottom: '8px', borderBottom: '1px solid #f3f4f6' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase' }}>Currency / Type</span>
+                        <span style={{ fontSize: '11px', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', textAlign: 'right' }}>Avg Rate</span>
+                        <span style={{ fontSize: '11px', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', textAlign: 'right' }}>Amount</span>
+                    </div>
                     {details.map((item, idx) => (
                         <div key={idx} style={{ marginBottom: '16px' }}>
-                            <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px' }}>{item.currency}</div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '4px' }}>
-                                <span style={{ color: '#10b981' }}>Deposits:</span>
-                                <span style={{ fontFamily: 'monospace' }}>{item.deposits}</span>
+                            <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px', color: '#111827' }}>{item.currency}</div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '8px', fontSize: '13px', marginBottom: '6px', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981' }}></div>
+                                    <span style={{ color: '#374151' }}>Deposits</span>
+                                </div>
+                                <span style={{ fontFamily: 'monospace', color: '#6b7280', fontSize: '12px', textAlign: 'right' }}>{item.avgRate}</span>
+                                <span style={{ fontFamily: 'monospace', textAlign: 'right', fontWeight: 500 }}>{item.deposits}</span>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '4px' }}>
-                                <span style={{ color: '#ef4444' }}>Loans:</span>
-                                <span style={{ fontFamily: 'monospace' }}>{item.loans}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#6b7280' }}>
-                                <span>Avg Rate: {item.avgRate}</span>
-                                <span>Avg Rate: {item.loanRate}</span>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '8px', fontSize: '13px', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ef4444' }}></div>
+                                    <span style={{ color: '#374151' }}>Loans</span>
+                                </div>
+                                <span style={{ fontFamily: 'monospace', color: '#6b7280', fontSize: '12px', textAlign: 'right' }}>{item.loanRate}</span>
+                                <span style={{ fontFamily: 'monospace', textAlign: 'right', fontWeight: 500 }}>{item.loans}</span>
                             </div>
                         </div>
                     ))}
@@ -300,11 +324,11 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
     };
 
     const lkrFdMaturityDetails = [
-        { label: 'Total', value: 'Rs 500.00M', color: 'transparent' },
-        { label: '0-3 Months', value: '0.0%', color: '#3b82f6' },
-        { label: '3-6 Months', value: '0.0%', color: '#10b981' },
-        { label: '6-12 Months', value: '0.0%', color: '#f59e0b' },
-        { label: '12+ Months', value: 'Rs 500.00M (1 FDs)', color: '#ef4444' },
+        { label: 'Total FDs', value: 'Rs 500.00M', count: 1, color: 'transparent' },
+        { label: '0-3 Months', value: '0.0%', count: 0, color: '#3b82f6' },
+        { label: '3-6 Months', value: '0.0%', count: 0, color: '#10b981' },
+        { label: '6-12 Months', value: '0.0%', count: 0, color: '#f59e0b' },
+        { label: '12+ Months', value: 'Rs 500.00M', count: 1, color: '#ef4444' },
     ];
 
     const forexData = {
@@ -337,9 +361,9 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
 
     // Mock Data for Operating Accounts
     const operatingAccounts = [
-        { accountNo: '1100023456', name: 'Operational Account', type: 'Current', currency: 'LKR', balance: '250,500,000.00' },
-        { accountNo: '1100023457', name: 'Payroll Account', type: 'Current', currency: 'LKR', balance: '50,000,000.00' },
-        { accountNo: '1100023458', name: 'Collection Account', type: 'Savings', currency: 'USD', balance: '1,200,000.00' },
+        { accountNo: '1100023456', company: 'Lanka Bell', name: 'Operational Account', type: 'Current', currency: 'LKR', avgBalance: '240,000,000.00', balance: '250,500,000.00', trend: 4.5 },
+        { accountNo: '1100023457', company: 'Bell Solutions', name: 'Payroll Account', type: 'Current', currency: 'LKR', avgBalance: '48,000,000.00', balance: '50,000,000.00', trend: 2.1 },
+        { accountNo: '1100023458', company: 'Lanka Bell', name: 'Collection Account', type: 'Savings', currency: 'USD', avgBalance: '1,150,000.00', balance: '1,200,000.00', trend: -1.2 },
     ];
 
     // Mock Data for Loan Facilities
@@ -433,10 +457,13 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
                             <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
                                 <tr>
                                     <th>ACCOUNT NUMBER</th>
+                                    <th>COMPANY</th>
                                     <th>ACCOUNT NAME</th>
                                     <th>TYPE</th>
                                     <th>CURRENCY</th>
-                                    <th style={{ textAlign: 'right', paddingRight: '24px' }}>BALANCE</th>
+                                    <th style={{ textAlign: 'right' }}>AVG BALANCE</th>
+                                    <th style={{ textAlign: 'right' }}>BALANCE</th>
+                                    <th style={{ textAlign: 'right', paddingRight: '24px' }}>TREND</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -448,10 +475,30 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
                                         style={{ cursor: 'pointer' }}
                                     >
                                         <td style={{ fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{acc.accountNo}</td>
+                                        <td style={{ color: 'var(--color-text-main)' }}>{acc.company}</td>
                                         <td style={{ color: 'var(--color-text-main)' }}>{acc.name}</td>
                                         <td style={{ color: 'var(--color-text-main)' }}>{acc.type}</td>
                                         <td><span className="currency-badge">{acc.currency}</span></td>
-                                        <td style={{ textAlign: 'right', paddingRight: '24px', fontFamily: 'monospace', fontWeight: 500 }}>{acc.balance}</td>
+                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>
+                                            <span style={{ color: '#9ca3af' }}>{acc.currency} </span>{acc.avgBalance}
+                                        </td>
+                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 500 }}>
+                                            <span style={{ color: '#9ca3af' }}>{acc.currency} </span>{acc.balance}
+                                        </td>
+                                        <td style={{ textAlign: 'right', paddingRight: '24px' }}>
+                                            <div style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'flex-end',
+                                                gap: '4px',
+                                                color: acc.trend >= 0 ? '#10b981' : '#ef4444',
+                                                fontSize: '13px',
+                                                fontWeight: 500
+                                            }}>
+                                                {acc.trend >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                                                <span>{Math.abs(acc.trend)}%</span>
+                                            </div>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -479,8 +526,12 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
                                 {loanFacilities.map((loan, idx) => (
                                     <tr key={idx} className="hover-row">
                                         <td style={{ color: 'var(--color-text-main)' }}>{loan.type}</td>
-                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{loan.amount}</td>
-                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 500, color: 'var(--color-text-main)' }}>{loan.outstanding}</td>
+                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>
+                                            <span style={{ color: '#9ca3af' }}>{loan.amount.split(' ')[0]} </span>{loan.amount.split(' ').slice(1).join(' ')}
+                                        </td>
+                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 500, color: 'var(--color-text-main)' }}>
+                                            <span style={{ color: '#9ca3af' }}>{loan.outstanding.split(' ')[0]} </span>{loan.outstanding.split(' ').slice(1).join(' ')}
+                                        </td>
                                         <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{loan.rate}</td>
                                         <td style={{ textAlign: 'right', paddingRight: '24px', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{loan.maturity}</td>
                                     </tr>
@@ -502,20 +553,18 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
                                     <th>FD NUMBER</th>
                                     <th style={{ textAlign: 'right' }}>AMOUNT</th>
                                     <th style={{ textAlign: 'right' }}>INTEREST RATE</th>
-                                    <th style={{ textAlign: 'right' }}>MATURITY DATE</th>
-                                    <th style={{ textAlign: 'right', paddingRight: '24px' }}>STATUS</th>
+                                    <th style={{ textAlign: 'right', paddingRight: '24px' }}>MATURITY DATE</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {fixedDeposits.map((fd, idx) => (
                                     <tr key={idx} className="hover-row">
                                         <td style={{ fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{fd.fdNo}</td>
-                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 500, color: 'var(--color-text-main)' }}>{fd.amount}</td>
-                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{fd.rate}</td>
-                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{fd.maturity}</td>
-                                        <td style={{ textAlign: 'right', paddingRight: '24px' }}>
-                                            <span className="status-pill status-active">{fd.status}</span>
+                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 500, color: 'var(--color-text-main)' }}>
+                                            <span style={{ color: '#9ca3af' }}>{fd.amount.split(' ')[0]} </span>{fd.amount.split(' ').slice(1).join(' ')}
                                         </td>
+                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{fd.rate}</td>
+                                        <td style={{ textAlign: 'right', paddingRight: '24px', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{fd.maturity}</td>
                                     </tr>
                                 ))}
                             </tbody>

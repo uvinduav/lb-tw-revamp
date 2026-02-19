@@ -9,7 +9,7 @@ import {
     LinearScale,
     BarElement
 } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import { Doughnut, Bar } from 'react-chartjs-2';
 
 import bankLogoHnb from '../../assets/bank-icons/hnb.png';
 import bankLogoCom from '../../assets/bank-icons/comb.png';
@@ -29,14 +29,27 @@ const topLabelsPlugin = {
                     ctx.font = '500 9px Inter, sans-serif';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'bottom';
-                    
+
                     let label;
-                    if (value > 0) {
-                        label = value.toLocaleString() + 'M';
-                    } else {
-                        label = '0M';
+                    const pluginOptions = chart.options.plugins.topLabels || {};
+                    let valueUnit = 'M';
+                    if (dataset.unit !== undefined) {
+                        valueUnit = dataset.unit;
+                    } else if (pluginOptions.unit !== undefined) {
+                        valueUnit = pluginOptions.unit;
                     }
-                    
+
+                    if (valueUnit === 'M') {
+                        if (value > 0) {
+                            label = value.toLocaleString() + 'M';
+                        } else {
+                            label = '0M';
+                        }
+                    } else {
+                        // For other units, append the unit (could be empty string)
+                        label = value + valueUnit;
+                    }
+
                     ctx.fillText(label, bar.x, bar.y - 5);
                 }
             });
@@ -51,9 +64,89 @@ ChartJS.register(
     Legend,
     CategoryScale,
     LinearScale,
-    BarElement,
-    topLabelsPlugin
+    BarElement
 );
+
+// Reusable Chart Card Component
+const ChartCard = (props) => {
+    const { title, chartData, details, columns } = props;
+
+    const chartOptions = {
+        cutout: '0%',
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        return `${context.label}: ${context.raw}%`;
+                    }
+                }
+            }
+        },
+        maintainAspectRatio: false,
+        elements: { arc: { borderWidth: 2 } }
+    };
+
+    return (
+        <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <h3 className="widget-title" style={{ margin: 0 }}>{title}</h3>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', flexWrap: 'wrap' }}>
+                <div style={{ width: '150px', height: '150px', position: 'relative', flexShrink: 0 }}>
+                    <Doughnut data={chartData} options={chartOptions} />
+                </div>
+
+                <div style={{ flex: 1, minWidth: '300px' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <thead>
+                            <tr style={{ borderBottom: '1px solid var(--color-border)', height: '32px' }}>
+                                {columns.map((col, index) => (
+                                    <th key={index} style={{ textAlign: col.align || 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
+                                        {col.header}
+                                    </th>
+                                ))}</tr >
+                        </thead>
+                        <tbody>
+                            {details.map((item, index) => (
+                                <tr key={index} style={{ borderBottom: index < details.length - 1 ? '1px solid #f3f4f6' : 'none', height: '32px' }}>
+                                    {columns.map((col, colIndex) => (
+                                        <td key={colIndex} style={{ padding: '4px 0', textAlign: col.align || 'left' }}>
+                                            {col.render ? col.render(item) : (
+                                                <span style={{
+                                                    fontSize: '13px',
+                                                    fontWeight: 400,
+                                                    fontFamily: col.monospace ? 'monospace' : 'inherit',
+                                                    color: col.color ? (typeof col.color === 'function' ? col.color(item) : col.color) : '#000000'
+                                                }}>
+                                                    {(() => {
+                                                        const val = item[col.key];
+                                                        if (typeof val === 'string' && val.includes(' ') && val.split(' ')[0].length === 3) {
+                                                            const parts = val.split(' ');
+                                                            return (
+                                                                <>
+                                                                    <span style={{ color: '#9ca3af', fontWeight: 400 }}>{parts[0]}</span>
+                                                                    <span> {parts.slice(1).join(' ')}</span>
+                                                                </>
+                                                            );
+                                                        }
+                                                        return val;
+                                                    })()}
+                                                </span>
+                                            )}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 
 const LogoImage = ({ src, name, color, size = 48 }) => {
     const [error, setError] = React.useState(false);
@@ -134,6 +227,112 @@ const InvestmentDetails = () => {
             hoverBackgroundColor: ['#f59e0bdd', '#3b82f6dd', '#ef4444dd']
         }]
     };
+
+    // Data copied from Dashboard
+    const investmentData = {
+        labels: ['USD', 'EUR', 'LKR'],
+        datasets: [{
+            data: [12.6, 0.8, 86.6],
+            backgroundColor: ['#10b981', '#f59e0b', '#3b82f6'],
+            borderWidth: 2,
+            borderColor: '#ffffff',
+            hoverOffset: 4,
+        }],
+    };
+
+    const investmentDetails = [
+        { color: '#10b981', label: 'USD', count: 6, lkrEquivalent: 'LKR 1,039.60M', percentage: '12.6%', value: 'USD 4.52M' },
+        { color: '#f59e0b', label: 'EUR', count: 1, lkrEquivalent: 'LKR 72.00M', percentage: '0.8%', value: 'EUR 0.24M' },
+        { color: '#3b82f6', label: 'LKR', count: 11, lkrEquivalent: 'LKR 9,950.00M', percentage: '86.6%', value: 'LKR 9,950.00M' }
+    ];
+
+    const investmentColumns = [
+        {
+            header: 'CURRENCY', key: 'label', fontWeight: 400, render: (item) => (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '4px', backgroundColor: item.color }}></div>
+                    <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.label}</span>
+                </div>
+            )
+        },
+        { header: 'FD COUNT', key: 'count', monospace: true, align: 'right' },
+        { header: 'LKR EQUIVALENT', key: 'lkrEquivalent', monospace: true, align: 'right' },
+        { header: '% OF TOTAL', key: 'percentage', monospace: true, align: 'right' },
+        { header: 'AMOUNT', key: 'value', monospace: true, align: 'right' },
+    ];
+
+    const bankRatesData = {
+        labels: ['Hatton National Bank', 'Commercial Bank', 'Sampath Bank'],
+        datasets: [
+            {
+                label: 'EUR',
+                data: [1.5, 0, 1.5],
+                backgroundColor: '#f59e0b',
+                unit: '',
+                minBarLength: 5
+            },
+            {
+                label: 'GBP',
+                data: [2.0, 0, 0],
+                backgroundColor: '#ef4444',
+                unit: '',
+                minBarLength: 5
+            },
+            {
+                label: 'LKR',
+                data: [11.5, 10.25, 12.0],
+                backgroundColor: '#3b82f6',
+                unit: '',
+                minBarLength: 5
+            },
+            {
+                label: 'SGD',
+                data: [3.5, 0, 0],
+                backgroundColor: '#14b8a6',
+                unit: '',
+                minBarLength: 5
+            },
+            {
+                label: 'USD',
+                data: [4.25, 3.8, 4.5],
+                backgroundColor: '#10b981',
+                unit: '',
+                minBarLength: 5
+            }
+        ]
+    };
+
+    const maturityAllData = {
+        labels: ['Hatton National Bank', 'Commercial Bank', 'Sampath Bank'],
+        datasets: [{
+            data: [50.0, 30.0, 20.0],
+            backgroundColor: ['#f59e0b', '#3b82f6', '#ef4444'],
+            borderWidth: 2,
+            borderColor: '#ffffff',
+            hoverOffset: 4,
+        }]
+    };
+
+    const maturityAllDetails = [
+        { label: 'Hatton National Bank', amount: 'USD 2.26M', count: 3, avgRate: '4.25%', share: '50.0%', color: '#f59e0b' },
+        { label: 'Commercial Bank', amount: 'USD 1.35M', count: 2, avgRate: '3.80%', share: '30.0%', color: '#3b82f6' },
+        { label: 'Sampath Bank', amount: 'USD 0.91M', count: 1, avgRate: '3.50%', share: '20.0%', color: '#ef4444' },
+    ];
+
+    const maturityColumns = [
+        {
+            header: 'BANK', key: 'label', fontWeight: 400, render: (item) => (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '4px', backgroundColor: item.color }}></div>
+                    <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.label}</span>
+                </div>
+            )
+        },
+        { header: 'FD COUNT', key: 'count', monospace: true, align: 'right' },
+        { header: 'AVG RATE', key: 'avgRate', monospace: true, align: 'right' },
+        { header: '% OF USD TOTAL', key: 'share', monospace: true, align: 'right' },
+        { header: 'AMOUNT', key: 'amount', monospace: true, align: 'right' },
+    ];
 
 
 
@@ -333,12 +532,12 @@ const InvestmentDetails = () => {
                                     maintainAspectRatio: false,
                                     plugins: { legend: { display: false } },
                                     scales: {
-                                        y: { 
-                                            beginAtZero: true, 
+                                        y: {
+                                            beginAtZero: true,
                                             grid: { color: '#f3f4f6' },
                                             grace: '10%'
                                         },
-                                        x: { 
+                                        x: {
                                             grid: { display: false },
                                             ticks: {
                                                 autoSkip: false,
@@ -354,6 +553,76 @@ const InvestmentDetails = () => {
                     </div>
 
 
+                </div>
+
+                <div className="investment-grid" style={{ marginTop: '24px' }}>
+                    <ChartCard
+                        title="Currency Breakdown"
+                        chartData={investmentData}
+                        details={investmentDetails}
+                        columns={investmentColumns}
+                    />
+                    <ChartCard
+                        title="USD Fixed Deposits - Bank Distribution"
+                        chartData={maturityAllData}
+                        details={maturityAllDetails}
+                        columns={maturityColumns}
+                    />
+                </div>
+
+                <div style={{ display: 'flex', gap: '24px', marginTop: '24px' }}>
+                    <div style={{ flex: 1, padding: '16px', backgroundColor: 'white', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                        <h3 className="widget-title" style={{ marginBottom: '16px' }}>Bank Investment Rates by Currency</h3>
+                        <div style={{ height: '200px' }}>
+                            <Bar
+                                data={bankRatesData}
+                                options={{
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    interaction: {
+                                        mode: 'index',
+                                        intersect: false,
+                                    },
+                                    plugins: {
+                                        legend: {
+                                            display: true,
+                                            position: 'right',
+                                            labels: {
+                                                boxWidth: 12,
+                                                font: { size: 10 }
+                                            }
+                                        }
+                                    },
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            grid: { color: '#f3f4f6' },
+                                            grace: '10%',
+                                            title: {
+                                                display: true,
+                                                text: 'Interest Rate (%)',
+                                                font: {
+                                                    size: 11,
+                                                    weight: 500
+                                                },
+                                                color: '#64748b'
+                                            },
+                                            ticks: {
+                                                callback: (value) => value + '%'
+                                            }
+                                        },
+                                        x: {
+                                            grid: { display: false },
+                                            ticks: {
+                                                autoSkip: false,
+                                                font: { size: 10 }
+                                            }
+                                        }
+                                    }
+                                }}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -377,7 +646,7 @@ const InvestmentDetails = () => {
                             <div style={{ textAlign: 'right' }}>
                                 <div style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-main)', lineHeight: 1.2 }}>{bank.totalVolume}</div>
                                 <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px', fontWeight: 400, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0' }}>
-                                      <span style={{ color: '#9ca3af' }}>{bank.desc}</span>
+                                    <span style={{ color: '#9ca3af' }}>{bank.desc}</span>
                                 </div>
                             </div>
                         </div>
@@ -409,11 +678,11 @@ const InvestmentDetails = () => {
                                             <td style={{ fontSize: '13px', color: 'var(--color-text-main)', whiteSpace: 'nowrap' }}>{inv.startDate}</td>
                                             <td style={{ fontSize: '13px', color: 'var(--color-text-main)', fontFamily: 'monospace', textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>{inv.rate}</td>
                                             <td style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
-                                                <div style={{ 
-                                                    fontSize: '13px', 
-                                                    fontWeight: 400, 
-                                                    color: 'var(--color-text-main)', 
-                                                    fontFamily: 'monospace', 
+                                                <div style={{
+                                                    fontSize: '13px',
+                                                    fontWeight: 400,
+                                                    color: 'var(--color-text-main)',
+                                                    fontFamily: 'monospace',
                                                     display: 'inline-flex',
                                                     alignItems: 'center',
                                                     gap: '4px'
@@ -423,11 +692,11 @@ const InvestmentDetails = () => {
                                                 </div>
                                             </td>
                                             <td style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
-                                                <div style={{ 
-                                                    fontSize: '13px', 
-                                                    fontWeight: 400, 
-                                                    color: 'var(--color-text-main)', 
-                                                    fontFamily: 'monospace', 
+                                                <div style={{
+                                                    fontSize: '13px',
+                                                    fontWeight: 400,
+                                                    color: 'var(--color-text-main)',
+                                                    fontFamily: 'monospace',
                                                     display: 'inline-flex',
                                                     alignItems: 'center',
                                                     gap: '4px'
@@ -441,11 +710,11 @@ const InvestmentDetails = () => {
                                             </td>
                                             <td style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
                                                 <div
-                                                    style={{ 
-                                                        fontSize: '13px', 
-                                                        fontWeight: 400, 
-                                                        color: 'var(--color-text-main)', 
-                                                        fontFamily: 'monospace', 
+                                                    style={{
+                                                        fontSize: '13px',
+                                                        fontWeight: 400,
+                                                        color: 'var(--color-text-main)',
+                                                        fontFamily: 'monospace',
                                                         cursor: inv.isForeign ? 'help' : 'default',
                                                         display: 'inline-flex',
                                                         alignItems: 'center',
