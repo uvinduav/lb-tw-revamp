@@ -510,6 +510,20 @@ const CashPositionDetails = () => {
                                         mode: 'index',
                                         intersect: false
                                     },
+                                    onClick: (event, elements) => {
+                                        if (elements.length > 0) {
+                                            const index = elements[0].index;
+                                            const bankName = chartLabels[index];
+                                            const elementId = `bank-${bankName.replace(/\s+/g, '-').toLowerCase()}`;
+                                            const element = document.getElementById(elementId);
+                                            if (element) {
+                                                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                            }
+                                        }
+                                    },
+                                    onHover: (event, elements) => {
+                                        event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
+                                    },
                                     plugins: { legend: { display: false } },
                                     scales: {
                                         y: {
@@ -537,7 +551,7 @@ const CashPositionDetails = () => {
             {/* Detailed Breakdown */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '48px', paddingBottom: '48px' }}>
                 {banks.map((bank) => (
-                    <div key={bank.id}>
+                    <div key={bank.id} id={`bank-${bank.name.replace(/\s+/g, '-').toLowerCase()}`}>
 
                         {/* Bank Header Info - Outside Table */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px', paddingLeft: '4px' }}>
