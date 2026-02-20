@@ -195,6 +195,7 @@ body {
   color: var(--sidebar-text);
   text-decoration: none;
   gap: 10px;
+  white-space: nowrap;
 }
 
 .nav-item:hover {
@@ -276,6 +277,7 @@ body {
   gap: 10px;
   transition: all 0.2s;
   opacity: 0.9;
+  white-space: nowrap;
 }
 
 .sub-nav-item:hover {

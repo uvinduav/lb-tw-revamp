@@ -212,7 +212,7 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, sh
             <div className="user-menu-actions">
               <button className="user-menu-item" onClick={handleSettingsClick}>
                 <Settings size={16} />
-                <span>Settings</span>
+                <span>Profile Settings</span>
               </button>
               <button className="user-menu-item logout" onClick={handleLogout}>
                 <LogOut size={16} />

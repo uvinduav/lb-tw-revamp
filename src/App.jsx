@@ -36,6 +36,8 @@ import SlidingPanel from './components/common/SlidingPanel';
 import AlertsPanel from './components/modules/AlertsPanel';
 import TasksPanel from './components/modules/TasksPanel';
 import ScrollToTop from './components/common/ScrollToTop';
+import Thresholds from './components/modules/Thresholds';
+import Alerts from './components/modules/Alerts';
 
 function App() {
   const [activePage, setActivePage] = useState('Dashboard');
@@ -92,7 +94,10 @@ function App() {
   useKeyboardShortcuts(null, null, toggleSidebar);
 
   React.useEffect(() => {
-    document.title = activePage + ' - LB Treasury';
+    const titleMap = {
+      'Settings': 'Profile Settings'
+    };
+    document.title = (titleMap[activePage] || activePage) + ' - LB Treasury';
   }, [activePage]);
 
   const renderPage = () => {
@@ -123,10 +128,12 @@ function App() {
       case 'Interest Rates': return <InterestRates />;
       case 'Exchange Rates': return <ExchangeRates />;
       case 'Purpose Tags': return <PurposeTags />;
+      case 'Thresholds': return <Thresholds />;
 
       // Setup - Users
       case 'Users': return <Users />;
       case 'User Groups': return <UserGroups />;
+      case 'Alerts': return <Alerts />;
 
       case 'Change Log': return <ChangeLog />;
       case 'Settings': return <Settings />;
@@ -198,7 +205,8 @@ function App() {
                   activePage === 'Debt Details' ? 'Dashboard > Debt Details' :
                     activePage === 'Cash Position Details' ? 'Dashboard > Cash Position Details' :
                       activePage === 'Investment Details' ? 'Dashboard > Investment Details' :
-                        activePage
+                        activePage === 'Settings' ? 'Profile Settings' :
+                          activePage
           }
           onAlertsClick={() => setIsAlertsOpen(true)}
           onTasksClick={() => setIsTasksOpen(true)}

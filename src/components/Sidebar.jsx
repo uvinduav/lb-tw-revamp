@@ -23,7 +23,8 @@ import {
   Clock,
   Percent,
   Coins,
-  Tag
+  Tag,
+  Activity
 } from "lucide-react";
 
 import lionLogo from "../assets/lb-tw-logo.png";
@@ -50,15 +51,16 @@ const subItems = [
   { name: "Interest Rates", icon: <Percent size={16} /> },
   { name: "Exchange Rates", icon: <Coins size={16} /> },
   { name: "Purpose Tags", icon: <Tag size={16} /> },
+  { name: "Thresholds", icon: <Activity size={16} /> },
 ];
 
 const usersSubItems = [
   { name: "Users", icon: <User size={16} /> },
   { name: "User Groups", icon: <Users size={16} /> },
+  { name: "Alerts", icon: <Bell size={16} /> },
 ];
 
-// Settings shortcut
-const settingsShortcut = ',';
+
 
 const Sidebar = ({
   activePage,
@@ -89,11 +91,7 @@ const Sidebar = ({
         return;
       }
 
-      // Check settings
-      if (key === settingsShortcut) {
-        e.preventDefault();
-        setActivePage('Settings');
-      }
+
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -164,7 +162,7 @@ const Sidebar = ({
         >
           <div className="nav-item-content">
             <Users size={18} />
-            Users & Groups
+            Users & Alerts
           </div>
           <ChevronDown
             size={16}
@@ -193,16 +191,8 @@ const Sidebar = ({
           Change Log
         </a>
 
-        <div className="nav-group-label">Settings</div>
-        <a href="#" className={`nav-item ${activePage === 'Settings' ? 'active' : ''}`} onClick={() => setActivePage('Settings')}>
-          <Settings size={18} />
-          Settings
-          <span className="shortcut-key">Alt+,</span>
-        </a>
-        <a href="#" className={`nav-item ${activePage === 'Notifications' ? 'active' : ''}`} onClick={() => setActivePage('Notifications')}>
-          <Bell size={18} />
-          Notifications
-        </a>
+
+
       </div>
     </div>
   );
