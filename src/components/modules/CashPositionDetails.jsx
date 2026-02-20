@@ -118,19 +118,13 @@ const topLabelsPlugin = {
         chart.data.datasets.forEach((dataset, i) => {
             chart.getDatasetMeta(i).data.forEach((bar, index) => {
                 const value = dataset.data[index];
-                if (value !== undefined && value !== null) {
+                if (value !== undefined && value !== null && value > 0) {
                     ctx.fillStyle = '#64748b';
                     ctx.font = '500 9px Inter, sans-serif';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'bottom';
-                    
-                    let label;
-                    if (value > 0) {
-                        label = value.toLocaleString() + 'M';
-                    } else {
-                        label = '0M';
-                    }
-                    
+
+                    const label = value.toLocaleString() + 'M';
                     ctx.fillText(label, bar.x, bar.y - 5);
                 }
             });
@@ -138,6 +132,36 @@ const topLabelsPlugin = {
         ctx.restore();
     }
 };
+
+const ghostBarsPlugin = {
+    id: 'ghostBars',
+    beforeDatasetsDraw(chart) {
+        if (chart.config.type !== 'bar') return;
+        const { ctx, chartArea, scales: { x, y } } = chart;
+        const dataset = chart.data.datasets[0];
+
+        ctx.save();
+        dataset.data.forEach((value, index) => {
+            if (value === 0) {
+                const meta = chart.getDatasetMeta(0);
+                const bar = meta.data[index];
+                if (!bar) return;
+
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)'; // Very light and transparent ghost column
+                const barWidth = 40; // match barThickness
+                ctx.fillRect(
+                    bar.x - barWidth / 2,
+                    chartArea.top,
+                    barWidth,
+                    chartArea.bottom - chartArea.top
+                );
+            }
+        });
+        ctx.restore();
+    }
+};
+
+ChartJS.register(ghostBarsPlugin);
 
 const CashPositionDetails = () => {
     // Mock Data
@@ -175,7 +199,7 @@ const CashPositionDetails = () => {
             backgroundColor: bankColors,
             borderRadius: 0,
             barThickness: 40, // thinner bars for more items
-            minBarLength: 5,
+            minBarLength: 0,
             hoverBackgroundColor: bankColors.map(c => c + 'dd') // Slightly transparent on hover
         }]
     };
@@ -349,7 +373,7 @@ const CashPositionDetails = () => {
             accountCount: 2,
             accountDesc: "2 LKR",
             accounts: [
-                  { id: 'ntb1', company: "Lion Brewery Sri Lanka - Loan Servicing", companyColor: "#f0fdf4", accountNo: "10023451122", currency: "LKR", type: "Savings", balance: "LKR 28,500,000,000.00", lkrBalance: "LKR 28,500,000,000.00", isForeign: false }
+                { id: 'ntb1', company: "Lion Brewery Sri Lanka - Loan Servicing", companyColor: "#f0fdf4", accountNo: "10023451122", currency: "LKR", type: "Savings", balance: "LKR 28,500,000,000.00", lkrBalance: "LKR 28,500,000,000.00", isForeign: false }
             ],
             currencyBreakdown: [{ code: 'LKR', amount: '28,500,000,000.00', lkr: '28,500,000,000.00' }]
         },
@@ -363,7 +387,7 @@ const CashPositionDetails = () => {
             accountCount: 1,
             accountDesc: "1 LKR",
             accounts: [
-                  { id: 'hnb1', company: "Lion Brewery Sri Lanka - General Operations", companyColor: "#f0fdf4", accountNo: "00344553344", currency: "LKR", type: "Current", balance: "LKR 6,700,000,000.00", lkrBalance: "LKR 6,700,000,000.00", isForeign: false }
+                { id: 'hnb1', company: "Lion Brewery Sri Lanka - General Operations", companyColor: "#f0fdf4", accountNo: "00344553344", currency: "LKR", type: "Current", balance: "LKR 6,700,000,000.00", lkrBalance: "LKR 6,700,000,000.00", isForeign: false }
             ],
             currencyBreakdown: [{ code: 'LKR', amount: '6,700,000,000.00', lkr: '6,700,000,000.00' }]
         },
@@ -378,8 +402,8 @@ const CashPositionDetails = () => {
             accountCount: 2,
             accountDesc: "1 USD, 1 LKR",
             accounts: [
-                 { id: 'citi1', company: "Lion Brewery Sri Lanka - Vendor Payments", companyColor: "#f0fdf4", accountNo: "82345555566", currency: "USD", type: "Current", balance: "USD 20,000,000.00", lkrBalance: "LKR 6,400,000,000.00", isForeign: true },
-                 { id: 'citi2', company: "Luxury Brands - Salary Payments", companyColor: "#fef2f2", accountNo: "82345557788", currency: "LKR", type: "Savings", balance: "LKR 6,000,000,000.00", lkrBalance: "LKR 6,000,000,000.00", isForeign: false }
+                { id: 'citi1', company: "Lion Brewery Sri Lanka - Vendor Payments", companyColor: "#f0fdf4", accountNo: "82345555566", currency: "USD", type: "Current", balance: "USD 20,000,000.00", lkrBalance: "LKR 6,400,000,000.00", isForeign: true },
+                { id: 'citi2', company: "Luxury Brands - Salary Payments", companyColor: "#fef2f2", accountNo: "82345557788", currency: "LKR", type: "Savings", balance: "LKR 6,000,000,000.00", lkrBalance: "LKR 6,000,000,000.00", isForeign: false }
             ],
             currencyBreakdown: [{ code: 'USD', amount: '20,000,000.00', lkr: '6,400,000,000.00' }, { code: 'LKR', amount: '6,000,000,000.00', lkr: '6,000,000,000.00' }]
         },
@@ -393,9 +417,9 @@ const CashPositionDetails = () => {
             accountCount: 1,
             accountDesc: "1 LKR",
             accounts: [
-                 { id: 'db1', company: "Lion Brewery Sri Lanka - General Operations", companyColor: "#f0fdf4", accountNo: "00567889900", currency: "LKR", type: "Current", balance: "LKR 1,200,000,000.00", lkrBalance: "LKR 1,200,000,000.00", isForeign: false }
+                { id: 'db1', company: "Lion Brewery Sri Lanka - General Operations", companyColor: "#f0fdf4", accountNo: "00567889900", currency: "LKR", type: "Current", balance: "LKR 1,200,000,000.00", lkrBalance: "LKR 1,200,000,000.00", isForeign: false }
             ],
-             currencyBreakdown: [{ code: 'LKR', amount: '1,200,000,000.00', lkr: '1,200,000,000.00' }]
+            currencyBreakdown: [{ code: 'LKR', amount: '1,200,000,000.00', lkr: '1,200,000,000.00' }]
         },
         {
             id: 8,
@@ -407,9 +431,9 @@ const CashPositionDetails = () => {
             accountCount: 2,
             accountDesc: "2 LKR",
             accounts: [
-                 { id: 'samp1', company: "Pubs'N Places Pvt Ltd - CAPEX", companyColor: "#fff7ed", accountNo: "10024452211", currency: "LKR", type: "Savings", balance: "LKR 9,300,000,000.00", lkrBalance: "LKR 9,300,000,000.00", isForeign: false }
+                { id: 'samp1', company: "Pubs'N Places Pvt Ltd - CAPEX", companyColor: "#fff7ed", accountNo: "10024452211", currency: "LKR", type: "Savings", balance: "LKR 9,300,000,000.00", lkrBalance: "LKR 9,300,000,000.00", isForeign: false }
             ],
-             currencyBreakdown: [{ code: 'LKR', amount: '9,300,000,000.00', lkr: '9,300,000,000.00' }]
+            currencyBreakdown: [{ code: 'LKR', amount: '9,300,000,000.00', lkr: '9,300,000,000.00' }]
         },
         {
             id: 9,
@@ -421,9 +445,9 @@ const CashPositionDetails = () => {
             accountCount: 1,
             accountDesc: "1 LKR",
             accounts: [
-                 { id: 'ndb1', company: "Retail Spaces Pvt Ltd - General Operations", companyColor: "#fefce8", accountNo: "10044554433", currency: "LKR", type: "Current", balance: "LKR 3,400,000,000.00", lkrBalance: "LKR 3,400,000,000.00", isForeign: false }
+                { id: 'ndb1', company: "Retail Spaces Pvt Ltd - General Operations", companyColor: "#fefce8", accountNo: "10044554433", currency: "LKR", type: "Current", balance: "LKR 3,400,000,000.00", lkrBalance: "LKR 3,400,000,000.00", isForeign: false }
             ],
-             currencyBreakdown: [{ code: 'LKR', amount: '3,400,000,000.00', lkr: '3,400,000,000.00' }]
+            currencyBreakdown: [{ code: 'LKR', amount: '3,400,000,000.00', lkr: '3,400,000,000.00' }]
         },
         {
             id: 10,
@@ -435,9 +459,9 @@ const CashPositionDetails = () => {
             accountCount: 1,
             accountDesc: "1 LKR",
             accounts: [
-                 { id: 'pb1', company: "Lion Brewery Sri Lanka - Vendor Payments", companyColor: "#f0fdf4", accountNo: "10066776655", currency: "LKR", type: "Savings", balance: "LKR 850,000,000.00", lkrBalance: "LKR 850,000,000.00", isForeign: false }
+                { id: 'pb1', company: "Lion Brewery Sri Lanka - Vendor Payments", companyColor: "#f0fdf4", accountNo: "10066776655", currency: "LKR", type: "Savings", balance: "LKR 850,000,000.00", lkrBalance: "LKR 850,000,000.00", isForeign: false }
             ],
-             currencyBreakdown: [{ code: 'LKR', amount: '850,000,000.00', lkr: '850,000,000.00' }]
+            currencyBreakdown: [{ code: 'LKR', amount: '850,000,000.00', lkr: '850,000,000.00' }]
         },
         {
             id: 11,
@@ -449,9 +473,9 @@ const CashPositionDetails = () => {
             accountCount: 1,
             accountDesc: "1 LKR",
             accounts: [
-                 { id: 'dfcc1', company: "Luxury Brands - Loan Servicing", companyColor: "#fef2f2", accountNo: "00889988877", currency: "LKR", type: "Current", balance: "LKR 0.00", lkrBalance: "LKR 0.00", isForeign: false }
+                { id: 'dfcc1', company: "Luxury Brands - Loan Servicing", companyColor: "#fef2f2", accountNo: "00889988877", currency: "LKR", type: "Current", balance: "LKR 0.00", lkrBalance: "LKR 0.00", isForeign: false }
             ],
-             currencyBreakdown: [{ code: 'LKR', amount: '0.00', lkr: '0.00' }]
+            currencyBreakdown: [{ code: 'LKR', amount: '0.00', lkr: '0.00' }]
         }
     ];
 
@@ -478,18 +502,22 @@ const CashPositionDetails = () => {
                         <div style={{ height: '300px' }}>
                             <Bar
                                 data={bankDistributionData}
-                                plugins={[topLabelsPlugin]}
+                                plugins={[topLabelsPlugin, ghostBarsPlugin]}
                                 options={{
                                     responsive: true,
                                     maintainAspectRatio: false,
+                                    interaction: {
+                                        mode: 'index',
+                                        intersect: false
+                                    },
                                     plugins: { legend: { display: false } },
                                     scales: {
-                                        y: { 
-                                            beginAtZero: true, 
+                                        y: {
+                                            beginAtZero: true,
                                             grid: { color: '#f3f4f6' },
                                             grace: '10%' // Add some space at the top for labels
                                         },
-                                        x: { 
+                                        x: {
                                             grid: { display: false },
                                             ticks: {
                                                 autoSkip: false,
@@ -566,11 +594,11 @@ const CashPositionDetails = () => {
                                                 <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{account.type}</div>
                                             </td>
                                             <td style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
-                                                <div style={{ 
-                                                    fontSize: '13px', 
-                                                    fontWeight: 400, 
-                                                    color: 'var(--color-text-main)', 
-                                                    fontFamily: 'monospace', 
+                                                <div style={{
+                                                    fontSize: '13px',
+                                                    fontWeight: 400,
+                                                    color: 'var(--color-text-main)',
+                                                    fontFamily: 'monospace',
                                                     display: 'inline-flex',
                                                     alignItems: 'center',
                                                     gap: '4px'

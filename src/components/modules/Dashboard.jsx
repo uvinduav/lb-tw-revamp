@@ -165,6 +165,34 @@ const ChartCard = (props) => {
   );
 };
 
+const ghostBarsPlugin = {
+  id: 'ghostBars',
+  beforeDatasetsDraw(chart) {
+    if (chart.config.type !== 'bar') return;
+    const { ctx, chartArea } = chart;
+    ctx.save();
+    chart.data.datasets.forEach((dataset, datasetIndex) => {
+      const meta = chart.getDatasetMeta(datasetIndex);
+      if (meta.hidden) return;
+      dataset.data.forEach((value, index) => {
+        if (value === 0) {
+          const bar = meta.data[index];
+          if (!bar) return;
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+          const barWidth = bar.width;
+          ctx.fillRect(
+            bar.x - barWidth / 2,
+            chartArea.top,
+            barWidth,
+            chartArea.bottom - chartArea.top
+          );
+        }
+      });
+    });
+    ctx.restore();
+  }
+};
+
 const Dashboard = ({ onNavigate }) => {
   const [showAwplrInfo, setShowAwplrInfo] = React.useState(false);
   const [showForexInfo, setShowForexInfo] = React.useState(false);
@@ -731,23 +759,30 @@ const Dashboard = ({ onNavigate }) => {
                         label: 'Deposits',
                         data: [4.52, 0.24],
                         backgroundColor: '#10b981',
-                        barPercentage: 0.5,
-                        categoryPercentage: 0.7,
-                        borderRadius: 4
+                        barPercentage: 1.0,
+                        categoryPercentage: 0.8,
+                        borderRadius: 4,
+                        minBarLength: 0
                       },
                       {
                         label: 'Loans',
                         data: [1.25, 0],
                         backgroundColor: '#ef4444',
-                        barPercentage: 0.5,
-                        categoryPercentage: 0.7,
-                        borderRadius: 4
+                        barPercentage: 1.0,
+                        categoryPercentage: 0.8,
+                        borderRadius: 4,
+                        minBarLength: 0
                       }
                     ]
                   }}
+                  plugins={[ghostBarsPlugin]}
                   options={{
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: {
+                      mode: 'index',
+                      intersect: false,
+                    },
                     plugins: {
                       legend: {
                         display: false, // Hidden as per user request
@@ -759,6 +794,9 @@ const Dashboard = ({ onNavigate }) => {
                         bodyFont: { size: 12 },
                         cornerRadius: 4,
                         displayColors: true
+                      },
+                      datalabels: {
+                        display: false
                       }
                     },
                     scales: {
@@ -787,17 +825,15 @@ const Dashboard = ({ onNavigate }) => {
                       <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
                           <div style={{ width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#10b981' }}></div>
-                          DEPOSITS
+                          DEPOSITS (AVG RATE)
                         </div>
                       </th>
-                      <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>AVG RATE</th>
                       <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
                           <div style={{ width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#ef4444' }}></div>
-                          LOANS
+                          LOANS (AVG RATE)
                         </div>
                       </th>
-                      <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>AVG RATE</th>
                       <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>NET POSITION</th>
                     </tr>
                   </thead>
@@ -808,19 +844,14 @@ const Dashboard = ({ onNavigate }) => {
                     ].map((item, index, array) => (
                       <tr key={index} style={{ borderBottom: index < array.length - 1 ? '1px solid #f3f4f6' : 'none', height: '32px' }}>
                         <td style={{ padding: '4px 0' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <div style={{ width: '12px', height: '12px', borderRadius: '4px', backgroundColor: item.color }}></div>
-                            <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.currency}</span>
-                          </div>
+                          <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.currency}</span>
                         </td>
                         <td style={{ padding: '4px 0', textAlign: 'right' }}>
                           <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: '#000000' }}>
                             <span style={{ color: '#9ca3af', fontWeight: 400 }}>{item.deposits.split(' ')[0]}</span>
                             <span> {item.deposits.split(' ')[1]}</span>
+                            <span style={{ color: '#10b981', fontSize: '12px', marginLeft: '6px' }}>({item.depRate})</span>
                           </div>
-                        </td>
-                        <td style={{ padding: '4px 0', textAlign: 'right' }}>
-                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: '#000000' }}>{item.depRate}</div>
                         </td>
                         <td style={{ padding: '4px 0', textAlign: 'right' }}>
                           <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: '#000000' }}>
@@ -828,14 +859,15 @@ const Dashboard = ({ onNavigate }) => {
                               <>
                                 <span style={{ color: '#9ca3af', fontWeight: 400 }}>{item.loans.split(' ')[0]}</span>
                                 <span> {item.loans.split(' ')[1]}</span>
+                                <span style={{ color: '#ef4444', fontSize: '12px', marginLeft: '6px' }}>({item.loanRate})</span>
                               </>
                             ) : (
-                              <span style={{ color: '#9ca3af' }}>{item.loans}</span>
+                              <>
+                                <span style={{ color: '#9ca3af' }}>{item.loans}</span>
+                                <span style={{ color: '#9ca3af', fontSize: '12px', marginLeft: '6px' }}>(0.00%)</span>
+                              </>
                             )}
                           </div>
-                        </td>
-                        <td style={{ padding: '4px 0', textAlign: 'right' }}>
-                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: '#000000' }}>{item.loanRate}</div>
                         </td>
                         <td style={{ padding: '4px 0', textAlign: 'right' }}>
                           <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', justifyContent: 'flex-end' }}>

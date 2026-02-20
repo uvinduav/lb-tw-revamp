@@ -23,20 +23,42 @@ const topLabelsPlugin = {
         chart.data.datasets.forEach((dataset, i) => {
             chart.getDatasetMeta(i).data.forEach((bar, index) => {
                 const value = dataset.data[index];
-                if (value !== undefined && value !== null) {
+                if (value !== undefined && value !== null && value > 0) {
                     ctx.fillStyle = '#64748b';
                     ctx.font = '500 9px Inter, sans-serif';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'bottom';
 
-                    let label;
-                    if (value > 0) {
-                        label = value.toLocaleString() + 'M';
-                    } else {
-                        label = '0M';
-                    }
-
+                    const label = value.toLocaleString() + 'M';
                     ctx.fillText(label, bar.x, bar.y - 5);
+                }
+            });
+        });
+        ctx.restore();
+    }
+};
+
+const ghostBarsPlugin = {
+    id: 'ghostBars',
+    beforeDatasetsDraw(chart) {
+        if (chart.config.type !== 'bar') return;
+        const { ctx, chartArea } = chart;
+        ctx.save();
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            if (meta.hidden) return;
+            dataset.data.forEach((value, index) => {
+                if (value === 0) {
+                    const bar = meta.data[index];
+                    if (!bar) return;
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+                    const barWidth = bar.width;
+                    ctx.fillRect(
+                        bar.x - barWidth / 2,
+                        chartArea.top,
+                        barWidth,
+                        chartArea.bottom - chartArea.top
+                    );
                 }
             });
         });
@@ -51,7 +73,8 @@ ChartJS.register(
     CategoryScale,
     LinearScale,
     BarElement,
-    topLabelsPlugin
+    topLabelsPlugin,
+    ghostBarsPlugin
 );
 
 const LogoImage = ({ src, name, color, size = 48 }) => {
@@ -129,7 +152,8 @@ const DebtDetails = () => {
             backgroundColor: ['#B10A32', '#38D200'],
             borderRadius: 0,
             barThickness: 40,
-            minBarLength: 5,
+            barThickness: 40,
+            minBarLength: 0,
             hoverBackgroundColor: ['#B10A32dd', '#38D200dd']
         }]
     };
@@ -282,10 +306,14 @@ const DebtDetails = () => {
                         <div style={{ height: '200px' }}>
                             <Bar
                                 data={bankDistributionData}
-                                plugins={[topLabelsPlugin]}
+                                plugins={[topLabelsPlugin, ghostBarsPlugin]}
                                 options={{
                                     responsive: true,
                                     maintainAspectRatio: false,
+                                    interaction: {
+                                        mode: 'index',
+                                        intersect: false
+                                    },
                                     plugins: { legend: { display: false } },
                                     onClick: (event, elements) => {
                                         if (elements.length > 0) {

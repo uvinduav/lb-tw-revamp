@@ -150,6 +150,18 @@ function App() {
     }
   };
 
+  const [alerts, setAlerts] = useState([
+    { id: 1, type: 'critical', message: 'Liquidity threshold breach: LKR position below minimum requirements' },
+    { id: 2, type: 'warning', message: 'Upcoming payment of 5M USD scheduled for tomorrow has insufficient funds' },
+    { id: 3, type: 'anomaly', message: 'Unusual transaction volume detected in Commercial Bank VND account' },
+    { id: 4, type: 'anomaly', message: 'Significant variance in daily LKR cash flow vs previous month average' },
+    { id: 5, type: 'anomaly', message: 'Unexpected withdrawal pattern observed in Entity: Global Exports Ltd' },
+  ]);
+
+  const handleDismissAlert = (id) => {
+    setAlerts(prev => prev.filter(alert => alert.id !== id));
+  };
+
   return (
     <div className="app-container">
       {/* Sidebar Trigger Zone for Hover Reveal */}
@@ -190,11 +202,17 @@ function App() {
           }
           onAlertsClick={() => setIsAlertsOpen(true)}
           onTasksClick={() => setIsTasksOpen(true)}
+          alerts={alerts}
         />
         {renderPage()}
       </div>
 
-      <AlertsPanel isOpen={isAlertsOpen} onClose={() => setIsAlertsOpen(false)} />
+      <AlertsPanel
+        isOpen={isAlertsOpen}
+        onClose={() => setIsAlertsOpen(false)}
+        alerts={alerts}
+        onDismiss={handleDismissAlert}
+      />
       <TasksPanel isOpen={isTasksOpen} onClose={() => setIsTasksOpen(false)} />
       <ScrollToTop activePage={activePage} />
     </div>

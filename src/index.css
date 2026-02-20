@@ -371,19 +371,49 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  background-color: #ffedc2;
-  color: #a65e00;
   padding: 0 10px;
   height: 28px;
   border-radius: 4px;
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
-.topbar-alert-pill:hover {
-  background-color: #ffe4a3;
+.topbar-alert-pill.none {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.topbar-alert-pill.none:hover {
+  background-color: #e5e7eb;
+}
+
+.topbar-alert-pill.critical {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.topbar-alert-pill.critical:hover {
+  background-color: #fecaca;
+}
+
+.topbar-alert-pill.warning {
+  background-color: #ffedd5;
+  color: #f97316;
+}
+
+.topbar-alert-pill.warning:hover {
+  background-color: #fed7aa;
+}
+
+.topbar-alert-pill.anomaly {
+  background-color: #fefce8;
+  color: #ca8a04;
+}
+
+.topbar-alert-pill.anomaly:hover {
+  background-color: #fef08a;
 }
 
 .topbar-task-pill {
@@ -801,13 +831,11 @@ input[type="checkbox"] {
   top: 50%;
   transform: translateY(-50%) translateX(0);
   /* Anchored to right edge */
-  background-image: linear-gradient(
-    to right,
-    #f8f9fa00,
-    #f8f9fa,
-    #f8f9fa,
-    #f8f9fa
-  );
+  background-image: linear-gradient(to right,
+      #f8f9fa00,
+      #f8f9fa,
+      #f8f9fa,
+      #f8f9fa);
   padding: 4px 10px;
   gap: 8px;
   height: 32px;
@@ -1426,7 +1454,7 @@ input[type="checkbox"] {
   margin-top: var(--spacing-md);
 }
 
-.investment-grid > * {
+.investment-grid>* {
   flex: 1 1 500px;
   /* Grow, Shrink, Basis */
   min-width: 300px;
@@ -1513,7 +1541,8 @@ input[type="checkbox"] {
 .sliding-panel {
   position: fixed;
   top: 0;
-  right: -100%; /* Start off-screen */
+  right: -100%;
+  /* Start off-screen */
   width: 400px;
   height: 100%;
   background-color: white;
@@ -1637,17 +1666,41 @@ input[type="checkbox"] {
   background-color: var(--color-text-main);
 }
 
-.panel-tab-item.critical { color: rgba(239, 68, 68, 0.6); }
-.panel-tab-item.critical.active { color: #ef4444; }
-.panel-tab-item.critical.active::after { background-color: #ef4444; }
+.panel-tab-item.critical {
+  color: rgba(239, 68, 68, 0.6);
+}
 
-.panel-tab-item.warning { color: rgba(245, 158, 11, 0.6); }
-.panel-tab-item.warning.active { color: #f59e0b; }
-.panel-tab-item.warning.active::after { background-color: #f59e0b; }
+.panel-tab-item.critical.active {
+  color: #ef4444;
+}
 
-.panel-tab-item.anomaly { color: rgba(161, 98, 7, 0.6); }
-.panel-tab-item.anomaly.active { color: #a16207; }
-.panel-tab-item.anomaly.active::after { background-color: #a16207; }
+.panel-tab-item.critical.active::after {
+  background-color: #ef4444;
+}
+
+.panel-tab-item.warning {
+  color: rgba(245, 158, 11, 0.6);
+}
+
+.panel-tab-item.warning.active {
+  color: #f59e0b;
+}
+
+.panel-tab-item.warning.active::after {
+  background-color: #f59e0b;
+}
+
+.panel-tab-item.anomaly {
+  color: rgba(161, 98, 7, 0.6);
+}
+
+.panel-tab-item.anomaly.active {
+  color: #a16207;
+}
+
+.panel-tab-item.anomaly.active::after {
+  background-color: #a16207;
+}
 
 .tab-count {
   font-size: 13px;
@@ -1667,20 +1720,70 @@ input[type="checkbox"] {
   border-left: 4px solid transparent;
 }
 
+.alert-item.critical-bg {
+  background-color: #fee2e2;
+  border-left-color: #ef4444;
+}
+
 .alert-item.warning-bg {
-  background-color: #fffbeb;
-  border-left-color: #f59e0b;
+  background-color: #ffedd5;
+  border-left-color: #f97316;
+}
+
+.alert-item.anomaly-bg {
+  background-color: #fefce8;
+  border-left-color: #eab308;
+}
+
+.alert-item.critical-bg .alert-message {
+  color: #991b1b;
+}
+
+.alert-item.warning-bg .alert-message {
+  color: #9a3412;
+}
+
+.alert-item.anomaly-bg .alert-message {
+  color: #854d0e;
 }
 
 .alert-item-content {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .alert-message {
-  font-size: 14px;
-  color: #111827;
+  font-size: 13px;
   font-weight: 400;
+  flex: 1;
+}
+
+.dismiss-alert-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.alert-item:hover .dismiss-alert-btn {
+  opacity: 0.4;
+  visibility: visible;
+}
+
+.dismiss-alert-btn:hover {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 /* Tasks Panel Specific Styles */
@@ -1783,7 +1886,8 @@ input[type="checkbox"] {
 
 .confirm-add-btn {
   padding: 6px 16px;
-  background-color: #dc2626; /* Using red as requested/shown in potential mocks */
+  background-color: #dc2626;
+  /* Using red as requested/shown in potential mocks */
   color: white;
   border: none;
   border-radius: 4px;
@@ -1926,8 +2030,15 @@ input[type="checkbox"] {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .popover-header {
@@ -2133,13 +2244,63 @@ input[type="checkbox"] {
 }
 
 @keyframes wiggle {
-  0% { transform: rotate(0deg); }
-  25% { transform: rotate(-5deg); }
-  50% { transform: rotate(5deg); }
-  75% { transform: rotate(-5deg); }
-  100% { transform: rotate(0deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-5deg);
+  }
+
+  50% {
+    transform: rotate(5deg);
+  }
+
+  75% {
+    transform: rotate(-5deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 .wiggle {
   animation: wiggle 1s ease-in-out;
+}
+
+/* Empty State Styling for Alerts */
+.no-alerts-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+}
+
+.empty-state-icon {
+  background-color: #f0fdf4;
+  color: #16a34a;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.empty-state-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin-bottom: 8px;
+}
+
+.empty-state-desc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  max-width: 240px;
 }

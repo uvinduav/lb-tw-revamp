@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, TrendingDown, Building2 } from 'lucide-react';
+import { TrendingUp, TrendingDown, Building2, ChevronDown } from 'lucide-react';
 import {
     Chart as ChartJS,
     ArcElement,
@@ -15,6 +15,34 @@ import bankLogoHnb from '../../assets/bank-icons/hnb.png';
 import bankLogoCom from '../../assets/bank-icons/comb.png';
 import bankLogoSamp from '../../assets/bank-icons/sampath.png';
 
+const ghostBarsPlugin = {
+    id: 'ghostBars',
+    beforeDatasetsDraw(chart) {
+        if (chart.config.type !== 'bar') return;
+        const { ctx, chartArea } = chart;
+        ctx.save();
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            if (meta.hidden) return;
+            dataset.data.forEach((value, index) => {
+                if (value === 0) {
+                    const bar = meta.data[index];
+                    if (!bar) return;
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+                    const barWidth = bar.width;
+                    ctx.fillRect(
+                        bar.x - barWidth / 2,
+                        chartArea.top,
+                        barWidth,
+                        chartArea.bottom - chartArea.top
+                    );
+                }
+            });
+        });
+        ctx.restore();
+    }
+};
+
 const topLabelsPlugin = {
     id: 'topLabels',
     afterDatasetsDraw(chart) {
@@ -24,7 +52,7 @@ const topLabelsPlugin = {
         chart.data.datasets.forEach((dataset, i) => {
             chart.getDatasetMeta(i).data.forEach((bar, index) => {
                 const value = dataset.data[index];
-                if (value !== undefined && value !== null) {
+                if (value !== undefined && value !== null && value > 0) {
                     ctx.fillStyle = '#64748b';
                     ctx.font = '500 9px Inter, sans-serif';
                     ctx.textAlign = 'center';
@@ -40,11 +68,7 @@ const topLabelsPlugin = {
                     }
 
                     if (valueUnit === 'M') {
-                        if (value > 0) {
-                            label = value.toLocaleString() + 'M';
-                        } else {
-                            label = '0M';
-                        }
+                        label = value.toLocaleString() + 'M';
                     } else {
                         // For other units, append the unit (could be empty string)
                         label = value + valueUnit;
@@ -206,6 +230,8 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
 
 
 const InvestmentDetails = () => {
+    const [rateFilter, setRateFilter] = React.useState('All');
+
     // Mock Data
     const summaryData = {
         totalInvestments: "Rs 11,453,278,578.97",
@@ -223,7 +249,7 @@ const InvestmentDetails = () => {
             backgroundColor: ['#f59e0b', '#3b82f6', '#ef4444'],
             borderRadius: 0,
             barThickness: 40,
-            minBarLength: 5,
+            minBarLength: 0,
             hoverBackgroundColor: ['#f59e0bdd', '#3b82f6dd', '#ef4444dd']
         }]
     };
@@ -265,41 +291,55 @@ const InvestmentDetails = () => {
         labels: ['Hatton National Bank', 'Commercial Bank', 'Sampath Bank'],
         datasets: [
             {
+                label: 'Blended Rate',
+                data: [9.52, 10.1, 9.2],
+                backgroundColor: '#6366f1',
+                unit: '%',
+                minBarLength: 0
+            },
+            {
                 label: 'EUR',
                 data: [1.5, 0, 1.5],
                 backgroundColor: '#f59e0b',
-                unit: '',
-                minBarLength: 5
+                unit: '%',
+                minBarLength: 0
             },
             {
                 label: 'GBP',
                 data: [2.0, 0, 0],
                 backgroundColor: '#ef4444',
-                unit: '',
+                unit: '%',
                 minBarLength: 5
             },
             {
                 label: 'LKR',
                 data: [11.5, 10.25, 12.0],
                 backgroundColor: '#3b82f6',
-                unit: '',
+                unit: '%',
                 minBarLength: 5
             },
             {
                 label: 'SGD',
                 data: [3.5, 0, 0],
                 backgroundColor: '#14b8a6',
-                unit: '',
+                unit: '%',
                 minBarLength: 5
             },
             {
                 label: 'USD',
                 data: [4.25, 3.8, 4.5],
                 backgroundColor: '#10b981',
-                unit: '',
+                unit: '%',
                 minBarLength: 5
             }
         ]
+    };
+
+    const filteredBankRatesData = {
+        ...bankRatesData,
+        datasets: rateFilter === 'All'
+            ? bankRatesData.datasets.filter(ds => ds.label !== 'Blended Rate')
+            : bankRatesData.datasets.filter(ds => ds.label === rateFilter)
     };
 
     const maturityAllData = {
@@ -494,27 +534,25 @@ const InvestmentDetails = () => {
                         </h1>
                         <div style={{ marginTop: '4px', fontSize: '13px', fontWeight: 400, color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span>Total Investments: {summaryData.totalInvestments}</span>
+                            <span style={{ color: '#e5e7eb' }}>•</span>
+                            <span>{summaryData.activeFDs} Total FDs</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Summary Cards */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
-                    <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Active FDs</div>
-                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'black' }}>{summaryData.activeFDs}</div>
-                    </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '24px' }}>
                     <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
                         <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Total Principal</div>
-                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'black' }}>{summaryData.totalPrincipal}</div>
+                        <div style={{ fontSize: '16px', fontWeight: 600, color: 'black' }}>{summaryData.totalPrincipal}</div>
                     </div>
                     <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
                         <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Interest Earned</div>
-                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'black' }}>{summaryData.interestEarned}</div>
+                        <div style={{ fontSize: '16px', fontWeight: 600, color: 'black' }}>{summaryData.interestEarned}</div>
                     </div>
                     <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
                         <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>WAIR</div>
-                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'black' }}>{summaryData.wair}</div>
+                        <div style={{ fontSize: '16px', fontWeight: 600, color: 'black' }}>{summaryData.wair}</div>
                     </div>
                 </div>
 
@@ -526,10 +564,14 @@ const InvestmentDetails = () => {
                         <div style={{ height: '200px' }}>
                             <Bar
                                 data={categoryDistributionData}
-                                plugins={[topLabelsPlugin]}
+                                plugins={[topLabelsPlugin, ghostBarsPlugin]}
                                 options={{
                                     responsive: true,
                                     maintainAspectRatio: false,
+                                    interaction: {
+                                        mode: 'index',
+                                        intersect: false
+                                    },
                                     plugins: { legend: { display: false } },
                                     scales: {
                                         y: {
@@ -572,10 +614,51 @@ const InvestmentDetails = () => {
 
                 <div style={{ display: 'flex', gap: '24px', marginTop: '24px' }}>
                     <div style={{ flex: 1, padding: '16px', backgroundColor: 'white', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <h3 className="widget-title" style={{ marginBottom: '16px' }}>Bank Investment Rates by Currency</h3>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                            <h3 className="widget-title" style={{ margin: 0 }}>Bank Investment Rates by Currency</h3>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span style={{ fontSize: '13px', color: '#64748b' }}>View:</span>
+                                <div style={{
+                                    position: 'relative',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    border: '1px solid #10b981',
+                                    borderRadius: '6px',
+                                    padding: '0 12px',
+                                    height: '32px',
+                                    backgroundColor: 'white'
+                                }}>
+                                    <select
+                                        value={rateFilter}
+                                        onChange={(e) => setRateFilter(e.target.value)}
+                                        style={{
+                                            appearance: 'none',
+                                            border: 'none',
+                                            background: 'transparent',
+                                            fontSize: '13px',
+                                            fontWeight: 500,
+                                            paddingRight: '20px',
+                                            cursor: 'pointer',
+                                            outline: 'none',
+                                            height: '100%'
+                                        }}
+                                    >
+                                        <option value="All">All</option>
+                                        <option value="Blended Rate">Blended Rate</option>
+                                        <option value="LKR">LKR</option>
+                                        <option value="USD">USD</option>
+                                        <option value="EUR">EUR</option>
+                                        <option value="GBP">GBP</option>
+                                        <option value="SGD">SGD</option>
+                                    </select>
+                                    <ChevronDown size={14} style={{ position: 'absolute', right: '8px', pointerEvents: 'none', color: '#64748b' }} />
+                                </div>
+                            </div>
+                        </div>
                         <div style={{ height: '200px' }}>
                             <Bar
-                                data={bankRatesData}
+                                data={filteredBankRatesData}
+                                plugins={[ghostBarsPlugin]}
                                 options={{
                                     responsive: true,
                                     maintainAspectRatio: false,

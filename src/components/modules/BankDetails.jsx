@@ -65,6 +65,36 @@ ChartJS.register(
     LineController
 );
 
+const ghostBarsPlugin = {
+    id: 'ghostBars',
+    beforeDatasetsDraw(chart) {
+        if (chart.config.type !== 'bar') return;
+        const { ctx, chartArea } = chart;
+        ctx.save();
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            if (meta.hidden) return;
+            dataset.data.forEach((value, index) => {
+                if (value === 0) {
+                    const bar = meta.data[index];
+                    if (!bar) return;
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+                    const barWidth = bar.width;
+                    ctx.fillRect(
+                        bar.x - barWidth / 2,
+                        chartArea.top,
+                        barWidth,
+                        chartArea.bottom - chartArea.top
+                    );
+                }
+            });
+        });
+        ctx.restore();
+    }
+};
+
+ChartJS.register(ghostBarsPlugin);
+
 const LogoImage = ({ src, name, color, size = 48 }) => {
     const [error, setError] = React.useState(false);
 
@@ -147,6 +177,10 @@ const ChartCard = (props) => {
     const barOptions = {
         responsive: true,
         maintainAspectRatio: false,
+        interaction: {
+            mode: 'index',
+            intersect: false,
+        },
         plugins: {
             legend: { display: false },
             tooltip: {
@@ -340,7 +374,8 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
                 backgroundColor: '#10b981',
                 barPercentage: 0.5,
                 categoryPercentage: 0.7,
-                borderRadius: 4
+                borderRadius: 4,
+                minBarLength: 0
             },
             {
                 label: 'Loans',
@@ -348,7 +383,8 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
                 backgroundColor: '#ef4444',
                 barPercentage: 0.5,
                 categoryPercentage: 0.7,
-                borderRadius: 4
+                borderRadius: 4,
+                minBarLength: 0
             }
         ]
     };

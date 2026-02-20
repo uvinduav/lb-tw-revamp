@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  PanelLeft, 
-  ArrowLeft, 
-  ArrowRight, 
-  User, 
-  ChevronDown, 
-  MessageSquareWarning, 
-  SquareCheckBig, 
+import {
+  PanelLeft,
+  ArrowLeft,
+  ArrowRight,
+  User,
+  ChevronDown,
+  MessageSquareWarning,
+  SquareCheckBig,
   Bell,
   Settings,
   LogOut,
@@ -14,20 +14,23 @@ import {
 } from 'lucide-react';
 import Popover from './common/Popover';
 
-const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, showForward, onForward, breadcrumb, onNavigate, onAlertsClick, onTasksClick }) => {
+const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, showForward, onForward, breadcrumb, onNavigate, onAlertsClick, onTasksClick, alerts = [] }) => {
   const [notificationsAnchor, setNotificationsAnchor] = useState(null);
   const [userMenuAnchor, setUserMenuAnchor] = useState(null);
   const [shouldWiggle, setShouldWiggle] = useState(false);
 
+  const alertCount = alerts.length;
+  const mostCriticalLevel = alerts.some(a => a.type === 'critical') ? 'critical' :
+    alerts.some(a => a.type === 'warning') ? 'warning' :
+      alerts.some(a => a.type === 'anomaly') ? 'anomaly' : 'none';
+
   React.useEffect(() => {
-    // Check if alert count > 0 (hardcoded 1 for now)
-    const alertCount = 1; 
     if (alertCount > 0) {
       setShouldWiggle(true);
       const timer = setTimeout(() => setShouldWiggle(false), 1000);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [alertCount]);
 
   const handleNotificationsClick = (event) => {
     setNotificationsAnchor(notificationsAnchor ? null : event.currentTarget);
@@ -118,11 +121,11 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, sh
       </div>
 
       <div className="topbar-right-elements">
-        <div className={`topbar-alert-pill ${shouldWiggle ? 'wiggle' : ''}`} onClick={onAlertsClick}>
+        <div className={`topbar-alert-pill ${mostCriticalLevel} ${shouldWiggle ? 'wiggle' : ''}`} onClick={onAlertsClick}>
           <MessageSquareWarning size={14} />
-          <span>1 Alerts</span>
+          <span>{alertCount} {alertCount === 1 ? 'Alert' : 'Alerts'}</span>
         </div>
-        
+
         <div className="topbar-task-pill" onClick={onTasksClick}>
           <SquareCheckBig size={14} />
           <span>1</span>
@@ -131,16 +134,16 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, sh
         <div className="topbar-divider" />
 
         <div style={{ position: 'relative' }}>
-          <div 
+          <div
             className={`topbar-icon-box ${notificationsAnchor ? 'active' : ''}`}
             onClick={handleNotificationsClick}
           >
             <Bell size={16} />
             <div className="topbar-badge">2</div>
           </div>
-          
-          <Popover 
-            isOpen={!!notificationsAnchor} 
+
+          <Popover
+            isOpen={!!notificationsAnchor}
             onClose={handleCloseNotifications}
             anchorEl={notificationsAnchor}
             topOffset={8}
@@ -181,7 +184,7 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, sh
         </div>
 
         <div style={{ position: 'relative' }}>
-          <div 
+          <div
             className={`user-profile ${userMenuAnchor ? 'active' : ''}`}
             onClick={handleUserMenuClick}
           >
@@ -189,8 +192,8 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, sh
             <ChevronDown size={12} />
           </div>
 
-          <Popover 
-            isOpen={!!userMenuAnchor} 
+          <Popover
+            isOpen={!!userMenuAnchor}
             onClose={handleCloseUserMenu}
             anchorEl={userMenuAnchor}
             topOffset={8}

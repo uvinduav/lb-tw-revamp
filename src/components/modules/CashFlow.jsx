@@ -365,20 +365,11 @@ const CashFlow = ({ onNavigate }) => {
                                             <td className="text-black" style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>LKR 2,407.79M</td>
                                         </tr>
                                         <tr>
-                                            <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6' }}>Net Monthly Cash Position</td>
-                                            <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>
+                                            <td style={{ padding: '6px 0' }}>Net Monthly Cash Position</td>
+                                            <td style={{ padding: '6px 0', textAlign: 'right' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
                                                     <span className="text-green">+LKR 2,002.08M</span>
                                                     <span className="text-green" style={{ fontSize: '11px' }}>+493.46%</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style={{ padding: '6px 0' }}>Daily Variance</td>
-                                            <td style={{ padding: '6px 0', textAlign: 'right' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
-                                                    <span className="text-green">+LKR 945.00M</span>
-                                                    <span className="text-green" style={{ fontSize: '11px' }}>+64.60%</span>
                                                 </div>
                                             </td>
                                         </tr>
