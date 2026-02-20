@@ -539,6 +539,12 @@ const Dashboard = ({ onNavigate }) => {
     { id: 4, currency: 'USD/LKR', name: 'US Dollar', rate: '230.00', prevRate: '229.55', date: 'Dec 26, 2025', cost: 'LKR 23,000,000', flag: 'https://flagcdn.com/w40/us.png', change: '+0.45', changePercent: '+0.20%' },
   ];
 
+  const forexOverviewData = [
+    { currency: 'USD', deposits: 'USD 4.52M', depVal: 4.52, depRate: '3.77%', loans: 'USD 1.25M', loanVal: 1.25, loanRate: '5.91%', net: 'USD 3.27M', netType: '(Asset)', color: '#3b82f6' },
+    { currency: 'EUR', deposits: 'EUR 0.24M', depVal: 0.24, depRate: '1.50%', loans: 'EUR 0.00M', loanVal: 0, loanRate: '0.00%', net: 'EUR 0.24M', netType: '(Asset)', color: '#f59e0b' }
+  ];
+
+
   const lineChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -753,11 +759,11 @@ const Dashboard = ({ onNavigate }) => {
               <div style={{ width: '350px', height: '220px', position: 'relative', flexShrink: 0 }}>
                 <Bar
                   data={{
-                    labels: ['USD', 'EUR'],
+                    labels: forexOverviewData.map(d => d.currency),
                     datasets: [
                       {
                         label: 'Deposits',
-                        data: [4.52, 0.24],
+                        data: forexOverviewData.map(d => d.depVal),
                         backgroundColor: '#10b981',
                         barPercentage: 1.0,
                         categoryPercentage: 0.8,
@@ -766,7 +772,7 @@ const Dashboard = ({ onNavigate }) => {
                       },
                       {
                         label: 'Loans',
-                        data: [1.25, 0],
+                        data: forexOverviewData.map(d => d.loanVal),
                         backgroundColor: '#ef4444',
                         barPercentage: 1.0,
                         categoryPercentage: 0.8,
@@ -793,7 +799,16 @@ const Dashboard = ({ onNavigate }) => {
                         titleFont: { size: 13 },
                         bodyFont: { size: 12 },
                         cornerRadius: 4,
-                        displayColors: true
+                        displayColors: true,
+                        callbacks: {
+                          label: function (context) {
+                            const item = forexOverviewData[context.dataIndex];
+                            const label = context.dataset.label;
+                            const value = context.raw;
+                            const rate = label === 'Deposits' ? item.depRate : item.loanRate;
+                            return `${label}: ${item.currency} ${value}M (${rate})`;
+                          }
+                        }
                       },
                       datalabels: {
                         display: false
@@ -838,10 +853,7 @@ const Dashboard = ({ onNavigate }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {[
-                      { currency: 'USD', deposits: 'USD 4.52M', depRate: '3.77%', loans: 'USD 1.25M', loanRate: '5.91%', net: 'USD 3.27M', netType: '(Asset)', color: '#3b82f6' },
-                      { currency: 'EUR', deposits: 'EUR 0.24M', depRate: '1.50%', loans: 'EUR 0.00M', loanRate: '0.00%', net: 'EUR 0.24M', netType: '(Asset)', color: '#f59e0b' }
-                    ].map((item, index, array) => (
+                    {forexOverviewData.map((item, index, array) => (
                       <tr key={index} style={{ borderBottom: index < array.length - 1 ? '1px solid #f3f4f6' : 'none', height: '32px' }}>
                         <td style={{ padding: '4px 0' }}>
                           <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.currency}</span>
