@@ -14,7 +14,7 @@ const DURATION_DATA = [
   { id: 10, title: '2 years', type: 'FD' },
 ];
 
-const Durations = () => {
+const Durations = ({ onNavigate }) => {
   return (
     <ModulePage 
       title="Durations"
@@ -25,6 +25,8 @@ const Durations = () => {
           'Title': 'title', 
           'Product Type': 'type'
       }}
+      onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Durations' })}
+      createButtonText="Add New Duration"
     />
   );
 };

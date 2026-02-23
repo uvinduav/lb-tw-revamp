@@ -12,7 +12,7 @@ const COMPANY_DATA = [
   { id: 8, name: 'Retail Spaces Pvt Ltd', code: '2000', registration: 'TAX-008', city: 'Colombo' },
 ];
 
-const Companies = () => {
+const Companies = ({ onNavigate }) => {
   return (
     <ModulePage 
       title="Companies"
@@ -25,6 +25,8 @@ const Companies = () => {
           'Registration': 'registration',
           'City': 'city'
       }}
+      onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Companies' })}
+      createButtonText="Add New Company"
     />
   );
 };

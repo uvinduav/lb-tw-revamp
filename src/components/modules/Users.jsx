@@ -1,7 +1,7 @@
 import React from 'react';
 import ModulePage from '../ModulePage';
 
-const Users = () => {
+const Users = ({ onNavigate }) => {
   return (
     <ModulePage 
       title="Users"
@@ -15,6 +15,8 @@ const Users = () => {
           'Role': 'role',
           'Status': 'status'
       }}
+      onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Users' })}
+      createButtonText="Add New User"
     />
   );
 };

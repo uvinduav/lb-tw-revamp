@@ -14,7 +14,7 @@ const CURRENCY_DATA = [
   { id: 10, name: 'Indian Rupee', code: 'INR', symbol: '₹', country: 'India', status: 'Active' },
 ];
 
-const Currencies = () => {
+const Currencies = ({ onNavigate }) => {
   return (
     <ModulePage 
       title="Currencies"
@@ -26,6 +26,8 @@ const Currencies = () => {
           'Code': 'code', 
           'Symbol': 'symbol'
       }}
+      onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Currencies' })}
+      createButtonText="Add New Currency"
     />
   );
 };

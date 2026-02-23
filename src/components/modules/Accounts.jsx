@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ModulePage from '../ModulePage';
 import csvFile from '../../assets/accounts-test-sheet.csv?raw';
 
-const Accounts = () => {
+const Accounts = ({ onNavigate }) => {
   const [data] = useState(() => {
     if (!csvFile) return [];
 
@@ -61,6 +61,8 @@ const Accounts = () => {
       data={data}
       filterFields={filterFields}
       dataMap={dataMap}
+      onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Accounts' })}
+      createButtonText="Add New Account"
     />
   );
 };

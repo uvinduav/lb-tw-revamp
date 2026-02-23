@@ -1,7 +1,7 @@
 import React from 'react';
 import ModulePage from '../ModulePage';
 
-const ExchangeRates = () => {
+const ExchangeRates = ({ onNavigate }) => {
   return (
     <ModulePage 
       title="Exchange Rates"
@@ -15,6 +15,8 @@ const ExchangeRates = () => {
           'Mid Rate': 'mid',
           'Date': 'date'
       }}
+      onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Exchange Rates' })}
+      createButtonText="Add New Exchange Rate"
     />
   );
 };

@@ -14,7 +14,7 @@ const BRANCH_DATA = [
   { id: 10, name: 'Head Office Branch', code: 'PB-HO', bank: "People's Bank", location: 'Colombo', status: 'Active' },
 ];
 
-const Branches = () => {
+const Branches = ({ onNavigate }) => {
   return (
     <ModulePage 
       title="Branches"
@@ -27,6 +27,8 @@ const Branches = () => {
           'Bank': 'bank',
           'City': 'location'
       }}
+      onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Branches' })}
+      createButtonText="Add New Branch"
     />
   );
 };

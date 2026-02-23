@@ -33,6 +33,8 @@ const ModulePage = ({
   filterOptions = {}, // Optional: object mapping field names to array of options
   alertCount = 0, // Optional: number of alerts to show
   showAddButton = true, // Optional: whether to show the "Add New" button
+  createButtonText, // Optional: custom text for the "Add New" button (without "Add New ")
+  onCreate, // Optional: callback when "Add New" button is clicked
   renderHeaderActions = null, // Optional: function to render custom header actions () => JSX
   showDefaultRowActions = true, // Optional: whether to show default Edit and Delete actions
   showColumnCustomization = true // Default to true
@@ -321,9 +323,9 @@ const ModulePage = ({
             <Download size={16} />
           </button>
           {showAddButton && (
-            <button className="btn btn-primary">
+            <button className="btn btn-primary" onClick={() => onCreate && onCreate(createButtonText || `Add New ${title.replace(/^All /, '').replace(/s$/, '')}`)}>
               <Plus size={16} />
-              Add New {title.slice(0, -1) || 'Item'}
+              {createButtonText || `Add New ${title.replace(/^All /, '').replace(/s$/, '')}`}
             </button>
           )}
         </div>

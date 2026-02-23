@@ -11,7 +11,7 @@ const BENCHMARK_DATA = [
   { id: 7, name: 'AWPLR Weekly', country: 'Sri Lanka', code: 'AWPLR-W', currency: 'LKR', tenor: '1 Week', status: 'Active' },
 ];
 
-const Benchmarks = () => {
+const Benchmarks = ({ onNavigate }) => {
   return (
     <ModulePage 
       title="Benchmarks"
@@ -22,6 +22,8 @@ const Benchmarks = () => {
           'Name': 'name', 
           'Country': 'country'
       }}
+      onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Benchmarks' })}
+      createButtonText="Add New Benchmark"
     />
   );
 };

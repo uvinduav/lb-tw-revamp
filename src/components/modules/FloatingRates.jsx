@@ -9,7 +9,7 @@ const FLOATING_RATE_DATA = [
   { id: 5, name: 'T-Bill 91D', baseRate: '9.12%', spread: '0.50%', effectiveDate: '2026-02-01', status: 'Active' },
 ];
 
-const FloatingRates = () => {
+const FloatingRates = ({ onNavigate }) => {
   return (
     <ModulePage 
       title="Floating Rates"
@@ -24,6 +24,8 @@ const FloatingRates = () => {
           'Status': 'status' 
       }}
       showDefaultRowActions={false}
+      onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Floating Rates' })}
+      createButtonText="Add New Rate"
     />
   );
 };

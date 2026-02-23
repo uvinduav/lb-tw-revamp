@@ -1,7 +1,7 @@
 import React from 'react';
 import ModulePage from '../ModulePage';
 
-const PurposeTags = () => {
+const PurposeTags = ({ onNavigate }) => {
   return (
     <ModulePage 
       title="Purpose Tags"
@@ -15,6 +15,8 @@ const PurposeTags = () => {
           'Description': 'description',
           'Status': 'status'
       }}
+      onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Purpose Tags' })}
+      createButtonText="Add New Purpose Tag"
     />
   );
 };

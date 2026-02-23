@@ -152,7 +152,6 @@ const DebtDetails = () => {
             backgroundColor: ['#B10A32', '#38D200'],
             borderRadius: 0,
             barThickness: 40,
-            barThickness: 40,
             minBarLength: 0,
             hoverBackgroundColor: ['#B10A32dd', '#38D200dd']
         }]

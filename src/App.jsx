@@ -38,6 +38,7 @@ import TasksPanel from './components/modules/TasksPanel';
 import ScrollToTop from './components/common/ScrollToTop';
 import Thresholds from './components/modules/Thresholds';
 import Alerts from './components/modules/Alerts';
+import CreateModulePage from './components/CreateModulePage';
 
 function App() {
   const [activePage, setActivePage] = useState('Dashboard');
@@ -102,6 +103,7 @@ function App() {
 
   const renderPage = () => {
     switch (activePage) {
+      case 'Create Page': return <CreateModulePage title={selectedEntity?.title} />;
       case 'Dashboard': return <Dashboard onNavigate={handlePageChange} />;
       case 'Entity Details': return <EntityDetails entity={selectedEntity} onNavigate={handlePageChange} onBack={() => setActivePage('Dashboard')} />;
       case 'Bank Details': return <BankDetails entity={selectedEntity} bank={selectedBank} onNavigate={handlePageChange} onBack={() => setActivePage('Entity Details')} />;
@@ -110,36 +112,36 @@ function App() {
       case 'Cash Position Details': return <CashPositionDetails onNavigate={handlePageChange} />;
       case 'Investment Details': return <InvestmentDetails onNavigate={handlePageChange} />;
       case 'Cash Flow': return <CashFlow onNavigate={setActivePage} />;
-      case 'Accounts': return <Accounts />;
+      case 'Accounts': return <Accounts onNavigate={handlePageChange} />;
       case 'Payments': return <Payments />;
       case 'Accruals': return <Accruals />;
       case 'Reports': return <Reports />;
-      case 'Floating Rates': return <FloatingRates />;
+      case 'Floating Rates': return <FloatingRates onNavigate={handlePageChange} />;
       case 'Posting Center': return <PostingCenter />;
-      case 'Working Calendar': return <WorkingCalendar />;
+      case 'Working Calendar': return <WorkingCalendar onNavigate={handlePageChange} />;
 
       // Setup - Parameters
-      case 'Banks': return <Banks />;
-      case 'Benchmarks': return <Benchmarks />;
-      case 'Branches': return <Branches />;
-      case 'Companies': return <Companies />;
-      case 'Currencies': return <Currencies />;
-      case 'Durations': return <Durations />;
-      case 'Interest Rates': return <InterestRates />;
-      case 'Exchange Rates': return <ExchangeRates />;
-      case 'Purpose Tags': return <PurposeTags />;
+      case 'Banks': return <Banks onNavigate={handlePageChange} />;
+      case 'Benchmarks': return <Benchmarks onNavigate={handlePageChange} />;
+      case 'Branches': return <Branches onNavigate={handlePageChange} />;
+      case 'Companies': return <Companies onNavigate={handlePageChange} />;
+      case 'Currencies': return <Currencies onNavigate={handlePageChange} />;
+      case 'Durations': return <Durations onNavigate={handlePageChange} />;
+      case 'Interest Rates': return <InterestRates onNavigate={handlePageChange} />;
+      case 'Exchange Rates': return <ExchangeRates onNavigate={handlePageChange} />;
+      case 'Purpose Tags': return <PurposeTags onNavigate={handlePageChange} />;
       case 'Thresholds': return <Thresholds />;
 
       // Setup - Users
-      case 'Users': return <Users />;
-      case 'User Groups': return <UserGroups />;
+      case 'Users': return <Users onNavigate={handlePageChange} />;
+      case 'User Groups': return <UserGroups onNavigate={handlePageChange} />;
       case 'Alerts': return <Alerts />;
 
       case 'Change Log': return <ChangeLog />;
       case 'Settings': return <Settings />;
       case 'Notifications': return <Notifications />;
 
-      default: return <Accounts />;
+      default: return <Accounts onNavigate={handlePageChange} />;
     }
   };
 
@@ -199,6 +201,7 @@ function App() {
           onForward={goForward}
           onNavigate={handleBreadcrumbNavigate}
           breadcrumb={
+            activePage === 'Create Page' ? `Dashboard > ${selectedEntity?.parent} > ${selectedEntity?.title}` :
             activePage === 'Entity Details' ? 'Dashboard > Entity Details' :
               activePage === 'Bank Details' ? `Dashboard > Entity Details > ${selectedBank || 'Bank Details'}` :
                 activePage === 'Account Details' ? `Dashboard > Entity Details > ${selectedBank} > ${selectedAccount?.accountNo || 'Account'}` :

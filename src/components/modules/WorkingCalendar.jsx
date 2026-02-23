@@ -1,7 +1,7 @@
 import React from 'react';
 import ModulePage from '../ModulePage';
 
-const WorkingCalendar = () => {
+const WorkingCalendar = ({ onNavigate }) => {
   return (
     <ModulePage 
       title="Working Calendar"
@@ -14,6 +14,8 @@ const WorkingCalendar = () => {
           'Holiday Name': 'holidayName',
           'Location': 'location'
       }}
+      onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Working Calendar' })}
+      createButtonText="Add New Calendar"
     />
   );
 };

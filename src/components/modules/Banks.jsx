@@ -14,7 +14,7 @@ const BANK_DATA = [
   { id: 10, name: 'Sampath Bank', code: 'SAMPATH', swift: 'BSAMLKLX', country: 'Sri Lanka', status: 'Active' },
 ];
 
-const Banks = () => {
+const Banks = ({ onNavigate }) => {
   return (
     <ModulePage 
       title="Banks"
@@ -26,6 +26,8 @@ const Banks = () => {
           'Short Code': 'code', 
           'SWIFT / BIC Code': 'swift'
       }}
+      onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Banks' })}
+      createButtonText="Add New Bank"
     />
   );
 };
