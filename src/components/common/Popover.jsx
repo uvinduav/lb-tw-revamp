@@ -43,11 +43,10 @@ const Popover = ({ isOpen, onClose, children, className = '', topOffset = 8, rig
   return createPortal(
     <div 
       ref={popoverRef}
-      className={`popover-container ${className}`}
+      className={`absolute bg-white rounded-lg shadow-[0_4px_16px_rgba(0,0,0,0.1),0_0_1px_rgba(0,0,0,0.1)] border border-border z-[1000] min-w-[280px] overflow-hidden animate-fade-in ${className}`}
       style={{ 
         top: `${position.top}px`, 
         left: `${position.left}px`,
-        position: 'absolute' 
       }}
     >
       {children}

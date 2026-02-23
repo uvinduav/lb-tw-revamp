@@ -102,51 +102,51 @@ const Sidebar = ({
 
   return (
     <div
-      className={`sidebar ${!isOpen ? 'closed' : ''} ${isHovered ? 'floating' : ''} `}
+      className={`w-[240px] bg-sidebar-bg text-sidebar-text flex flex-col fixed h-full left-0 top-0 z-[100] transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${!isOpen ? '-translate-x-full' : 'translate-x-0'} ${isHovered ? 'translate-x-0 z-[110] shadow-[4px_0_24px_rgba(0,0,0,0.15)]' : ''}`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="sidebar-header">
-        <img src={lionLogo} alt="Lion Logo" className="logo-img" />
+      <div className="h-[70px] flex items-center pt-6 px-6">
+        <img src={lionLogo} alt="Lion Logo" className="h-8 w-auto object-contain" />
       </div>
 
-      <div className="sidebar-nav">
+      <div className="flex-1 py-4 overflow-y-auto sidebar-scrollbar">
         {mainNavItems.map((item) => (
           <a
             key={item.name}
             href="#"
-            className={`nav-item ${activePage === item.name ? 'active' : ''}`}
+            className={`group flex items-center py-2 px-6 cursor-pointer transition-all duration-200 text-[13px] font-medium text-sidebar-text no-underline gap-2.5 whitespace-nowrap hover:bg-sidebar-hover hover:text-sidebar-text-active ${activePage === item.name ? 'text-sidebar-text-active font-semibold border-l-[3px] border-primary-action pl-[21px]' : ''}`}
             onClick={() => setActivePage(item.name)}
           >
             {item.icon}
             {item.name}
-            <span className="shortcut-key">Alt+{item.shortcut}</span>
+            <span className="ml-auto text-[10px] font-semibold text-sidebar-text bg-white/[0.08] border border-white/[0.15] border-b-2 border-b-white/20 px-[5px] py-px rounded-[4px] font-[Inter,sans-serif] opacity-0 translate-x-1 transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] pointer-events-none flex items-center justify-center leading-none h-[18px] group-hover:opacity-100 group-hover:translate-x-0 group-hover:delay-500">Alt+{item.shortcut}</span>
           </a>
         ))}
 
-        <div className="nav-group-label">Setup</div>
+        <div className="py-2 px-6 text-[11px] uppercase text-[#78716c] font-semibold mt-4">Setup</div>
 
         <div
-          className="nav-item nav-item-expandable"
+          className="flex items-center justify-between py-2 px-6 cursor-pointer transition-all duration-200 text-[13px] font-medium text-sidebar-text gap-2.5 whitespace-nowrap hover:bg-sidebar-hover hover:text-sidebar-text-active"
           onClick={() => setIsParametersOpen(!isParametersOpen)}
         >
-          <div className="nav-item-content">
+          <div className="flex items-center gap-2.5">
             <Sliders size={18} />
             Parameters
           </div>
           <ChevronDown
             size={16}
-            className={`chevron-icon ${isParametersOpen ? 'open' : ''}`}
+            className={`transition-transform duration-200 text-sidebar-text ${isParametersOpen ? 'rotate-180' : ''}`}
           />
         </div>
 
         {isParametersOpen && (
-          <div className="sidebar-sub-nav">
+          <div className="py-1 flex flex-col">
             {subItems.map((item) => (
               <a
                 key={item.name}
                 href="#"
-                className={`sub-nav-item ${activePage === item.name ? 'active' : ''}`}
+                className={`flex items-center py-2 pr-6 pl-[36px] text-[13px] text-sidebar-text no-underline gap-2.5 transition-all duration-200 opacity-90 whitespace-nowrap hover:text-sidebar-text-active hover:bg-sidebar-hover ${activePage === item.name ? 'text-sidebar-text-active font-semibold' : ''}`}
                 onClick={() => setActivePage(item.name)}
               >
                 {item.icon}
@@ -157,26 +157,26 @@ const Sidebar = ({
         )}
 
         <div
-          className="nav-item nav-item-expandable"
+          className="flex items-center justify-between py-2 px-6 cursor-pointer transition-all duration-200 text-[13px] font-medium text-sidebar-text gap-2.5 whitespace-nowrap hover:bg-sidebar-hover hover:text-sidebar-text-active"
           onClick={() => setIsUsersOpen(!isUsersOpen)}
         >
-          <div className="nav-item-content">
+          <div className="flex items-center gap-2.5">
             <Users size={18} />
             Users & Alerts
           </div>
           <ChevronDown
             size={16}
-            className={`chevron-icon ${isUsersOpen ? 'open' : ''}`}
+            className={`transition-transform duration-200 text-sidebar-text ${isUsersOpen ? 'rotate-180' : ''}`}
           />
         </div>
 
         {isUsersOpen && (
-          <div className="sidebar-sub-nav">
+          <div className="py-1 flex flex-col">
             {usersSubItems.map((item) => (
               <a
                 key={item.name}
                 href="#"
-                className={`sub-nav-item ${activePage === item.name ? 'active' : ''}`}
+                className={`flex items-center py-2 pr-6 pl-[36px] text-[13px] text-sidebar-text no-underline gap-2.5 transition-all duration-200 opacity-90 whitespace-nowrap hover:text-sidebar-text-active hover:bg-sidebar-hover ${activePage === item.name ? 'text-sidebar-text-active font-semibold' : ''}`}
                 onClick={() => setActivePage(item.name)}
               >
                 {item.icon}
@@ -186,7 +186,7 @@ const Sidebar = ({
           </div>
         )}
 
-        <a href="#" className={`nav-item ${activePage === 'Change Log' ? 'active' : ''}`} onClick={() => setActivePage('Change Log')}>
+        <a href="#" className={`flex items-center py-2 px-6 cursor-pointer transition-all duration-200 text-[13px] font-medium text-sidebar-text no-underline gap-2.5 whitespace-nowrap hover:bg-sidebar-hover hover:text-sidebar-text-active ${activePage === 'Change Log' ? 'text-sidebar-text-active font-semibold border-l-[3px] border-primary-action pl-[21px]' : ''}`} onClick={() => setActivePage('Change Log')}>
           <History size={18} />
           Change Log
         </a>

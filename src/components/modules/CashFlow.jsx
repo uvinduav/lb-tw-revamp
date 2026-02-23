@@ -77,46 +77,22 @@ const LogoPlaceholder = ({ name, color, size = 20, src }) => {
     if (src) {
         return (
             <div
-                style={{
-                    width: `${size}px`,
-                    height: `${size}px`,
-                    borderRadius: '4px',
-                    backgroundColor: 'white', // Ensure white background for logos
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: '1px solid rgba(0,0,0,0.05)',
-                    flexShrink: 0,
-                    overflow: 'hidden'
-                }}
+                className="rounded bg-white flex items-center justify-center border border-black/5 shrink-0 overflow-hidden"
+                style={{ width: `${size}px`, height: `${size}px` }}
             >
-                <img
-                    src={src}
-                    alt={name}
-                    style={{
-                        width: '80%', // Slightly smaller to fit nicely
-                        height: '80%',
-                        objectFit: 'contain'
-                    }}
-                />
+                <img src={src} alt={name} className="w-4/5 h-4/5 object-contain" />
             </div>
         );
     }
     return (
         <div
+            className="rounded flex items-center justify-center font-semibold border border-black/5 shrink-0"
             style={{
                 width: `${size}px`,
                 height: `${size}px`,
-                borderRadius: '4px',
                 backgroundColor: color || '#f3f4f6',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 fontSize: size > 20 ? '10px' : '9px',
-                fontWeight: 600,
                 color: color ? 'rgba(0,0,0,0.5)' : '#9ca3af',
-                border: '1px solid rgba(0,0,0,0.05)',
-                flexShrink: 0
             }}
         >
             {name ? name.charAt(0) : 'E'}
@@ -173,7 +149,7 @@ const CashFlow = ({ onNavigate }) => {
         return (
             <>
                 {sign && <span>{sign}</span>}
-                <span style={{ color: '#9ca3af', fontWeight: 400 }}>{code}</span>
+                <span className="text-gray-400 font-normal">{code}</span>
                 <span> {amount}</span>
             </>
         );
@@ -268,17 +244,17 @@ const CashFlow = ({ onNavigate }) => {
     ];
 
     return (
-        <div className="dashboard-main-wrapper">
+        <div className="h-full flex flex-col overflow-hidden bg-white">
             {/* Tabs Wrapper */}
-            <div className="dashboard-tabs-wrapper">
-                <div className="dashboard-tabs">
+            <div className="border-b border-border bg-white px-6 shrink-0">
+                <div className="flex items-center gap-1 h-11">
                     {tabs.map((tab) => {
                         const Icon = tab.icon;
                         return (
                             <React.Fragment key={tab.id}>
-                                {tab.id === 'cash-flow' && <div className="vertical-divider" style={{ margin: '0 8px', alignSelf: 'center' }} />}
+                                {tab.id === 'cash-flow' && <div className="w-px h-4 bg-border mx-2 self-center" />}
                                 <button
-                                    className={`tab-item ${activeTab === tab.id ? 'active' : ''}`}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-150 whitespace-nowrap border-none cursor-pointer ${activeTab === tab.id ? 'bg-primary-action text-white' : 'bg-transparent text-text-secondary hover:bg-bg-subtle hover:text-text-main'}`}
                                     onClick={() => handleTabClick(tab.id)}
                                 >
                                     {Icon && <Icon size={14} />}
@@ -290,86 +266,86 @@ const CashFlow = ({ onNavigate }) => {
                 </div>
             </div>
 
-            <div className="dashboard-container">
+            <div className="flex-1 overflow-y-auto p-6">
 
                 {/* Header, Summary & Chart Section */}
-                <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
+                <div className="bg-bg-subtle -m-6 mb-8 p-6 border-b border-border">
                     {/* Header Section */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+                    <div className="flex justify-between items-start mb-6">
                         <div>
-                            <h1 style={{ fontSize: '20px', fontWeight: '600', color: '#111827', margin: '0 0 4px 0' }}>Daily Cash Position</h1>
-                            <p style={{ fontSize: '13px', color: '#6b7280', margin: 0 }}>Real-time account-level cash positions with daily tracking and variance analysis</p>
+                            <h1 className="text-xl font-semibold text-gray-900 m-0 mb-1">Daily Cash Position</h1>
+                            <p className="text-[13px] text-gray-500 m-0">Real-time account-level cash positions with daily tracking and variance analysis</p>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <div className="filter-dropdown-container">
-                                <Filter size={14} className="text-gray" />
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2 bg-white border border-border rounded-md px-3 h-9 text-[13px] text-text-main">
+                                <Filter size={14} className="text-gray-400" />
                                 <select
                                     value={selectedCompany}
                                     onChange={(e) => setSelectedCompany(e.target.value)}
-                                    className="filter-select"
+                                    className="appearance-none border-none bg-transparent text-[13px] outline-none cursor-pointer pr-5"
                                 >
                                     {companies.map(c => <option key={c} value={c}>{c}</option>)}
                                 </select>
-                                <ChevronDown size={14} className="text-gray select-arrow" />
+                                <ChevronDown size={14} className="text-gray-400 -ml-4 pointer-events-none" />
                             </div>
-                            <button className="download-btn" title="Download Report">
+                            <button className="flex items-center justify-center w-9 h-9 rounded-md border border-border bg-white text-text-secondary hover:bg-bg-subtle cursor-pointer transition-colors" title="Download Report">
                                 <Download size={14} />
                             </button>
                         </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 1fr) 2fr', gap: '24px', marginBottom: '24px' }}>
+                    <div className="grid gap-6 mb-6" style={{ gridTemplateColumns: 'minmax(320px, 1fr) 2fr' }}>
                         {/* Total Cash Balance Card */}
-                        <div className="widget-card">
-                            <div className="widget-header">
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <h3 className="widget-title" style={{ margin: 0 }}>TOTAL CASH BALANCE</h3>
+                        <div className="bg-white border border-border rounded-lg p-4">
+                            <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-1.5">
+                                    <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide m-0">TOTAL CASH BALANCE</h3>
                                 </div>
                             </div>
 
-                            <div style={{ marginTop: '0px' }}>
-                                <p className="widget-label">As of February 12, 2026</p>
-                                <div className="widget-value-row" style={{ margin: '8px 0' }}>
-                                    <span className="widget-value text-black">2,407.79M</span>
-                                    <span className="widget-label" style={{ marginBottom: '4px' }}>LKR</span>
+                            <div>
+                                <p className="text-[11px] text-text-secondary m-0">As of February 12, 2026</p>
+                                <div className="flex items-baseline gap-2 my-2">
+                                    <span className="text-xl font-bold font-mono text-black">2,407.79M</span>
+                                    <span className="text-[11px] text-text-secondary mb-1">LKR</span>
                                 </div>
 
-                                <div style={{ borderTop: '1px solid #f3f4f6', paddingTop: '14px', marginTop: '14px' }}>
-                                    <p className="widget-label" style={{ marginBottom: '4px' }}>Daily Movement (vs Yesterday)</p>
-                                    <div className="widget-value-row">
-                                        <span className="text-green" style={{ fontSize: '14px', fontWeight: 500 }}>~945.00M</span>
-                                        <span className="widget-change text-green">+64.60%</span>
-                                        <TrendingUp size={14} className="text-green" />
+                                <div className="border-t border-gray-100 pt-3.5 mt-3.5">
+                                    <p className="text-[11px] text-text-secondary mb-1">Daily Movement (vs Yesterday)</p>
+                                    <div className="flex items-baseline gap-2">
+                                        <span className="text-green-600 text-sm font-medium">~945.00M</span>
+                                        <span className="text-green-600 text-xs font-medium">+64.60%</span>
+                                        <TrendingUp size={14} className="text-green-600" />
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Previous Month Closing Card */}
-                        <div className="widget-card">
-                            <div className="widget-header">
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <h3 className="widget-title" style={{ margin: 0 }}>PREVIOUS MONTH CLOSING</h3>
+                        <div className="bg-white border border-border rounded-lg p-4">
+                            <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-1.5">
+                                    <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide m-0">PREVIOUS MONTH CLOSING</h3>
                                 </div>
                             </div>
 
-                            <div style={{ marginTop: '8px' }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', fontWeight: '400', color: '#111827' }}>
+                            <div className="mt-2">
+                                <table className="w-full border-collapse text-[13px] font-normal text-gray-900">
                                     <tbody>
                                         <tr>
-                                            <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6' }}>Closing Balance (Jan 2026)</td>
-                                            <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>LKR 405.72M</td>
+                                            <td className="py-1.5 border-b border-gray-100">Closing Balance (Jan 2026)</td>
+                                            <td className="py-1.5 border-b border-gray-100 text-right">LKR 405.72M</td>
                                         </tr>
                                         <tr>
-                                            <td style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6' }}>Current Balance</td>
-                                            <td className="text-black" style={{ padding: '6px 0', borderBottom: '1px solid #f3f4f6', textAlign: 'right' }}>LKR 2,407.79M</td>
+                                            <td className="py-1.5 border-b border-gray-100">Current Balance</td>
+                                            <td className="py-1.5 border-b border-gray-100 text-right text-black">LKR 2,407.79M</td>
                                         </tr>
                                         <tr>
-                                            <td style={{ padding: '6px 0' }}>Net Monthly Cash Position</td>
-                                            <td style={{ padding: '6px 0', textAlign: 'right' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
-                                                    <span className="text-green">+LKR 2,002.08M</span>
-                                                    <span className="text-green" style={{ fontSize: '11px' }}>+493.46%</span>
+                                            <td className="py-1.5">Net Monthly Cash Position</td>
+                                            <td className="py-1.5 text-right">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <span className="text-green-600">+LKR 2,002.08M</span>
+                                                    <span className="text-green-600 text-[11px]">+493.46%</span>
                                                 </div>
                                             </td>
                                         </tr>
@@ -380,205 +356,127 @@ const CashFlow = ({ onNavigate }) => {
                     </div>
 
                     {/* 30-Day Trend Chart */}
-                    <div className="widget-card" style={{ marginBottom: 0, padding: '24px' }}>
-                        <div className="widget-header" style={{ marginBottom: '16px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <LineChart size={16} className="text-gray" />
-                                <h3 className="widget-title" style={{ margin: 0 }}>30-DAY CASH POSITION TREND</h3>
+                    <div className="bg-white border border-border rounded-lg p-6 mb-0">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2">
+                                <LineChart size={16} className="text-gray-400" />
+                                <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide m-0">30-DAY CASH POSITION TREND</h3>
                             </div>
-                            <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>Rolling 30-day view: Jan 14 - Feb 12, 2026</p>
+                            <p className="text-xs text-gray-500 m-0">Rolling 30-day view: Jan 14 - Feb 12, 2026</p>
                         </div>
-                        <div style={{ height: '280px' }}>
+                        <div className="h-[280px]">
                             <Line data={trendData} options={chartOptions} />
                         </div>
                     </div>
                 </div>
 
                 {/* Detailed Account Breakdown */}
-                <div id="account-breakdown" style={{ marginTop: '32px' }}>
-                    <div style={{ marginBottom: '16px', paddingLeft: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                <div id="account-breakdown" className="mt-8">
+                    <div className="mb-4 pl-1 flex justify-between items-end">
                         <div>
-                            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Detailed Account Breakdown</h2>
-                            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>All accounts with currency balances and LKR equivalents</p>
+                            <h2 className="text-lg font-semibold text-text-main mb-1">Detailed Account Breakdown</h2>
+                            <p className="text-[13px] text-text-secondary">All accounts with currency balances and LKR equivalents</p>
                         </div>
-                        <div style={{ display: 'flex', gap: '12px' }}>
-                            <div className="filter-dropdown-container">
-                                <Filter size={14} className="text-gray" />
+                        <div className="flex gap-3">
+                            <div className="flex items-center gap-2 bg-white border border-border rounded-md px-3 h-9 text-[13px] text-text-main">
+                                <Filter size={14} className="text-gray-400" />
                                 <select
                                     value={selectedBank}
                                     onChange={(e) => setSelectedBank(e.target.value)}
-                                    className="filter-select"
+                                    className="appearance-none border-none bg-transparent text-[13px] outline-none cursor-pointer pr-5"
                                 >
                                     {banks.map(b => <option key={b} value={b}>{b}</option>)}
                                 </select>
-                                <ChevronDown size={14} className="text-gray select-arrow" />
+                                <ChevronDown size={14} className="text-gray-400 -ml-4 pointer-events-none" />
                             </div>
-                            <div className="filter-dropdown-container">
-                                <Filter size={14} className="text-gray" />
+                            <div className="flex items-center gap-2 bg-white border border-border rounded-md px-3 h-9 text-[13px] text-text-main">
+                                <Filter size={14} className="text-gray-400" />
                                 <select
                                     value={selectedType}
                                     onChange={(e) => setSelectedType(e.target.value)}
-                                    className="filter-select"
+                                    className="appearance-none border-none bg-transparent text-[13px] outline-none cursor-pointer pr-5"
                                 >
                                     {types.map(t => <option key={t} value={t}>{t}</option>)}
                                 </select>
-                                <ChevronDown size={14} className="text-gray select-arrow" />
+                                <ChevronDown size={14} className="text-gray-400 -ml-4 pointer-events-none" />
                             </div>
 
                             {/* Column Visibility Popover */}
                             <Popover.Root open={isColumnPopoverOpen} onOpenChange={setIsColumnPopoverOpen}>
                                 <Popover.Trigger asChild>
                                     <button
-                                        className="filter-dropdown-container"
+                                        className="flex items-center justify-center w-9 h-9 rounded-md border border-border bg-white text-text-secondary hover:bg-bg-subtle cursor-pointer relative z-20"
                                         title="View options"
-                                        style={{ height: '36px', width: '36px', padding: 0, justifyContent: 'center', zIndex: 20, position: 'relative', cursor: 'pointer' }}
                                     >
-                                        {visibleColumns.size === 0 ? <EyeOff size={16} className="text-gray" /> : <Eye size={16} className="text-gray" />}
+                                        {visibleColumns.size === 0 ? <EyeOff size={16} className="text-gray-400" /> : <Eye size={16} className="text-gray-400" />}
                                     </button>
                                 </Popover.Trigger>
                                 <Popover.Portal>
-                                    <Popover.Content className="popover-content" align="end" sideOffset={5} style={{
-                                        backgroundColor: 'white',
-                                        borderRadius: '8px',
-                                        boxShadow: '0 10px 38px -10px rgba(22, 23, 24, 0.35), 0 10px 20px -15px rgba(22, 23, 24, 0.2)',
-                                        width: '280px',
-                                        zIndex: 2000,
-                                        border: '1px solid var(--color-border)',
-                                        overflow: 'hidden',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        padding: 0
-                                    }}>
-                                        <div style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                            padding: '16px 16px 12px',
-                                            borderBottom: '1px solid var(--color-border)'
-                                        }}>
-                                            <span style={{ fontWeight: 600, fontSize: '14px', color: 'var(--color-text-main)' }}>View options</span>
+                                    <Popover.Content className="bg-white rounded-lg shadow-[0_10px_38px_-10px_rgba(22,23,24,0.35),0_10px_20px_-15px_rgba(22,23,24,0.2)] w-[280px] z-[2000] border border-border overflow-hidden flex flex-col p-0" align="end" sideOffset={5}>
+                                        <div className="flex items-center justify-between px-4 pt-4 pb-3 border-b border-border">
+                                            <span className="font-semibold text-sm text-text-main">View options</span>
                                             <button
                                                 onClick={() => setVisibleColumns(new Set(COLUMN_DEFS.map(c => c.id).filter(id => id !== 'currency' && id !== 'lkrEquivalent')))}
                                                 title="Reset to Default"
-                                                style={{
-                                                    background: 'none',
-                                                    border: 'none',
-                                                    color: 'var(--color-text-secondary)',
-                                                    cursor: 'pointer',
-                                                    padding: '4px',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    borderRadius: '4px'
-                                                }}
-                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-secondary)'}
-                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                className="bg-transparent border-none text-text-secondary cursor-pointer p-1 flex items-center justify-center rounded hover:bg-bg-secondary"
                                             >
                                                 <RotateCcw size={14} />
                                             </button>
                                         </div>
 
-                                        <div style={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            maxHeight: '300px',
-                                            overflowY: 'auto',
-                                            padding: '0'
-                                        }}>
+                                        <div className="flex flex-col max-h-[300px] overflow-y-auto">
                                             {COLUMN_DEFS.map((col, index) => {
                                                 const isVisible = visibleColumns.has(col.id);
                                                 const isLast = index === COLUMN_DEFS.length - 1;
                                                 return (
-                                                    <label key={col.id} style={{
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'space-between',
-                                                        padding: '10px 16px',
-                                                        cursor: 'pointer',
-                                                        fontSize: '13px',
-                                                        transition: 'background-color 0.2s',
-                                                        borderBottom: isLast ? 'none' : '1px solid var(--color-border)'
-                                                    }}
-                                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-subtle)'}
-                                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                                                    >
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                            <span style={{
-                                                                color: isVisible ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
-                                                                display: 'flex',
-                                                                alignItems: 'center'
-                                                            }}>
+                                                    <label key={col.id} className={`flex items-center justify-between px-4 py-2.5 cursor-pointer text-[13px] transition-colors duration-200 hover:bg-bg-subtle ${!isLast ? 'border-b border-border' : ''}`}>
+                                                        <div className="flex items-center gap-2.5">
+                                                            <span className={`flex items-center ${isVisible ? 'text-primary' : 'text-text-tertiary'}`}>
                                                                 {isVisible ? <Eye size={14} /> : <EyeOff size={14} />}
                                                             </span>
-                                                            <span style={{
-                                                                color: isVisible ? 'var(--color-text-main)' : 'var(--color-text-secondary)'
-                                                            }}>{col.label}</span>
+                                                            <span className={isVisible ? 'text-text-main' : 'text-text-secondary'}>{col.label}</span>
                                                         </div>
 
                                                         {/* Custom Toggle Switch */}
-                                                        <div style={{ position: 'relative', width: '32px', height: '18px' }}>
+                                                        <div className="relative w-8 h-[18px]">
                                                             <input
                                                                 type="checkbox"
                                                                 checked={isVisible}
                                                                 onChange={() => toggleColumnVisibility(col.id)}
-                                                                style={{
-                                                                    opacity: 0,
-                                                                    width: 0,
-                                                                    height: 0
-                                                                }}
+                                                                className="opacity-0 w-0 h-0"
                                                             />
-                                                            <div style={{
-                                                                position: 'absolute',
-                                                                cursor: 'pointer',
-                                                                top: 0,
-                                                                left: 0,
-                                                                right: 0,
-                                                                bottom: 0,
-                                                                backgroundColor: isVisible ? 'var(--color-primary)' : '#ccc',
-                                                                transition: '.4s',
-                                                                borderRadius: '34px'
-                                                            }}>
-                                                                <div style={{
-                                                                    position: 'absolute',
-                                                                    content: '',
-                                                                    height: '14px',
-                                                                    width: '14px',
-                                                                    left: isVisible ? '16px' : '2px',
-                                                                    bottom: '2px',
-                                                                    backgroundColor: 'white',
-                                                                    transition: '.4s',
-                                                                    borderRadius: '50%'
-                                                                }}></div>
+                                                            <div className={`absolute cursor-pointer inset-0 rounded-full transition-all duration-400 ${isVisible ? 'bg-primary' : 'bg-gray-300'}`}>
+                                                                <div className={`absolute h-3.5 w-3.5 bottom-0.5 bg-white rounded-full transition-all duration-400 ${isVisible ? 'left-4' : 'left-0.5'}`}></div>
                                                             </div>
                                                         </div>
                                                     </label>
                                                 );
                                             })}
                                         </div>
-                                        <Popover.Arrow className="popover-arrow" style={{ fill: 'white' }} />
+                                        <Popover.Arrow style={{ fill: 'white' }} />
                                     </Popover.Content>
                                 </Popover.Portal>
                             </Popover.Root>
                         </div>
                     </div>
 
-                    <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)' }}>
-                        <table className="data-table min-w-800">
-                            <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+                    <div className="m-0 bg-white border-t border-border overflow-x-auto">
+                        <table className="w-full border-collapse text-[13px] min-w-[800px]">
+                            <thead className="sticky top-0 z-10">
                                 <tr>
-                                    {visibleColumns.has('company') && <th style={{ minWidth: '180px', paddingLeft: '16px' }}>COMPANY</th>}
-                                    {visibleColumns.has('bank') && <th style={{ minWidth: '120px', paddingLeft: '20px', paddingRight: '20px' }}>BANK</th>}
-                                    {visibleColumns.has('type') && <th style={{ minWidth: '80px', paddingLeft: '20px', paddingRight: '20px' }}>TYPE</th>}
-                                    {visibleColumns.has('odLimit') && <th style={{ textAlign: 'right', minWidth: '100px', paddingLeft: '20px', paddingRight: '20px' }}>OD LIMIT</th>}
-                                    {visibleColumns.has('accName') && <th style={{ minWidth: '140px', paddingLeft: '20px', paddingRight: '20px' }}>ACC. NAME</th>}
-                                    {visibleColumns.has('accNo') && <th style={{ minWidth: '120px', paddingLeft: '20px', paddingRight: '20px' }}>ACC. NO.</th>}
-                                    {visibleColumns.has('currency') && <th style={{ minWidth: '80px', paddingLeft: '20px', paddingRight: '20px' }}>CURRENCY</th>}
-                                    {visibleColumns.has('balance') && <th style={{ textAlign: 'right', minWidth: '120px', paddingLeft: '20px', paddingRight: '20px' }}>BALANCE</th>}
-                                    {visibleColumns.has('lkrEquivalent') && <th style={{ textAlign: 'right', minWidth: '140px', paddingLeft: '20px', paddingRight: '20px' }}>LKR EQUIVALENT</th>}
-                                    {visibleColumns.has('prevDay') && <th style={{ textAlign: 'right', minWidth: '140px', paddingLeft: '20px', paddingRight: '20px' }}>PREV. DAY BALANCE</th>}
-                                    {visibleColumns.has('prevMonth') && <th style={{ textAlign: 'right', minWidth: '160px', paddingLeft: '20px', paddingRight: '20px' }}>PREV. MONTH CLOSING</th>}
-                                    {visibleColumns.has('changeDay') && <th style={{ textAlign: 'right', minWidth: '130px', paddingLeft: '20px', paddingRight: '20px' }}>CHANGE (prev. day)</th>}
-                                    {visibleColumns.has('changeMonth') && <th style={{ textAlign: 'right', paddingRight: '24px', minWidth: '150px', paddingLeft: '20px' }}>CHANGE (prev. month)</th>}
+                                    {visibleColumns.has('company') && <th className="bg-[#fafafa] text-left pl-4 px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8" style={{ minWidth: '180px' }}>COMPANY</th>}
+                                    {visibleColumns.has('bank') && <th className="bg-[#fafafa] text-left px-5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8" style={{ minWidth: '120px' }}>BANK</th>}
+                                    {visibleColumns.has('type') && <th className="bg-[#fafafa] text-left px-5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8" style={{ minWidth: '80px' }}>TYPE</th>}
+                                    {visibleColumns.has('odLimit') && <th className="bg-[#fafafa] text-right px-5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8" style={{ minWidth: '100px' }}>OD LIMIT</th>}
+                                    {visibleColumns.has('accName') && <th className="bg-[#fafafa] text-left px-5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8" style={{ minWidth: '140px' }}>ACC. NAME</th>}
+                                    {visibleColumns.has('accNo') && <th className="bg-[#fafafa] text-left px-5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8" style={{ minWidth: '120px' }}>ACC. NO.</th>}
+                                    {visibleColumns.has('currency') && <th className="bg-[#fafafa] text-left px-5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8" style={{ minWidth: '80px' }}>CURRENCY</th>}
+                                    {visibleColumns.has('balance') && <th className="bg-[#fafafa] text-right px-5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8" style={{ minWidth: '120px' }}>BALANCE</th>}
+                                    {visibleColumns.has('lkrEquivalent') && <th className="bg-[#fafafa] text-right px-5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8" style={{ minWidth: '140px' }}>LKR EQUIVALENT</th>}
+                                    {visibleColumns.has('prevDay') && <th className="bg-[#fafafa] text-right px-5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8" style={{ minWidth: '140px' }}>PREV. DAY BALANCE</th>}
+                                    {visibleColumns.has('prevMonth') && <th className="bg-[#fafafa] text-right px-5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8" style={{ minWidth: '160px' }}>PREV. MONTH CLOSING</th>}
+                                    {visibleColumns.has('changeDay') && <th className="bg-[#fafafa] text-right px-5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8" style={{ minWidth: '130px' }}>CHANGE (prev. day)</th>}
+                                    {visibleColumns.has('changeMonth') && <th className="bg-[#fafafa] text-right pr-6 px-5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8" style={{ minWidth: '150px' }}>CHANGE (prev. month)</th>}
                                 </tr>
                             </thead>
                             <tbody>
@@ -595,46 +493,46 @@ const CashFlow = ({ onNavigate }) => {
                                         return (a.accountType || '').localeCompare(b.accountType || '');
                                     })
                                     .map((row, index) => (
-                                        <tr key={index} className="hover-row">
+                                        <tr key={index} className="hover:bg-bg-subtle transition-colors duration-150">
                                             {visibleColumns.has('company') && (
-                                                <td style={{ maxWidth: 'none', overflow: 'visible', textOverflow: 'clip', paddingLeft: '16px' }}>
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                <td className="pl-4 px-2.5 py-1 border-b border-border">
+                                                    <div className="flex items-center gap-2">
                                                         <LogoPlaceholder name={row.company} color={row.companyColor} />
-                                                        <span style={{ fontWeight: 500, color: '#000000', whiteSpace: 'nowrap' }}>{row.company}</span>
+                                                        <span className="font-medium text-black whitespace-nowrap">{row.company}</span>
                                                     </div>
                                                 </td>
                                             )}
                                             {visibleColumns.has('bank') && (
-                                                <td style={{ paddingLeft: '20px', paddingRight: '20px' }}>
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                <td className="px-5 py-1 border-b border-border">
+                                                    <div className="flex items-center gap-2">
                                                         <LogoPlaceholder name={row.bank} color={row.bankColor} src={bankLogos[row.bank]} />
-                                                        <span style={{ color: '#000000' }}>{row.bank}</span>
+                                                        <span className="text-black">{row.bank}</span>
                                                     </div>
                                                 </td>
                                             )}
-                                            {visibleColumns.has('type') && <td style={{ color: '#000000', paddingLeft: '20px', paddingRight: '20px' }}>{row.accountType}</td>}
+                                            {visibleColumns.has('type') && <td className="px-5 py-1 border-b border-border text-black">{row.accountType}</td>}
                                             {visibleColumns.has('odLimit') && (
-                                                <td style={{ textAlign: 'right', fontFamily: 'monospace', color: row.odLimit === 'N/A' ? '#9ca3af' : '#000000', paddingLeft: '20px', paddingRight: '20px' }}>
+                                                <td className={`px-5 py-1 border-b border-border text-right font-mono ${row.odLimit === 'N/A' ? 'text-gray-400' : 'text-black'}`}>
                                                     {formatValue(row.odLimit)}
                                                 </td>
                                             )}
-                                            {visibleColumns.has('accName') && <td style={{ color: '#000000', paddingLeft: '20px', paddingRight: '20px' }}>{row.name}</td>}
-                                            {visibleColumns.has('accNo') && <td style={{ textAlign: 'left', fontFamily: 'monospace', color: '#000000', fontSize: '12px', paddingLeft: '20px', paddingRight: '20px' }}>{row.number}</td>}
-                                            {visibleColumns.has('currency') && <td style={{ paddingLeft: '20px', paddingRight: '20px' }}><span className="currency-badge" style={{ color: '#000000' }}>{row.currency}</span></td>}
-                                            {visibleColumns.has('balance') && <td style={{ textAlign: 'right', fontWeight: 500, fontFamily: 'monospace', color: '#000000', paddingLeft: '20px', paddingRight: '20px' }}>{formatValue(row.balance)}</td>}
-                                            {visibleColumns.has('lkrEquivalent') && <td style={{ textAlign: 'right', fontWeight: 500, color: '#000000', fontFamily: 'monospace', paddingLeft: '20px', paddingRight: '20px' }}>{row.lkr.replace('LKR ', '')}</td>}
-                                            {visibleColumns.has('prevDay') && <td style={{ textAlign: 'right', color: '#000000', fontFamily: 'monospace', paddingLeft: '20px', paddingRight: '20px' }}>{formatValue(row.prevDay)}</td>}
-                                            {visibleColumns.has('prevMonth') && <td style={{ textAlign: 'right', color: '#000000', fontFamily: 'monospace', paddingLeft: '20px', paddingRight: '20px' }}>{formatValue(row.prev)}</td>}
+                                            {visibleColumns.has('accName') && <td className="px-5 py-1 border-b border-border text-black">{row.name}</td>}
+                                            {visibleColumns.has('accNo') && <td className="px-5 py-1 border-b border-border text-left font-mono text-black text-xs">{row.number}</td>}
+                                            {visibleColumns.has('currency') && <td className="px-5 py-1 border-b border-border"><span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-blue-50 text-blue-600">{row.currency}</span></td>}
+                                            {visibleColumns.has('balance') && <td className="px-5 py-1 border-b border-border text-right font-medium font-mono text-black">{formatValue(row.balance)}</td>}
+                                            {visibleColumns.has('lkrEquivalent') && <td className="px-5 py-1 border-b border-border text-right font-medium text-black font-mono">{row.lkr.replace('LKR ', '')}</td>}
+                                            {visibleColumns.has('prevDay') && <td className="px-5 py-1 border-b border-border text-right text-black font-mono">{formatValue(row.prevDay)}</td>}
+                                            {visibleColumns.has('prevMonth') && <td className="px-5 py-1 border-b border-border text-right text-black font-mono">{formatValue(row.prev)}</td>}
                                             {visibleColumns.has('changeDay') && (
-                                                <td style={{ textAlign: 'right', paddingLeft: '20px', paddingRight: '20px' }}>
-                                                    <span className={row.changeDayType === 'positive' ? 'text-green' : row.changeDayType === 'negative' ? 'text-red' : ''} style={{ color: row.changeDayType === 'neutral' ? '#000000' : undefined, fontSize: '12px', fontWeight: '500', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontFamily: 'monospace' }}>
+                                                <td className="px-5 py-1 border-b border-border text-right">
+                                                    <span className={`flex items-center justify-end gap-1 text-xs font-medium font-mono ${row.changeDayType === 'positive' ? 'text-green-600' : row.changeDayType === 'negative' ? 'text-red-500' : 'text-black'}`}>
                                                         {row.changeDay.replace(/[A-Z]{3}\s/, '')}
                                                     </span>
                                                 </td>
                                             )}
                                             {visibleColumns.has('changeMonth') && (
-                                                <td style={{ textAlign: 'right', paddingRight: '20px', paddingLeft: '20px' }}>
-                                                    <span className={row.changeMonthType === 'positive' ? 'text-green' : row.changeMonthType === 'negative' ? 'text-red' : ''} style={{ color: row.changeMonthType === 'neutral' ? '#000000' : undefined, fontSize: '12px', fontWeight: '500', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontFamily: 'monospace' }}>
+                                                <td className="pr-5 px-5 py-1 border-b border-border text-right">
+                                                    <span className={`flex items-center justify-end gap-1 text-xs font-medium font-mono ${row.changeMonthType === 'positive' ? 'text-green-600' : row.changeMonthType === 'negative' ? 'text-red-500' : 'text-black'}`}>
                                                         {row.changeMonth.replace(/[A-Z]{3}\s/, '')}
                                                     </span>
                                                 </td>

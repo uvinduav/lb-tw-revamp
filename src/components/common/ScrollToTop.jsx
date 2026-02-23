@@ -100,33 +100,8 @@ const ScrollToTop = ({ activePage }) => {
   return (
     <button
       onClick={scrollToTop}
-      style={{
-        position: 'fixed',
-        bottom: '24px',
-        right: '24px',
-        zIndex: 1000,
-        backgroundColor: 'var(--color-primary-action)',
-        color: 'white',
-        border: 'none',
-        borderRadius: '50%',
-        width: '40px',
-        height: '40px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        transition: 'all 0.3s ease',
-      }}
+      className="fixed bottom-6 right-6 z-[1000] bg-primary-action text-white border-none rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-primary-action-hover"
       title="Scroll to top"
-      onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'translateY(-2px)';
-          e.currentTarget.style.backgroundColor = 'var(--color-primary-action-hover)';
-      }}
-      onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'translateY(0)';
-          e.currentTarget.style.backgroundColor = 'var(--color-primary-action)';
-      }}
     >
       <ArrowUp size={20} />
     </button>

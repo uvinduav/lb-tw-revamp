@@ -63,83 +63,76 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, sh
     console.log('Logging out...');
   };
 
+  const alertPillColors = {
+    none: 'bg-gray-100 text-gray-500 hover:bg-gray-200',
+    critical: 'bg-red-100 text-red-500 hover:bg-red-200',
+    warning: 'bg-orange-100 text-orange-500 hover:bg-orange-200',
+    anomaly: 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100',
+  };
+
   return (
-    <div className="topbar">
-      <div className="breadcrumb">
+    <div className="h-[44px] border-b border-border flex items-center justify-between px-6 bg-surface sticky top-0 z-5 shrink-0">
+      <div className="flex items-center gap-2 text-xs text-text-secondary">
         <div
-          className="topbar-icon-btn"
+          className="flex items-center justify-center w-8 h-8 rounded cursor-pointer transition-colors duration-200 -ml-1.5 hover:bg-bg-subtle group"
           onClick={toggleSidebar}
           title={`${isSidebarOpen ? 'Hide' : 'Show'} Sidebar (Alt+\\)`}
         >
-          <PanelLeft size={20} color="#666" />
+          <PanelLeft size={20} className="text-[#666] group-hover:text-primary-action" />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div className="flex items-center gap-1">
           <div
-            className={`topbar-icon-btn ${!showBack ? 'disabled' : ''}`}
+            className={`flex items-center justify-center w-8 h-8 rounded transition-colors duration-200 hover:bg-bg-subtle group ${showBack ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-30'}`}
             title="Back"
             onClick={() => showBack && onBack()}
-            style={{
-              opacity: showBack ? 1 : 0.3,
-              cursor: showBack ? 'pointer' : 'not-allowed',
-            }}
           >
-            <ArrowLeft size={18} color="#666" />
+            <ArrowLeft size={18} className="text-[#666] group-hover:text-primary-action" />
           </div>
           <div
-            className={`topbar-icon-btn ${!showForward ? 'disabled' : ''}`}
+            className={`flex items-center justify-center w-8 h-8 rounded transition-colors duration-200 hover:bg-bg-subtle group ${showForward ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-30'}`}
             title="Forward"
             onClick={() => showForward && onForward()}
-            style={{
-              opacity: showForward ? 1 : 0.3,
-              cursor: showForward ? 'pointer' : 'not-allowed',
-            }}
           >
-            <ArrowRight size={18} color="#666" />
+            <ArrowRight size={18} className="text-[#666] group-hover:text-primary-action" />
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: '4px' }}>
+        <div className="flex items-center gap-1 ml-1">
           {(breadcrumb || activePage).split(' > ').map((item, index, array) => (
             <React.Fragment key={index}>
               <span
-                className={index === array.length - 1 ? 'breadcrumb-active' : ''}
+                className={`text-xs ${index === array.length - 1 ? 'font-medium text-text-main' : 'font-normal text-text-secondary cursor-pointer'}`}
                 onClick={() => index < array.length - 1 && onNavigate && onNavigate(item)}
-                style={{
-                  fontSize: '12px',
-                  fontWeight: index === array.length - 1 ? 500 : 400,
-                  color: index === array.length - 1 ? 'var(--color-text-main)' : 'var(--color-text-secondary)',
-                  cursor: index < array.length - 1 ? 'pointer' : 'default'
-                }}
               >
                 {item}
               </span>
               {index < array.length - 1 && (
-                <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)', margin: '0 2px' }}>&gt;</span>
+                <span className="text-xs text-text-secondary mx-0.5">&gt;</span>
               )}
             </React.Fragment>
           ))}
         </div>
       </div>
 
-      <div className="topbar-right-elements">
-        <div className={`topbar-alert-pill ${mostCriticalLevel} ${shouldWiggle ? 'wiggle' : ''}`} onClick={onAlertsClick}>
+      <div className="flex items-center gap-2">
+        <div className={`flex items-center gap-1.5 px-2.5 h-7 rounded text-xs font-medium cursor-pointer transition-all duration-200 ${alertPillColors[mostCriticalLevel] || alertPillColors.none} ${shouldWiggle ? 'wiggle' : ''}`} onClick={onAlertsClick}>
           <MessageSquareWarning size={14} />
           <span>{alertCount} {alertCount === 1 ? 'Alert' : 'Alerts'}</span>
         </div>
 
-        <div className="topbar-task-pill" onClick={onTasksClick}>
+        <div className="flex items-center gap-1.5 bg-[#e0ebff] text-blue-500 px-2.5 h-7 rounded text-xs font-medium cursor-pointer transition-colors duration-200 hover:bg-[#d1e1ff]" onClick={onTasksClick}>
           <SquareCheckBig size={14} />
           <span>1</span>
         </div>
 
-        <div className="topbar-divider" />
+        <div className="w-px h-5 bg-gray-200 mx-1" />
 
-        <div style={{ position: 'relative' }}>
+        <div className="relative">
           <div
-            className={`topbar-icon-box ${notificationsAnchor ? 'active' : ''}`}
+            className={`relative flex items-center justify-center w-7 h-7 border border-gray-200 rounded cursor-pointer text-[#666] transition-all duration-200 bg-white hover:bg-[#f9f9f9] hover:border-gray-300 ${notificationsAnchor ? 'bg-gray-100 border-gray-300' : ''}`}
             onClick={handleNotificationsClick}
           >
             <Bell size={16} />
-            <div className="topbar-badge">2</div>
+            <div className="absolute -top-1.5 -right-1.5 bg-[#ff6b6b] text-white text-[11px] font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center border-[3px] border-white">2</div>
           </div>
 
           <Popover
@@ -148,44 +141,44 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, sh
             anchorEl={notificationsAnchor}
             topOffset={8}
             rightOffset={0}
-            className="notifications-popover"
+            className="w-80"
           >
-            <div className="popover-header">
-              <h3>Notifications</h3>
+            <div className="px-4 py-3 border-b border-border">
+              <h3 className="text-sm font-semibold text-text-main">Notifications</h3>
             </div>
-            <div className="popover-content">
-              <div className="notification-list">
-                <div className="notification-item unread">
-                  <div className="notification-icon warning">
+            <div className="py-2">
+              <div className="max-h-[300px] overflow-y-auto">
+                <div className="flex gap-3 px-4 py-3 border-b border-border-subtle cursor-pointer transition-colors duration-150 hover:bg-bg-subtle bg-[#f8fafc]">
+                  <div className="w-8 h-8 rounded-md flex items-center justify-center shrink-0 bg-orange-50 text-orange-700">
                     <MessageSquareWarning size={14} />
                   </div>
-                  <div className="notification-text">
-                    <p className="notification-title">System Alert</p>
-                    <p className="notification-desc">High server load detected.</p>
+                  <div className="flex-1">
+                    <p className="text-[13px] font-medium text-text-main mb-0.5">System Alert</p>
+                    <p className="text-xs text-text-secondary leading-snug">High server load detected.</p>
                   </div>
-                  <span className="notification-time">2m</span>
+                  <span className="text-[11px] text-gray-400 whitespace-nowrap">2m</span>
                 </div>
-                <div className="notification-item">
-                  <div className="notification-icon task">
+                <div className="flex gap-3 px-4 py-3 cursor-pointer transition-colors duration-150 hover:bg-bg-subtle">
+                  <div className="w-8 h-8 rounded-md flex items-center justify-center shrink-0 bg-blue-50 text-blue-700">
                     <SquareCheckBig size={14} />
                   </div>
-                  <div className="notification-text">
-                    <p className="notification-title">Task Assigned</p>
-                    <p className="notification-desc">New audit task assigned.</p>
+                  <div className="flex-1">
+                    <p className="text-[13px] font-medium text-text-main mb-0.5">Task Assigned</p>
+                    <p className="text-xs text-text-secondary leading-snug">New audit task assigned.</p>
                   </div>
-                  <span className="notification-time">1h</span>
+                  <span className="text-[11px] text-gray-400 whitespace-nowrap">1h</span>
                 </div>
               </div>
-              <button className="see-all-btn" onClick={handleSeeAllNotifications}>
+              <button className="block w-full py-2.5 text-center text-[13px] font-medium text-blue-500 bg-transparent border-none border-t border-border cursor-pointer mt-1 hover:bg-bg-subtle" onClick={handleSeeAllNotifications}>
                 See all notifications
               </button>
             </div>
           </Popover>
         </div>
 
-        <div style={{ position: 'relative' }}>
+        <div className="relative">
           <div
-            className={`user-profile ${userMenuAnchor ? 'active' : ''}`}
+            className={`flex items-center gap-1.5 px-2 h-7 rounded border border-border cursor-pointer text-xs text-[#666] transition-all duration-200 bg-white hover:bg-bg-subtle hover:border-gray-300 ${userMenuAnchor ? 'bg-gray-100 border-gray-300' : ''}`}
             onClick={handleUserMenuClick}
           >
             <User size={16} />
@@ -198,23 +191,23 @@ const Topbar = ({ activePage, toggleSidebar, isSidebarOpen, showBack, onBack, sh
             anchorEl={userMenuAnchor}
             topOffset={8}
             rightOffset={0}
-            className="user-menu-popover"
+            className="w-60"
           >
-            <div className="user-menu-header">
-              <div className="user-avatar-circle">
+            <div className="p-4 flex items-center gap-3 border-b border-border">
+              <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
                 <User size={24} color="#555" />
               </div>
-              <div className="user-info">
-                <p className="user-name">Kamal Perera</p>
-                <p className="user-email">kamal@avlyon.com</p>
+              <div className="flex flex-col">
+                <p className="text-sm font-semibold text-text-main">Kamal Perera</p>
+                <p className="text-xs text-text-secondary mt-0.5">kamal@avlyon.com</p>
               </div>
             </div>
-            <div className="user-menu-actions">
-              <button className="user-menu-item" onClick={handleSettingsClick}>
+            <div className="p-1.5 flex flex-col gap-0.5">
+              <button className="flex items-center gap-2.5 w-full py-2 px-3 border-none bg-transparent text-left text-[13px] text-text-main rounded-md cursor-pointer transition-all duration-150 hover:bg-bg-subtle [&_svg]:text-gray-500" onClick={handleSettingsClick}>
                 <Settings size={16} />
                 <span>Profile Settings</span>
               </button>
-              <button className="user-menu-item logout" onClick={handleLogout}>
+              <button className="flex items-center gap-2.5 w-full py-2 px-3 border-none bg-transparent text-left text-[13px] text-red-500 rounded-md cursor-pointer transition-all duration-150 hover:bg-red-50 [&_svg]:text-red-500" onClick={handleLogout}>
                 <LogOut size={16} />
                 <span>Logout</span>
               </button>

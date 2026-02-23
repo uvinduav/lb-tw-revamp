@@ -97,25 +97,25 @@ const TasksPanel = ({ isOpen, onClose }) => {
     return (
       <div 
         key={task.id} 
-        className={`task-item ${isVisuallyCompleted ? 'completed' : ''} ${isTransitioning ? 'transitioning' : ''}`}
+        className={`flex items-start gap-3 px-4 py-3 border-b border-border-subtle cursor-pointer transition-all duration-200 hover:bg-bg-subtle ${isVisuallyCompleted ? 'opacity-50' : ''} ${isTransitioning ? 'opacity-30' : ''}`}
         onClick={() => toggleTask(task.id)}
       >
-        <div className="task-checkbox-container" onClick={(e) => e.stopPropagation()}>
+        <div className="pt-0.5" onClick={(e) => e.stopPropagation()}>
           <input 
             type="checkbox" 
-            className="task-real-checkbox"
+            className="w-4 h-4 accent-primary cursor-pointer"
             checked={isVisuallyCompleted}
             onChange={() => toggleTask(task.id)}
           />
         </div>
-        <div className="task-info">
-          <p className="task-title">{task.title}</p>
-          <div className="task-meta">
-            <span className="task-date">
+        <div className="flex-1 min-w-0">
+          <p className={`text-[13px] font-medium text-text-main m-0 ${isVisuallyCompleted ? 'line-through text-text-secondary' : ''}`}>{task.title}</p>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="flex items-center gap-1 text-[11px] text-text-secondary">
               <Calendar size={12} />
               {task.dueDate}
             </span>
-            <span className="task-category-label">
+            <span className="text-[10px] font-medium text-text-tertiary bg-bg-subtle px-1.5 py-0.5 rounded">
               {task.category === 'my-tasks' ? 'Personal' : 'Assigned'}
             </span>
           </div>
@@ -126,61 +126,61 @@ const TasksPanel = ({ isOpen, onClose }) => {
 
   return (
     <SlidingPanel isOpen={isOpen} onClose={onClose} title="Tasks" width="400px">
-      <div className="tasks-content">
-        <div className="panel-tabs-wrapper">
-          <div className="panel-tabs">
+      <div className="-m-6">
+        <div className="border-b border-border px-4 pt-2">
+          <div className="flex items-center gap-1">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                className={`panel-tab-item all ${activeTab === tab.id ? 'active' : ''}`}
+                className={`px-3 py-2 text-[13px] font-medium border-none cursor-pointer transition-all duration-200 rounded-t ${activeTab === tab.id ? 'text-primary-action bg-bg-subtle border-b-2 border-b-primary-action' : 'text-text-secondary bg-transparent hover:text-text-main'}`}
                 onClick={() => setActiveTab(tab.id)}
               >
                 {tab.label}
-                <span className="tab-count">({tab.count})</span>
+                <span className="text-text-tertiary ml-1">({tab.count})</span>
               </button>
             ))}
           </div>
         </div>
 
-        <div className="add-task-section">
+        <div className="px-4 py-3 border-b border-border">
           {!isAddingTask ? (
-            <button className="add-task-btn" onClick={() => setIsAddingTask(true)}>
+            <button className="flex items-center gap-2 text-[13px] font-medium text-primary-action bg-transparent border border-dashed border-primary-action/30 rounded px-3 py-2 w-full cursor-pointer hover:bg-primary-action/5 transition-all duration-200" onClick={() => setIsAddingTask(true)}>
               <Plus size={16} />
               Add task
             </button>
           ) : (
-            <div className="add-task-form">
+            <div className="flex flex-col gap-2">
               <input
                 type="text"
-                className="add-task-input"
+                className="w-full border border-border rounded px-3 py-2 text-[13px] outline-none focus:border-primary-action"
                 placeholder="Task title"
                 value={newTaskTitle}
                 onChange={(e) => setNewTaskTitle(e.target.value)}
                 autoFocus
               />
-              <div className="add-task-options">
-                <button className="option-btn" title="Add Date">
+              <div className="flex items-center gap-2">
+                <button className="flex items-center gap-1 text-[12px] text-text-secondary bg-transparent border border-border rounded px-2 py-1 cursor-pointer hover:bg-bg-subtle" title="Add Date">
                   <Calendar size={14} />
                   <span>{newTaskDate || 'Date'}</span>
                 </button>
-                <button className="option-btn" title="Add Time">
+                <button className="flex items-center gap-1 text-[12px] text-text-secondary bg-transparent border border-border rounded px-2 py-1 cursor-pointer hover:bg-bg-subtle" title="Add Time">
                   <Clock size={14} />
                   <span>Time</span>
                 </button>
-                <button className="option-btn" title="Assign Person">
+                <button className="flex items-center gap-1 text-[12px] text-text-secondary bg-transparent border border-border rounded px-2 py-1 cursor-pointer hover:bg-bg-subtle" title="Assign Person">
                   <User size={14} />
                   <span>Assign</span>
                 </button>
               </div>
-              <div className="add-task-actions">
+              <div className="flex justify-end gap-2 mt-1">
                 <button 
-                  className="cancel-btn" 
+                  className="px-3 py-1.5 text-[13px] text-text-secondary bg-transparent border border-border rounded cursor-pointer hover:bg-bg-subtle" 
                   onClick={() => setIsAddingTask(false)}
                 >
                   Cancel
                 </button>
                 <button 
-                  className="confirm-add-btn" 
+                  className="px-3 py-1.5 text-[13px] text-white bg-primary-action border-none rounded cursor-pointer hover:bg-primary-action-hover disabled:opacity-50 disabled:cursor-not-allowed" 
                   onClick={handleAddTask}
                   disabled={!newTaskTitle.trim()}
                 >
@@ -191,11 +191,11 @@ const TasksPanel = ({ isOpen, onClose }) => {
           )}
         </div>
 
-        <div className="tasks-list">
+        <div>
           {uncompletedTasks.length > 0 ? (
             uncompletedTasks.map(task => renderTaskItem(task))
           ) : (
-             <div className="empty-tasks">
+             <div className="py-10 text-center text-text-secondary text-[13px]">
                <p>
                  {tasks.filter(t => activeTab === 'all' || t.category === activeTab).length > 0 
                    ? "All tasks completed! 🎉" 
@@ -206,9 +206,9 @@ const TasksPanel = ({ isOpen, onClose }) => {
           
           {/* Completed Section */}
           {completedTasks.length > 0 && (
-            <div className="completed-section">
+            <div className="border-t border-border">
               <button 
-                className="completed-header" 
+                className="flex items-center gap-2 w-full px-4 py-2.5 text-[13px] font-medium text-text-secondary bg-transparent border-none cursor-pointer hover:bg-bg-subtle" 
                 onClick={() => setIsCompletedExpanded(!isCompletedExpanded)}
               >
                 {isCompletedExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -216,7 +216,7 @@ const TasksPanel = ({ isOpen, onClose }) => {
               </button>
               
               {isCompletedExpanded && (
-                <div className="completed-tasks-list">
+                <div>
                   {completedTasks.map(task => renderTaskItem(task, true))}
                 </div>
               )}

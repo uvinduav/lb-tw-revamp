@@ -17,7 +17,7 @@ const Accruals = () => {
 
   const renderPeriodSelector = () => (
     <select 
-      className="header-period-select"
+      className="appearance-none bg-white border border-border rounded px-3 py-1.5 text-[13px] font-medium text-text-main cursor-pointer outline-none"
       value={selectedPeriod}
       onChange={(e) => setSelectedPeriod(e.target.value)}
     >

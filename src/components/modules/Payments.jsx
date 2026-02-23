@@ -26,7 +26,7 @@ const Payments = () => {
       showAddButton={false}
       renderRowActions={(row) => (
           <button 
-            className="text-action-btn"
+            className="inline-flex items-center gap-1 text-[12px] font-medium text-primary-action bg-transparent border-none cursor-pointer hover:underline"
             onClick={(e) => {
                 e.stopPropagation();
                 console.log('Payment clicked for', row.accountNo);

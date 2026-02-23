@@ -172,11 +172,11 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className="flex min-h-screen">
       {/* Sidebar Trigger Zone for Hover Reveal */}
       {!isSidebarOpen && (
         <div
-          className="sidebar-trigger"
+          className="fixed left-0 top-0 bottom-0 w-6 z-40 bg-transparent"
           onMouseEnter={() => setIsSidebarHovered(true)}
         />
       )}
@@ -190,7 +190,7 @@ function App() {
         onMouseLeave={() => setIsSidebarHovered(false)}
       />
 
-      <div className={`main-content ${!isSidebarOpen ? 'expanded' : ''}`}>
+      <div className={`flex-1 flex flex-col h-screen overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${!isSidebarOpen ? 'ml-0 w-full' : 'ml-[240px] w-[calc(100%-240px)]'}`}>
         <Topbar
           activePage={activePage}
           toggleSidebar={toggleSidebar}

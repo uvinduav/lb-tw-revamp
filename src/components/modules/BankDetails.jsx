@@ -101,18 +101,13 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
     if (error || !src) {
         return (
             <div
+                className="rounded flex items-center justify-center font-semibold border border-black/5"
                 style={{
                     width: `${size}px`,
                     height: `${size}px`,
-                    borderRadius: '4px',
                     backgroundColor: color || '#f3f4f6',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
                     fontSize: size > 20 ? '10px' : '8px',
-                    fontWeight: 600,
                     color: color ? 'rgba(0,0,0,0.5)' : '#9ca3af',
-                    border: '1px solid rgba(0,0,0,0.05)'
                 }}
             >
                 {name ? name.charAt(0) : 'B'}
@@ -125,29 +120,24 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
             src={src}
             alt={name}
             onError={() => setError(true)}
-            style={{
-                width: `${size}px`,
-                height: `${size}px`,
-                borderRadius: '4px',
-                objectFit: 'cover',
-                border: '1px solid var(--color-border)'
-            }}
+            className="rounded object-cover border border-border"
+            style={{ width: `${size}px`, height: `${size}px` }}
         />
     );
 };
 
 // Reusable Top Row Summary Card
 const SummaryWidget = ({ title, value, subtext, onClick }) => (
-    <div className="widget-card" onClick={onClick} style={{ cursor: 'pointer' }}>
-        <div className="widget-header">
-            <h3 className="widget-title" style={{ margin: 0 }}>{title}</h3>
+    <div className="bg-white border border-border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5" onClick={onClick}>
+        <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide m-0">{title}</h3>
         </div>
 
-        <div style={{ marginTop: '0px' }}>
-            <div className="widget-value-row">
-                <span className="widget-value">{value}</span>
+        <div>
+            <div className="flex items-baseline gap-2">
+                <span className="text-xl font-bold font-mono text-text-main">{value}</span>
             </div>
-            <p className="widget-subtext">
+            <p className="text-xs text-text-secondary mt-1">
                 {subtext}
             </p>
         </div>
@@ -208,19 +198,14 @@ const ChartCard = (props) => {
     };
 
     return (
-        <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h3 className="widget-title" style={{ margin: 0 }}>{title}</h3>
+        <div className="bg-white border border-border rounded-lg p-4 flex flex-col h-full">
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide m-0">{title}</h3>
             </div>
 
-            <div style={{ flex: 1, display: 'flex', gap: '32px', alignItems: 'flex-start', flexDirection: chartType === 'bar' ? 'column' : 'row' }}>
+            <div className={`flex-1 flex gap-8 items-start ${chartType === 'bar' ? 'flex-col' : 'flex-row'}`}>
                 {/* Chart Section */}
-                <div style={{
-                    width: chartType === 'bar' ? '100%' : '180px',
-                    height: '150px',
-                    position: 'relative',
-                    flexShrink: 0
-                }}>
+                <div className={`h-[150px] relative shrink-0 ${chartType === 'bar' ? 'w-full' : 'w-[180px]'}`}>
                     {chartType === 'doughnut' ? (
                         <Doughnut data={chartData} options={doughnutOptions} />
                     ) : (
@@ -230,29 +215,23 @@ const ChartCard = (props) => {
 
                 {/* Legend/Details Section (For Charts) */}
                 {details && chartType !== 'bar' && (
-                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div className="flex-1 flex flex-col gap-2">
                         {details.map((item, idx) => (
-                            <div key={idx} style={{
-                                display: 'grid',
-                                gridTemplateColumns: item.count !== undefined ? '1.5fr auto 1.5fr' : '1fr 1fr',
-                                alignItems: 'center',
-                                gap: '8px',
-                                fontSize: '13px'
-                            }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: item.color }}></div>
-                                    <span style={{ color: 'var(--color-text-secondary)', fontWeight: 400 }}>{item.label}</span>
+                            <div key={idx} className="grid items-center gap-2 text-[13px]" style={{ gridTemplateColumns: item.count !== undefined ? '1.5fr auto 1.5fr' : '1fr 1fr' }}>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></div>
+                                    <span className="text-text-secondary font-normal">{item.label}</span>
                                 </div>
 
                                 {item.count !== undefined && (
-                                    <div style={{ textAlign: 'center', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>
+                                    <div className="text-center text-text-secondary font-mono">
                                         {item.count}
                                     </div>
                                 )}
 
-                                <div style={{ textAlign: 'right' }}>
-                                    <div style={{ fontWeight: 500, color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{item.value}</div>
-                                    {item.subtext && <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>{item.subtext}</div>}
+                                <div className="text-right">
+                                    <div className="font-medium text-text-main font-mono">{item.value}</div>
+                                    {item.subtext && <div className="text-[11px] text-text-secondary">{item.subtext}</div>}
                                 </div>
                             </div>
                         ))}
@@ -262,32 +241,32 @@ const ChartCard = (props) => {
 
             {/* Bottom Section for Bar Chart (Data Table style) */}
             {chartType === 'bar' && columns && (
-                <div style={{ marginTop: '20px', borderTop: '1px solid #f3f4f6', paddingTop: '16px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '8px', marginBottom: '12px', paddingBottom: '8px', borderBottom: '1px solid #f3f4f6' }}>
-                        <span style={{ fontSize: '11px', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase' }}>Currency / Type</span>
-                        <span style={{ fontSize: '11px', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', textAlign: 'right' }}>Avg Rate</span>
-                        <span style={{ fontSize: '11px', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', textAlign: 'right' }}>Amount</span>
+                <div className="mt-5 border-t border-gray-100 pt-4">
+                    <div className="grid grid-cols-[1fr_auto_auto] gap-2 mb-3 pb-2 border-b border-gray-100">
+                        <span className="text-[11px] font-semibold text-gray-400 uppercase">Currency / Type</span>
+                        <span className="text-[11px] font-semibold text-gray-400 uppercase text-right">Avg Rate</span>
+                        <span className="text-[11px] font-semibold text-gray-400 uppercase text-right">Amount</span>
                     </div>
                     {details.map((item, idx) => (
-                        <div key={idx} style={{ marginBottom: '16px' }}>
-                            <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px', color: '#111827' }}>{item.currency}</div>
+                        <div key={idx} className="mb-4">
+                            <div className="text-[13px] font-semibold mb-2 text-gray-900">{item.currency}</div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '8px', fontSize: '13px', marginBottom: '6px', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981' }}></div>
-                                    <span style={{ color: '#374151' }}>Deposits</span>
+                            <div className="grid grid-cols-[1fr_auto_auto] gap-2 text-[13px] mb-1.5 items-center">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                    <span className="text-gray-700">Deposits</span>
                                 </div>
-                                <span style={{ fontFamily: 'monospace', color: '#6b7280', fontSize: '12px', textAlign: 'right' }}>{item.avgRate}</span>
-                                <span style={{ fontFamily: 'monospace', textAlign: 'right', fontWeight: 500 }}>{item.deposits}</span>
+                                <span className="font-mono text-gray-500 text-xs text-right">{item.avgRate}</span>
+                                <span className="font-mono text-right font-medium">{item.deposits}</span>
                             </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '8px', fontSize: '13px', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ef4444' }}></div>
-                                    <span style={{ color: '#374151' }}>Loans</span>
+                            <div className="grid grid-cols-[1fr_auto_auto] gap-2 text-[13px] items-center">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                                    <span className="text-gray-700">Loans</span>
                                 </div>
-                                <span style={{ fontFamily: 'monospace', color: '#6b7280', fontSize: '12px', textAlign: 'right' }}>{item.loanRate}</span>
-                                <span style={{ fontFamily: 'monospace', textAlign: 'right', fontWeight: 500 }}>{item.loans}</span>
+                                <span className="font-mono text-gray-500 text-xs text-right">{item.loanRate}</span>
+                                <span className="font-mono text-right font-medium">{item.loans}</span>
                             </div>
                         </div>
                     ))}
@@ -415,27 +394,27 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
     ];
 
     return (
-        <div className="dashboard-main-wrapper" style={{ height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        <div className="h-full overflow-hidden flex flex-col">
 
-            <div className="dashboard-container" style={{ padding: '24px' }}>
+            <div className="flex-1 overflow-y-auto p-6">
 
                 {/* Header & Summary Section */}
-                <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
+                <div className="bg-bg-subtle -m-6 mb-8 p-6 border-b border-border">
                     {/* Header Info */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+                    <div className="flex items-center gap-4 mb-6">
                         <LogoImage src={bankLogos[bank]} name={bank} size={48} />
                         <div>
-                            <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
+                            <h1 className="text-xl font-semibold text-text-main m-0">
                                 {bank}
                             </h1>
-                            <div style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+                            <div className="text-[13px] text-text-secondary mt-1">
                                 {entity.name}
                             </div>
                         </div>
                     </div>
 
                     {/* Summary Widgets Grid */}
-                    <div className="dashboard-grid" style={{ marginBottom: '32px' }}>
+                    <div className="grid grid-cols-3 gap-4 mb-8">
                         {summaryData.map((item, index) => (
                             <SummaryWidget
                                 key={index}
@@ -449,29 +428,29 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
                     </div>
 
                     {/* Charts Grid */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', width: '100%', marginBottom: 0 }}>
-                        <div style={{ height: '100%' }}>
+                    <div className="grid grid-cols-2 gap-4 w-full mb-0">
+                        <div className="h-full">
                             <ChartCard
                                 title="Investment Breakdown"
                                 chartData={investmentData}
                                 details={investmentDetails}
                             />
                         </div>
-                        <div style={{ height: '100%' }}>
+                        <div className="h-full">
                             <ChartCard
                                 title="FD Maturity - All Currencies"
                                 chartData={fdMaturityData}
                                 details={fdMaturityDetails}
                             />
                         </div>
-                        <div style={{ height: '100%' }}>
+                        <div className="h-full">
                             <ChartCard
                                 title="LKR FD Maturity"
                                 chartData={lkrFdMaturityData}
                                 details={lkrFdMaturityDetails}
                             />
                         </div>
-                        <div style={{ height: '100%' }}>
+                        <div className="h-full">
                             <ChartCard
                                 title="Foreign Currency Overview"
                                 chartType="bar"
@@ -484,53 +463,44 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
                 </div>
 
                 {/* Operating Accounts Table */}
-                <div id="operating-accounts" style={{ marginTop: '32px' }}>
-                    <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
-                        <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Operating Accounts</h2>
+                <div id="operating-accounts" className="mt-8">
+                    <div className="mb-4 pl-1">
+                        <h2 className="text-lg font-semibold text-text-main mb-1">Operating Accounts</h2>
                     </div>
-                    <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)', overflowX: 'auto' }}>
-                        <table className="data-table" style={{ minWidth: '100%' }}>
-                            <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+                    <div className="m-0 bg-white border-t border-border overflow-x-auto">
+                        <table className="w-full border-collapse text-[13px]">
+                            <thead className="sticky top-0 z-10">
                                 <tr>
-                                    <th>ACCOUNT NUMBER</th>
-                                    <th>COMPANY</th>
-                                    <th>ACCOUNT NAME</th>
-                                    <th>TYPE</th>
-                                    <th>CURRENCY</th>
-                                    <th style={{ textAlign: 'right' }}>AVG BALANCE</th>
-                                    <th style={{ textAlign: 'right' }}>BALANCE</th>
-                                    <th style={{ textAlign: 'right', paddingRight: '24px' }}>TREND</th>
+                                    <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">ACCOUNT NUMBER</th>
+                                    <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">COMPANY</th>
+                                    <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">ACCOUNT NAME</th>
+                                    <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">TYPE</th>
+                                    <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">CURRENCY</th>
+                                    <th className="bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">AVG BALANCE</th>
+                                    <th className="bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">BALANCE</th>
+                                    <th className="pr-6 bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">TREND</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {operatingAccounts.map((acc, idx) => (
                                     <tr
                                         key={idx}
-                                        className="hover-row"
+                                        className="cursor-pointer hover:bg-bg-subtle transition-colors duration-150"
                                         onClick={() => onNavigate && onNavigate('Account Details', entity, bank, acc)}
-                                        style={{ cursor: 'pointer' }}
                                     >
-                                        <td style={{ fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{acc.accountNo}</td>
-                                        <td style={{ color: 'var(--color-text-main)' }}>{acc.company}</td>
-                                        <td style={{ color: 'var(--color-text-main)' }}>{acc.name}</td>
-                                        <td style={{ color: 'var(--color-text-main)' }}>{acc.type}</td>
-                                        <td><span className="currency-badge">{acc.currency}</span></td>
-                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>
-                                            <span style={{ color: '#9ca3af' }}>{acc.currency} </span>{acc.avgBalance}
+                                        <td className="px-2.5 py-1 border-b border-border font-mono text-text-main">{acc.accountNo}</td>
+                                        <td className="px-2.5 py-1 border-b border-border text-text-main">{acc.company}</td>
+                                        <td className="px-2.5 py-1 border-b border-border text-text-main">{acc.name}</td>
+                                        <td className="px-2.5 py-1 border-b border-border text-text-main">{acc.type}</td>
+                                        <td className="px-2.5 py-1 border-b border-border"><span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-blue-50 text-blue-600">{acc.currency}</span></td>
+                                        <td className="px-2.5 py-1 border-b border-border text-right font-mono text-text-main">
+                                            <span className="text-gray-400">{acc.currency} </span>{acc.avgBalance}
                                         </td>
-                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 500 }}>
-                                            <span style={{ color: '#9ca3af' }}>{acc.currency} </span>{acc.balance}
+                                        <td className="px-2.5 py-1 border-b border-border text-right font-mono font-medium">
+                                            <span className="text-gray-400">{acc.currency} </span>{acc.balance}
                                         </td>
-                                        <td style={{ textAlign: 'right', paddingRight: '24px' }}>
-                                            <div style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'flex-end',
-                                                gap: '4px',
-                                                color: acc.trend >= 0 ? '#10b981' : '#ef4444',
-                                                fontSize: '13px',
-                                                fontWeight: 500
-                                            }}>
+                                        <td className="pr-6 px-2.5 py-1 border-b border-border text-right">
+                                            <div className={`flex items-center justify-end gap-1 text-[13px] font-medium ${acc.trend >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
                                                 {acc.trend >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                                                 <span>{Math.abs(acc.trend)}%</span>
                                             </div>
@@ -543,33 +513,33 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
                 </div>
 
                 {/* Loan Facilities Table */}
-                <div id="loan-facilities" style={{ marginTop: '32px' }}>
-                    <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
-                        <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Loan Facilities</h2>
+                <div id="loan-facilities" className="mt-8">
+                    <div className="mb-4 pl-1">
+                        <h2 className="text-lg font-semibold text-text-main mb-1">Loan Facilities</h2>
                     </div>
-                    <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)', overflowX: 'auto' }}>
-                        <table className="data-table" style={{ minWidth: '100%' }}>
-                            <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+                    <div className="m-0 bg-white border-t border-border overflow-x-auto">
+                        <table className="w-full border-collapse text-[13px]">
+                            <thead className="sticky top-0 z-10">
                                 <tr>
-                                    <th>TYPE</th>
-                                    <th style={{ textAlign: 'right' }}>AMOUNT</th>
-                                    <th style={{ textAlign: 'right' }}>OUTSTANDING</th>
-                                    <th style={{ textAlign: 'right' }}>INTEREST RATE</th>
-                                    <th style={{ textAlign: 'right', paddingRight: '24px' }}>MATURITY DATE</th>
+                                    <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">TYPE</th>
+                                    <th className="bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">AMOUNT</th>
+                                    <th className="bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">OUTSTANDING</th>
+                                    <th className="bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">INTEREST RATE</th>
+                                    <th className="pr-6 bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">MATURITY DATE</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {loanFacilities.map((loan, idx) => (
-                                    <tr key={idx} className="hover-row">
-                                        <td style={{ color: 'var(--color-text-main)' }}>{loan.type}</td>
-                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>
-                                            <span style={{ color: '#9ca3af' }}>{loan.amount.split(' ')[0]} </span>{loan.amount.split(' ').slice(1).join(' ')}
+                                    <tr key={idx} className="hover:bg-bg-subtle transition-colors duration-150">
+                                        <td className="px-2.5 py-1 border-b border-border text-text-main">{loan.type}</td>
+                                        <td className="px-2.5 py-1 border-b border-border text-right font-mono text-text-main">
+                                            <span className="text-gray-400">{loan.amount.split(' ')[0]} </span>{loan.amount.split(' ').slice(1).join(' ')}
                                         </td>
-                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 500, color: 'var(--color-text-main)' }}>
-                                            <span style={{ color: '#9ca3af' }}>{loan.outstanding.split(' ')[0]} </span>{loan.outstanding.split(' ').slice(1).join(' ')}
+                                        <td className="px-2.5 py-1 border-b border-border text-right font-mono font-medium text-text-main">
+                                            <span className="text-gray-400">{loan.outstanding.split(' ')[0]} </span>{loan.outstanding.split(' ').slice(1).join(' ')}
                                         </td>
-                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{loan.rate}</td>
-                                        <td style={{ textAlign: 'right', paddingRight: '24px', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{loan.maturity}</td>
+                                        <td className="px-2.5 py-1 border-b border-border text-right font-mono text-text-main">{loan.rate}</td>
+                                        <td className="pr-6 px-2.5 py-1 border-b border-border text-right font-mono text-text-main">{loan.maturity}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -578,29 +548,29 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
                 </div>
 
                 {/* Fixed Deposits Table */}
-                <div id="fixed-deposits" style={{ marginTop: '32px' }}>
-                    <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
-                        <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Fixed Deposits</h2>
+                <div id="fixed-deposits" className="mt-8">
+                    <div className="mb-4 pl-1">
+                        <h2 className="text-lg font-semibold text-text-main mb-1">Fixed Deposits</h2>
                     </div>
-                    <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)', overflowX: 'auto' }}>
-                        <table className="data-table" style={{ minWidth: '100%' }}>
-                            <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+                    <div className="m-0 bg-white border-t border-border overflow-x-auto">
+                        <table className="w-full border-collapse text-[13px]">
+                            <thead className="sticky top-0 z-10">
                                 <tr>
-                                    <th>FD NUMBER</th>
-                                    <th style={{ textAlign: 'right' }}>AMOUNT</th>
-                                    <th style={{ textAlign: 'right' }}>INTEREST RATE</th>
-                                    <th style={{ textAlign: 'right', paddingRight: '24px' }}>MATURITY DATE</th>
+                                    <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">FD NUMBER</th>
+                                    <th className="bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">AMOUNT</th>
+                                    <th className="bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">INTEREST RATE</th>
+                                    <th className="pr-6 bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">MATURITY DATE</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {fixedDeposits.map((fd, idx) => (
-                                    <tr key={idx} className="hover-row">
-                                        <td style={{ fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{fd.fdNo}</td>
-                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', fontWeight: 500, color: 'var(--color-text-main)' }}>
-                                            <span style={{ color: '#9ca3af' }}>{fd.amount.split(' ')[0]} </span>{fd.amount.split(' ').slice(1).join(' ')}
+                                    <tr key={idx} className="hover:bg-bg-subtle transition-colors duration-150">
+                                        <td className="px-2.5 py-1 border-b border-border font-mono text-text-main">{fd.fdNo}</td>
+                                        <td className="px-2.5 py-1 border-b border-border text-right font-mono font-medium text-text-main">
+                                            <span className="text-gray-400">{fd.amount.split(' ')[0]} </span>{fd.amount.split(' ').slice(1).join(' ')}
                                         </td>
-                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{fd.rate}</td>
-                                        <td style={{ textAlign: 'right', paddingRight: '24px', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{fd.maturity}</td>
+                                        <td className="px-2.5 py-1 border-b border-border text-right font-mono text-text-main">{fd.rate}</td>
+                                        <td className="pr-6 px-2.5 py-1 border-b border-border text-right font-mono text-text-main">{fd.maturity}</td>
                                     </tr>
                                 ))}
                             </tbody>

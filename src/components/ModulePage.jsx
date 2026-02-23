@@ -292,15 +292,15 @@ const ModulePage = ({
     const value = row[key];
 
     if (key === 'status') {
-      const getStatusClass = (status) => {
+      const getStatusClasses = (status) => {
         const s = status?.toLowerCase();
-        if (s === 'active') return 'status-active';
-        if (s === 'posted') return 'status-posted';
-        if (s === 'failed') return 'status-failed';
-        return 'status-renewed';
+        if (s === 'active') return 'bg-status-active-bg text-status-active-text';
+        if (s === 'posted') return 'bg-status-posted-bg text-status-posted-text';
+        if (s === 'failed') return 'bg-status-failed-bg text-status-failed-text';
+        return 'bg-status-renewed-bg text-status-renewed-text';
       };
       return (
-        <span className={`status-pill ${getStatusClass(value)}`}>
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusClasses(value)}`}>
           <HighlightText text={value} highlight={debouncedSearchQuery} />
         </span>
       )
@@ -310,20 +310,20 @@ const ModulePage = ({
   }
 
   return (
-    <div className="page-content">
-      <div className={`page-header ${!isHeaderVisible ? 'header-hidden' : ''}`}>
+    <div className="flex flex-col flex-1 overflow-hidden p-0">
+      <div className={`flex justify-between items-center px-6 pt-4 shrink-0 transition-all duration-300 ease-in-out overflow-hidden ${!isHeaderVisible ? 'max-h-0 pt-0 opacity-0 pointer-events-none' : 'max-h-[100px] opacity-100'}`}>
         <div>
-          <div className="page-title">
-            <h1>{title}</h1>
+          <div>
+            <h1 className="text-lg font-semibold mb-1">{title}</h1>
           </div>
-          <div className="page-subtitle">Showing {visibleData.length} of {filteredData.length} results</div>
+          <div className="text-[13px] text-text-secondary">Showing {visibleData.length} of {filteredData.length} results</div>
         </div>
-        <div className="actions-row">
-          <button className="btn btn-outline">
+        <div className="flex gap-2">
+          <button className="inline-flex items-center justify-center p-2 rounded border border-border bg-white text-text-main cursor-pointer transition-all duration-200 hover:bg-bg-subtle">
             <Download size={16} />
           </button>
           {showAddButton && (
-            <button className="btn btn-primary" onClick={() => onCreate && onCreate(createButtonText || `Add New ${title.replace(/^All /, '').replace(/s$/, '')}`)}>
+            <button className="inline-flex items-center justify-center px-4 py-2 rounded border border-transparent bg-primary-action text-white text-[13px] font-medium cursor-pointer transition-all duration-200 gap-1.5 hover:bg-primary-action-hover" onClick={() => onCreate && onCreate(createButtonText || `Add New ${title.replace(/^All /, '').replace(/s$/, '')}`)}>
               <Plus size={16} />
               {createButtonText || `Add New ${title.replace(/^All /, '').replace(/s$/, '')}`}
             </button>
@@ -331,24 +331,24 @@ const ModulePage = ({
         </div>
       </div>
 
-      <div className="table-controls">
-        <div className={`search-bar ${isFilterModalOpen ? 'is-expanded' : ''}`}>
+      <div className="flex items-center gap-4 px-6 pt-4 shrink-0">
+        <div className={`flex items-center gap-2 text-[13px] text-text-secondary px-4 py-2 border border-border rounded h-10 transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${isFilterModalOpen ? 'w-[480px] border-primary-action' : 'w-[300px]'} focus-within:w-[480px] focus-within:border-primary-action`}>
           {isSearching ? (
-            <Loader2 size={16} className="text-secondary spinner" />
+            <Loader2 size={16} className="text-text-secondary spinner" />
           ) : (
-            <Search size={16} className="text-secondary" />
+            <Search size={16} className="text-text-secondary" />
           )}
           <input
             type="text"
             ref={searchInputRef}
             placeholder="Search or press /"
-            className="search-input"
+            className="border-none bg-transparent outline-none w-full text-[13px]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           {(searchQuery || activeFilterCount > 0) && (
             <button
-              className="clear-search"
+              className="bg-transparent border-none text-text-secondary cursor-pointer flex items-center justify-center p-1 rounded transition-all duration-200 -mr-1 hover:bg-gray-200 hover:text-primary-action"
               onClick={handleClearAll}
               onMouseDown={(e) => e.preventDefault()}
               title="Clear all"
@@ -366,43 +366,39 @@ const ModulePage = ({
           >
             <Dialog.Trigger asChild>
               <div
-                className="filter-trigger-wrapper"
+                className="flex items-center justify-center cursor-pointer p-1 rounded transition-all duration-200 hover:bg-gray-200 relative"
                 onMouseDown={(e) => e.preventDefault()}
                 title="Advanced Filters (Alt+/)"
               >
-                <SlidersHorizontal size={16} className="text-secondary" />
+                <SlidersHorizontal size={16} className="text-text-secondary" />
                 {activeFilterCount > 0 && (
-                  <span className="filter-badge">{activeFilterCount}</span>
+                  <span className="absolute -top-1.5 -right-1.5 bg-primary-action text-white text-[10px] font-bold min-w-[16px] h-4 rounded-full flex items-center justify-center">{activeFilterCount}</span>
                 )}
               </div>
             </Dialog.Trigger>
             <Dialog.Portal>
               <Dialog.Overlay className="dialog-overlay" />
-              <Dialog.Content className="dialog-content">
-                <Dialog.Title className="dialog-title">Advanced Filters</Dialog.Title>
+              <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-[0_16px_70px_-12px_rgba(0,0,0,0.25)] border border-border p-6 z-50 w-[90vw] max-w-[600px] animate-fade-in">
+                <Dialog.Title className="text-base font-semibold text-text-main mb-4">Advanced Filters</Dialog.Title>
                 <Dialog.Close asChild>
-                  <button className="dialog-close" aria-label="Close">
+                  <button className="absolute top-4 right-4 bg-transparent border-none cursor-pointer text-gray-400 p-1 rounded hover:bg-gray-100 hover:text-gray-900" aria-label="Close">
                     <X size={20} />
                   </button>
                 </Dialog.Close>
-                <div className="filter-form">
+                <div className="grid grid-cols-4 gap-4">
                   {filterFields.map(field => {
                     const isBankField = field.toLowerCase() === 'bank';
                     const isValueField = field.toLowerCase().includes('value') || field.toLowerCase().includes('provision') || field.toLowerCase().includes('amount');
 
-                    let fieldClass = "filter-field";
-                    if (isValueField) fieldClass += " value-filter-group span-4";
-                    else fieldClass += " span-1";
-
                     if (isValueField) {
                       return (
-                        <div className={fieldClass} key={field}>
-                          <label>{field}</label>
-                          <div className="value-inputs">
+                        <div className="flex flex-col gap-1.5 col-span-4" key={field}>
+                          <label className="text-xs font-medium text-text-secondary">{field}</label>
+                          <div className="flex gap-2">
                             <select
                               value={tempFilters[`${field}_currency`] || ''}
                               onChange={(e) => setTempFilters(prev => ({ ...prev, [`${field}_currency`]: e.target.value }))}
-                              className="filter-select currency-select"
+                              className="appearance-none bg-transparent border border-border rounded px-3 py-2 text-[13px] font-medium text-text-main cursor-pointer outline-none w-[120px]"
                             >
                               <option value="">Currency</option>
                               <option value="LKR">LKR</option>
@@ -415,14 +411,14 @@ const ModulePage = ({
                               placeholder="Min"
                               value={tempFilters[`${field}_min`] || ''}
                               onChange={(e) => setTempFilters(prev => ({ ...prev, [`${field}_min`]: e.target.value }))}
-                              className="value-input"
+                              className="flex-1 border border-border rounded px-3 py-2 text-[13px] outline-none"
                             />
                             <input
                               type="number"
                               placeholder="Max"
                               value={tempFilters[`${field}_max`] || ''}
                               onChange={(e) => setTempFilters(prev => ({ ...prev, [`${field}_max`]: e.target.value }))}
-                              className="value-input"
+                              className="flex-1 border border-border rounded px-3 py-2 text-[13px] outline-none"
                             />
                           </div>
                         </div>
@@ -436,13 +432,13 @@ const ModulePage = ({
                     ] : null);
 
                     return (
-                      <div className={fieldClass} key={field}>
-                        <label>{field}</label>
+                      <div className="flex flex-col gap-1.5 col-span-1" key={field}>
+                        <label className="text-xs font-medium text-text-secondary">{field}</label>
                         {options ? (
                           <select
                             value={tempFilters[field] || ''}
                             onChange={(e) => setTempFilters(prev => ({ ...prev, [field]: e.target.value }))}
-                            className="filter-select"
+                            className="appearance-none bg-transparent border border-border rounded px-3 py-2 text-[13px] font-medium text-text-main cursor-pointer outline-none w-full"
                           >
                             <option value="">{isBankField ? 'Select bank' : `Select ${field.toLowerCase()}`}</option>
                             {options.map(opt => (
@@ -455,17 +451,18 @@ const ModulePage = ({
                             placeholder={`Filter by ${field.toLowerCase()}`}
                             value={tempFilters[field] || ''}
                             onChange={(e) => setTempFilters(prev => ({ ...prev, [field]: e.target.value }))}
+                            className="border border-border rounded px-3 py-2 text-[13px] outline-none w-full"
                           />
                         )}
                       </div>
                     );
                   })}
                 </div>
-                <div className="dialog-actions">
-                  <button className="btn-clear" onClick={handleClearFilters}>Clear all</button>
-                  <div style={{ display: 'flex', gap: '12px' }}>
+                <div className="flex justify-between items-center mt-6 pt-4 border-t border-border">
+                  <button className="text-[13px] font-medium text-text-secondary bg-transparent border-none cursor-pointer hover:text-text-main" onClick={handleClearFilters}>Clear all</button>
+                  <div className="flex gap-3">
                     <Dialog.Close asChild>
-                      <button className="btn-search" onClick={handleApplyFilters}>Search</button>
+                      <button className="px-4 py-2 bg-primary-action text-white rounded text-[13px] font-medium border-none cursor-pointer hover:bg-primary-action-hover" onClick={handleApplyFilters}>Search</button>
                     </Dialog.Close>
                   </div>
                 </div>
@@ -474,34 +471,33 @@ const ModulePage = ({
           </Dialog.Root>
         </div>
 
-        <div className="control-icons">
-          <div className="control-group-left">
-            <div className="perma-controls">
+        <div className="flex-1 flex items-center justify-between gap-2 text-text-secondary bg-bg-subtle px-2 rounded h-10">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
               {isRefreshing ? (
-                <Loader2 className="control-icon spinner" size={16} />
+                <Loader2 className="cursor-pointer w-7 h-7 p-1.5 rounded transition-all duration-200 bg-transparent border-none flex items-center justify-center text-inherit spinner" size={16} />
               ) : (
                 <RotateCw
-                  className="control-icon"
+                  className="cursor-pointer w-7 h-7 p-1.5 rounded transition-all duration-200 bg-transparent border-none flex items-center justify-center text-inherit hover:bg-gray-200 hover:text-primary-action"
                   size={16}
                   onClick={handleRefresh}
-                  style={{ cursor: 'pointer' }}
                 />
               )}
             </div>
 
             {selectedRows.size > 0 && (
-              <div className="temp-icons">
-                <div className="vertical-divider"></div>
-                <SquareArrowOutUpRight className="control-icon" size={16} />
-                {selectedRows.size === 1 && <Pencil className="control-icon" size={16} />}
-                <Trash2 className="control-icon" size={16} />
+              <div className="flex items-center gap-2">
+                <div className="h-5 w-px bg-gray-200"></div>
+                <SquareArrowOutUpRight className="cursor-pointer w-7 h-7 p-1.5 rounded transition-all duration-200 bg-transparent border-none flex items-center justify-center text-inherit hover:bg-gray-200 hover:text-primary-action" size={16} />
+                {selectedRows.size === 1 && <Pencil className="cursor-pointer w-7 h-7 p-1.5 rounded transition-all duration-200 bg-transparent border-none flex items-center justify-center text-inherit hover:bg-gray-200 hover:text-primary-action" size={16} />}
+                <Trash2 className="cursor-pointer w-7 h-7 p-1.5 rounded transition-all duration-200 bg-transparent border-none flex items-center justify-center text-inherit hover:bg-gray-200 hover:text-primary-action" size={16} />
               </div>
             )}
           </div>
 
-          <div className="control-group-right">
+          <div className="flex items-center gap-2">
             {alertCount > 0 && (
-              <div className="alert-pill">
+              <div className="flex items-center gap-1.5 px-2.5 h-7 rounded bg-red-50 text-red-500 text-xs font-medium">
                 <AlertCircle size={14} />
                 {alertCount} {alertCount === 1 ? 'Alert' : 'Alerts'}
               </div>
@@ -514,153 +510,74 @@ const ModulePage = ({
               <Popover.Root open={isColumnPopoverOpen} onOpenChange={setIsColumnPopoverOpen}>
                 <Popover.Trigger asChild>
                   <button
-                    className="control-icon"
+                    className="cursor-pointer w-7 h-7 p-1.5 rounded transition-all duration-200 bg-transparent border-none flex items-center justify-center text-inherit outline-none hover:bg-gray-200 hover:text-primary-action relative z-20"
                     type="button"
                     title="View options"
-                    style={{ zIndex: 20, position: 'relative' }}
                   >
                     {visibleColumns.size === 0 ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </Popover.Trigger>
                 <Popover.Portal>
-                  <Popover.Content className="popover-content" align="end" sideOffset={5} style={{
-                    backgroundColor: 'white',
-                    borderRadius: '8px',
-                    boxShadow: '0 10px 38px -10px rgba(22, 23, 24, 0.35), 0 10px 20px -15px rgba(22, 23, 24, 0.2)',
-                    width: '280px',
-                    zIndex: 2000,
-                    border: '1px solid var(--color-border)',
-                    overflow: 'hidden', // Ensure header doesn't scroll
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}>
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '16px 16px 12px',
-                      borderBottom: '1px solid var(--color-border)'
-                    }}>
-                      <span style={{ fontWeight: 600, fontSize: '14px' }}>View options</span>
+                  <Popover.Content className="bg-white rounded-lg shadow-[0_10px_38px_-10px_rgba(22,23,24,0.35),0_10px_20px_-15px_rgba(22,23,24,0.2)] w-[280px] z-[2000] border border-border overflow-hidden flex flex-col" align="end" sideOffset={5}>
+                    <div className="flex items-center justify-between px-4 pt-4 pb-3 border-b border-border">
+                      <span className="font-semibold text-sm">View options</span>
                       <button
                         onClick={() => setVisibleColumns(new Set(columns))}
                         title="Reset to Default"
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          color: 'var(--color-text-secondary)',
-                          cursor: 'pointer',
-                          padding: '4px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          borderRadius: '4px'
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-secondary)'}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        className="bg-transparent border-none text-text-secondary cursor-pointer p-1 flex items-center justify-center rounded hover:bg-bg-subtle"
                       >
                         <RotateCcw size={14} />
                       </button>
                     </div>
 
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      maxHeight: '300px',
-                      overflowY: 'auto',
-                      padding: '0'
-                    }}>
+                    <div className="flex flex-col max-h-[300px] overflow-y-auto">
                       {columns.map((col, index) => {
                         const isVisible = visibleColumns.has(col);
                         const isLast = index === columns.length - 1;
                         return (
-                          <label key={col} style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            padding: '6px 16px', // Compact height
-                            cursor: 'pointer',
-                            fontSize: '13px',
-                            transition: 'background-color 0.2s',
-                            borderBottom: isLast ? 'none' : '1px solid var(--color-border)' // Correct border variable
-                          }}
-                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-subtle)'} // Correct hover variable
-                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                          >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                              <span style={{
-                                color: isVisible ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
-                                display: 'flex',
-                                alignItems: 'center'
-                              }}>
+                          <label key={col} className={`flex items-center justify-between px-4 py-1.5 cursor-pointer text-[13px] transition-colors duration-200 hover:bg-bg-subtle ${!isLast ? 'border-b border-border' : ''}`}>
+                            <div className="flex items-center gap-2.5">
+                              <span className={`flex items-center ${isVisible ? 'text-primary' : 'text-text-tertiary'}`}>
                                 {isVisible ? <Eye size={14} /> : <EyeOff size={14} />}
                               </span>
-                              <span style={{
-                                color: isVisible ? 'var(--color-text-main)' : 'var(--color-text-secondary)'
-                              }}>{col}</span>
+                              <span className={isVisible ? 'text-text-main' : 'text-text-secondary'}>{col}</span>
                             </div>
 
                             {/* Custom Toggle Switch */}
-                            <div style={{ position: 'relative', width: '32px', height: '18px' }}>
+                            <div className="relative w-8 h-[18px]">
                               <input
                                 type="checkbox"
                                 checked={isVisible}
                                 onChange={() => toggleColumnVisibility(col)}
-                                style={{
-                                  opacity: 0,
-                                  width: 0,
-                                  height: 0
-                                }}
+                                className="opacity-0 w-0 h-0"
                               />
-                              <div style={{
-                                position: 'absolute',
-                                cursor: 'pointer',
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                backgroundColor: isVisible ? 'var(--color-primary)' : '#ccc',
-                                transition: '.4s',
-                                borderRadius: '34px'
-                              }}>
-                                <div style={{
-                                  position: 'absolute',
-                                  content: '',
-                                  height: '14px',
-                                  width: '14px',
-                                  left: isVisible ? '16px' : '2px',
-                                  bottom: '2px',
-                                  backgroundColor: 'white',
-                                  transition: '.4s',
-                                  borderRadius: '50%'
-                                }}></div>
+                              <div className={`absolute cursor-pointer inset-0 rounded-full transition-all duration-400 ${isVisible ? 'bg-primary' : 'bg-gray-300'}`}>
+                                <div className={`absolute h-3.5 w-3.5 bottom-0.5 bg-white rounded-full transition-all duration-400 ${isVisible ? 'left-4' : 'left-0.5'}`}></div>
                               </div>
                             </div>
                           </label>
                         );
                       })}
                     </div>
-                    <Popover.Arrow className="popover-arrow" style={{ fill: 'white' }} />
+                    <Popover.Arrow style={{ fill: 'white' }} />
                   </Popover.Content>
                 </Popover.Portal>
               </Popover.Root>
             )}
-            {/* <MoreVertical className="control-icon" size={16} /> */}
           </div>
         </div>
       </div>
 
       <div
-        className="table-wrapper"
+        className="overflow-auto mx-6 flex-1 bg-white"
         ref={tableContainerRef}
-        style={{ backgroundColor: 'white' }}
         onScroll={handleScroll}
       >
 
-        <table className="data-table">
-          <thead style={{ position: 'sticky', top: 0, zIndex: 20 }}>
+        <table className="w-full min-w-full border-collapse text-[13px]">
+          <thead className="sticky top-0 z-20">
             <tr>
-              <th className="checkbox-col">
+              <th className="w-10 bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">
                 <input
                   type="checkbox"
                   checked={visibleData.length > 0 && selectedRows.size === visibleData.length}
@@ -668,15 +585,15 @@ const ModulePage = ({
                 />
               </th>
               {columns.filter(col => visibleColumns.has(col)).map(col => (
-                <th key={col}>{col.toUpperCase()}</th>
+                <th key={col} className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">{col.toUpperCase()}</th>
               ))}
-              <th className="actions-col"></th>
+              <th className="w-20 bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8"></th>
             </tr>
           </thead>
           <tbody>
             {visibleColumns.size > 0 && visibleData.map((row) => (
-              <tr key={row.id}>
-                <td className="checkbox-col">
+              <tr key={row.id} className="hover:bg-bg-subtle">
+                <td className="w-10 px-2.5 py-1 border-b border-border align-middle text-text-main whitespace-nowrap">
                   <input
                     type="checkbox"
                     checked={selectedRows.has(row.id)}
@@ -684,30 +601,27 @@ const ModulePage = ({
                   />
                 </td>
                 {columns.filter(col => visibleColumns.has(col)).map(col => (
-                  <td key={col} style={col === 'Amount' ? { fontFamily: 'monospace', fontWeight: 500 } : {}}>
+                  <td key={col} className={`px-2.5 py-1 border-b border-border align-middle text-text-main whitespace-nowrap ${col === 'Amount' ? 'font-mono font-medium' : ''}`}>
                     {getCellContent(row, col)}
                   </td>
                 ))}
 
-                <td className="actions-col">
-                  <div className="row-actions">
+                <td className="w-20 px-2.5 py-1 border-b border-border align-middle text-text-main whitespace-nowrap">
+                  <div className="flex items-center gap-1 opacity-0 transition-opacity duration-200 [tr:hover_&]:opacity-100">
                     {renderRowActions ? (
                       renderRowActions(row)
                     ) : (
                       <>
                         {showDefaultRowActions && (
                           <>
-                            <button className="action-btn" title="Edit">
+                            <button className="bg-transparent border-none cursor-pointer p-1 rounded text-text-secondary transition-all duration-200 hover:bg-gray-100 hover:text-primary-action" title="Edit">
                               <Pencil size={14} />
                             </button>
-                            <button className="action-btn" title="Delete">
+                            <button className="bg-transparent border-none cursor-pointer p-1 rounded text-text-secondary transition-all duration-200 hover:bg-gray-100 hover:text-red-500" title="Delete">
                               <Trash2 size={14} />
                             </button>
                           </>
                         )}
-                        {/* <button className="action-btn" title="More">
-                          <MoreVertical size={14} />
-                        </button> */}
                       </>
                     )}
                   </div>
@@ -715,9 +629,9 @@ const ModulePage = ({
               </tr>
             ))}
             {visibleColumns.size > 0 && visibleData.length === 0 && (isLoading || !showEmptyState) && (
-              <tr className="loading-state-row">
-                <td colSpan={visibleColumns.size + 2} style={{ textAlign: 'center', padding: '60px 40px', borderBottom: 'none' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', color: 'var(--color-text-secondary)' }}>
+              <tr>
+                <td colSpan={visibleColumns.size + 2} className="text-center py-15 px-10 border-b-0">
+                  <div className="flex flex-col items-center gap-4 text-text-secondary">
                     <Loader2 className="spinner" size={32} />
                     <span>Loading data...</span>
                   </div>
@@ -725,13 +639,13 @@ const ModulePage = ({
               </tr>
             )}
             {(visibleColumns.size === 0 || (visibleData.length === 0 && !isLoading && showEmptyState)) && (
-              <tr className="empty-state-row">
-                <td colSpan={visibleColumns.size + 2} style={{ textAlign: 'center', padding: '60px 40px', color: '#888', borderBottom: 'none' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+              <tr>
+                <td colSpan={visibleColumns.size + 2} className="text-center py-15 px-10 text-[#888] border-b-0">
+                  <div className="flex flex-col items-center gap-4">
                     <img
                       src={emptyBox}
                       alt="No records"
-                      style={{ width: '80px', height: '80px', opacity: 0.4 }}
+                      className="w-20 h-20 opacity-40"
                     />
                     <span>{visibleColumns.size === 0 ? 'No columns visible' : 'No records found'}</span>
                   </div>
@@ -742,7 +656,7 @@ const ModulePage = ({
         </table>
 
         {isLoading && visibleData.length > 0 && (
-          <div className="loading-indicator">
+          <div className="flex items-center justify-center gap-2 py-4 text-text-secondary text-[13px]">
             <Loader2 className="spinner" size={24} />
             <span>Loading more...</span>
           </div>
@@ -750,7 +664,7 @@ const ModulePage = ({
 
         {/* Footer Summary & Spacing */}
         {!hasMore && visibleData.length > 0 && (
-          <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-text-secondary)', fontSize: '13px' }}>
+          <div className="p-5 text-center text-text-secondary text-[13px]">
             Everything loaded. Showing {visibleData.length} of {allData.length} results
           </div>
         )}
