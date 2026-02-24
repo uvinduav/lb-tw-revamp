@@ -83,19 +83,13 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
     if (error || !src) {
         return (
             <div
+                className="rounded flex items-center justify-center font-semibold border border-black/5 shrink-0"
                 style={{
                     width: `${size}px`,
                     height: `${size}px`,
-                    borderRadius: '4px',
                     backgroundColor: color || '#f3f4f6',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
                     fontSize: size > 20 ? '16px' : '10px',
-                    fontWeight: 600,
                     color: color ? 'rgba(0,0,0,0.5)' : '#9ca3af',
-                    border: '1px solid rgba(0,0,0,0.05)',
-                    flexShrink: 0
                 }}
             >
                 {name ? name.charAt(0) : 'B'}
@@ -105,29 +99,15 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
 
     return (
         <div
-            style={{
-                width: `${size}px`,
-                height: `${size}px`,
-                borderRadius: '4px',
-                backgroundColor: 'white',
-                border: '1px solid var(--color-border)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-                overflow: 'hidden'
-            }}
+            className="rounded bg-white border border-border flex items-center justify-center shrink-0 overflow-hidden"
+            style={{ width: `${size}px`, height: `${size}px` }}
         >
             <img
                 src={src}
                 alt={name}
                 onError={() => setError(true)}
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'contain',
-                    padding: size > 30 ? '4px' : '2px'
-                }}
+                className="w-full h-full object-contain"
+                style={{ padding: size > 30 ? '4px' : '2px' }}
             />
         </div>
     );
@@ -258,50 +238,50 @@ const DebtDetails = () => {
     ];
 
     return (
-        <div className="dashboard-main-wrapper" style={{ height: '100%', overflowY: 'auto', padding: '24px' }}>
+        <div className="h-full overflow-y-auto p-6">
 
-            <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
+            <div className="bg-bg-subtle -m-6 mb-8 p-6 border-b border-border">
                 {/* Header Section */}
-                <div style={{ marginBottom: '24px' }}>
+                <div className="mb-6">
                     <div>
-                        <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
+                        <h1 className="text-xl font-semibold text-text-main m-0">
                             Debt Breakdown by Bank
                         </h1>
-                        <div style={{ marginTop: '4px', fontSize: '13px', fontWeight: 400, color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div className="mt-1 text-[13px] font-normal text-text-secondary flex items-center gap-3">
                             <span>Total Outstanding: {summaryData.totalOutstanding}</span>
-                            <span style={{ color: '#e5e7eb' }}>•</span>
+                            <span className="text-gray-200">•</span>
                             <span>WACD: {summaryData.wacd}</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Summary Cards */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
-                    <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Total Loans</div>
-                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.totalLoans}</div>
+                <div className="grid grid-cols-4 gap-4 mb-6">
+                    <div className="bg-white p-4 rounded-lg border border-border">
+                        <div className="text-xs text-text-secondary mb-2">Total Loans</div>
+                        <div className="text-lg font-semibold text-text-main">{summaryData.totalLoans}</div>
                     </div>
-                    <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Short-Term Loans</div>
-                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.shortTermLoans.count}</div>
-                        <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>{summaryData.shortTermLoans.value}</div>
+                    <div className="bg-white p-4 rounded-lg border border-border">
+                        <div className="text-xs text-text-secondary mb-2">Short-Term Loans</div>
+                        <div className="text-lg font-semibold text-text-main">{summaryData.shortTermLoans.count}</div>
+                        <div className="text-[11px] text-text-secondary mt-1">{summaryData.shortTermLoans.value}</div>
                     </div>
-                    <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Long-Term Loans</div>
-                        <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)' }}>{summaryData.longTermLoans.count}</div>
-                        <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>{summaryData.longTermLoans.value}</div>
+                    <div className="bg-white p-4 rounded-lg border border-border">
+                        <div className="text-xs text-text-secondary mb-2">Long-Term Loans</div>
+                        <div className="text-lg font-semibold text-text-main">{summaryData.longTermLoans.count}</div>
+                        <div className="text-[11px] text-text-secondary mt-1">{summaryData.longTermLoans.value}</div>
                     </div>
-                    <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>WACD</div>
-                        <div style={{ fontSize: '18px', fontWeight: 600, color: '#ef4444' }}>{summaryData.wacd}</div>
+                    <div className="bg-white p-4 rounded-lg border border-border">
+                        <div className="text-xs text-text-secondary mb-2">WACD</div>
+                        <div className="text-lg font-semibold text-red-500">{summaryData.wacd}</div>
                     </div>
                 </div>
 
                 {/* Charts Section */}
-                <div style={{ display: 'flex', gap: '24px', marginBottom: '0' }}>
+                <div className="flex gap-6 mb-0">
                     {/* Bank-wise Debt Distribution */}
-                    <div style={{ flex: 1, padding: '16px', backgroundColor: 'white', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <h3 className="widget-title" style={{ marginBottom: '16px' }}>Bank-wise Debt Distribution (Million LKR)</h3>
+                    <div className="flex-1 p-4 bg-white rounded-lg border border-border">
+                        <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-4">Bank-wise Debt Distribution (Million LKR)</h3>
                         <div style={{ height: '200px' }}>
                             <Bar
                                 data={bankDistributionData}
@@ -349,10 +329,10 @@ const DebtDetails = () => {
                     </div>
 
                     {/* Debt by Interest Type */}
-                    <div style={{ flex: 1, padding: '16px', backgroundColor: 'white', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <h3 className="widget-title" style={{ marginBottom: '16px' }}>Debt by Interest Type</h3>
-                        <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <div style={{ width: '180px', height: '180px' }}>
+                    <div className="flex-1 p-4 bg-white rounded-lg border border-border">
+                        <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-4">Debt by Interest Type</h3>
+                        <div className="h-[200px] flex items-center justify-center">
+                            <div className="w-[180px] h-[180px]">
                                 <Doughnut
                                     data={interestTypeData}
                                     options={{
@@ -363,11 +343,11 @@ const DebtDetails = () => {
                                 />
                             </div>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '16px' }}>
+                        <div className="flex justify-center gap-4 mt-4">
                             {interestTypeData.labels.map((label, index) => (
-                                <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <div style={{ width: '12px', height: '8px', backgroundColor: interestTypeData.datasets[0].backgroundColor[index] }}></div>
-                                    <span style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>{label}: {interestTypeData.datasets[0].data[index]}%</span>
+                                <div key={index} className="flex items-center gap-1.5">
+                                    <div className="w-3 h-2" style={{ backgroundColor: interestTypeData.datasets[0].backgroundColor[index] }}></div>
+                                    <span className="text-[11px] text-text-secondary">{label}: {interestTypeData.datasets[0].data[index]}%</span>
                                 </div>
                             ))}
                         </div>
@@ -375,78 +355,69 @@ const DebtDetails = () => {
                 </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '48px', paddingBottom: '48px' }}>
+            <div className="flex flex-col gap-12 pb-12">
                 {banks.map((bank) => (
                     <div key={bank.id} id={`bank-section-${bank.id}`}>
 
-                        {/* Bank Header Info - Outside Table */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px', paddingLeft: '4px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        {/* Bank Header Info */}
+                        <div className="flex justify-between items-end mb-4 pl-1">
+                            <div className="flex items-center gap-3">
                                 <LogoImage src={bank.logo} name={bank.name} color={bank.color} size={40} />
                                 <div>
-                                    <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>{bank.name}</h3>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+                                    <h3 className="text-base font-semibold text-text-main m-0">{bank.name}</h3>
+                                    <div className="flex items-center gap-3 text-xs text-text-secondary mt-1">
                                         <span>{bank.loanCount} loans ({bank.loanDesc})</span>
-                                        <span style={{ color: '#e5e7eb' }}>•</span>
+                                        <span className="text-gray-200">•</span>
                                         <span>{bank.share}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div style={{ textAlign: 'right' }}>
-                                <div style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-main)', lineHeight: 1.2 }}>{bank.totalOutstanding}</div>
-                                <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px', fontWeight: 400, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0' }}>
-                                    <span style={{ color: '#9ca3af' }}>Avg Rate: {bank.avgRate}</span>
+                            <div className="text-right">
+                                <div className="text-base font-semibold text-text-main leading-tight">{bank.totalOutstanding}</div>
+                                <div className="text-xs text-text-secondary mt-1 font-normal flex items-center justify-end">
+                                    <span className="text-gray-400">Avg Rate: {bank.avgRate}</span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Table wrapper - Dashboard Entity Overview Style */}
-                        <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)' }}>
-                            <table className="data-table" style={{ borderCollapse: 'collapse' }}>
-                                <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+                        {/* Table */}
+                        <div className="m-0 bg-white border-t border-border overflow-x-auto">
+                            <table className="w-full border-collapse text-[13px]">
+                                <thead className="sticky top-0 z-10">
                                     <tr>
-                                        <th style={{ whiteSpace: 'nowrap' }}>LOAN FACILITY</th>
-                                        <th style={{ whiteSpace: 'nowrap' }}>TYPE</th>
-                                        <th style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap' }}>RATE</th>
-                                        <th style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap' }}>DAILY ACCRUAL</th>
-                                        <th style={{ whiteSpace: 'nowrap' }}>MATURITY</th>
-                                        <th style={{ whiteSpace: 'nowrap' }}>FREQUENCY</th>
-                                        <th style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap' }}>AMOUNT</th>
+                                        <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">LOAN FACILITY</th>
+                                        <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">TYPE</th>
+                                        <th className="bg-[#fafafa] text-right pr-6 px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">RATE</th>
+                                        <th className="bg-[#fafafa] text-right pr-6 px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">DAILY ACCRUAL</th>
+                                        <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">MATURITY</th>
+                                        <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">FREQUENCY</th>
+                                        <th className="bg-[#fafafa] text-right pr-6 px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">AMOUNT</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {bank.loans.map((loan) => (
-                                        <tr key={loan.id} className="hover-row">
-                                            <td style={{ whiteSpace: 'nowrap' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)' }}>{loan.name}</div>
+                                        <tr key={loan.id} className="hover:bg-bg-subtle transition-colors duration-150">
+                                            <td className="px-2.5 py-1 border-b border-border whitespace-nowrap">
+                                                <div className="text-[13px] font-medium text-text-main">{loan.name}</div>
                                             </td>
-                                            <td style={{ whiteSpace: 'nowrap' }}>
-                                                <div style={{ fontSize: '13px', color: 'var(--color-text-main)', cursor: loan.margin ? 'help' : 'default', whiteSpace: 'nowrap' }} title={loan.margin || ''}>
+                                            <td className="px-2.5 py-1 border-b border-border whitespace-nowrap">
+                                                <div className={`text-[13px] text-text-main ${loan.margin ? 'cursor-help' : ''}`} title={loan.margin || ''}>
                                                     {loan.type}
                                                 </div>
                                             </td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', fontFamily: 'monospace', textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>{loan.rate}</td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', fontFamily: 'monospace', textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
-                                                <span style={{ color: '#9ca3af' }}>{loan.accrual.split(' ')[0]}</span>
+                                            <td className="px-2.5 py-1 border-b border-border text-right pr-6 font-mono text-text-main whitespace-nowrap">{loan.rate}</td>
+                                            <td className="px-2.5 py-1 border-b border-border text-right pr-6 font-mono text-text-main whitespace-nowrap">
+                                                <span className="text-gray-400">{loan.accrual.split(' ')[0]}</span>
                                                 <span> {loan.accrual.split(' ')[1]}</span>
                                             </td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', whiteSpace: 'nowrap' }}>{loan.maturity}</td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', whiteSpace: 'nowrap' }}>{loan.frequency}</td>
-                                            <td style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
+                                            <td className="px-2.5 py-1 border-b border-border text-text-main whitespace-nowrap">{loan.maturity}</td>
+                                            <td className="px-2.5 py-1 border-b border-border text-text-main whitespace-nowrap">{loan.frequency}</td>
+                                            <td className="px-2.5 py-1 border-b border-border text-right pr-6 whitespace-nowrap">
                                                 <div
-                                                    style={{
-                                                        fontSize: '13px',
-                                                        fontWeight: 400,
-                                                        color: 'var(--color-text-main)',
-                                                        fontFamily: 'monospace',
-                                                        cursor: loan.isForeign ? 'help' : 'default',
-                                                        display: 'inline-flex',
-                                                        alignItems: 'center',
-                                                        gap: '4px'
-                                                    }}
+                                                    className={`text-[13px] font-normal text-text-main font-mono inline-flex items-center gap-1 ${loan.isForeign ? 'cursor-help' : ''}`}
                                                     title={loan.isForeign ? loan.lkrAmount : ''}
                                                 >
-                                                    <span style={{ color: '#9ca3af' }}>{loan.amount.split(' ')[0]}</span>
+                                                    <span className="text-gray-400">{loan.amount.split(' ')[0]}</span>
                                                     <span>{loan.amount.split(' ')[1]}</span>
                                                 </div>
                                             </td>

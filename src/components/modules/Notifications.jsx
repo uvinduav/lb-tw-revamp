@@ -3,14 +3,14 @@ import emptyBox from '../../assets/empty-box.png';
 
 const Notifications = () => {
   return (
-    <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', color: '#888' }}>
+    <div className="flex flex-col flex-1 overflow-hidden items-center justify-center">
+      <div className="flex flex-col items-center gap-4 text-[#888]">
         <img
           src={emptyBox}
           alt="No records"
-          style={{ width: '80px', height: '80px', opacity: 0.4 }}
+          className="w-20 h-20 opacity-40"
         />
-        <span style={{ fontSize: '14px', fontWeight: 500 }}>No records found</span>
+        <span className="text-sm font-medium">No records found</span>
       </div>
     </div>
   );

@@ -112,36 +112,33 @@ const ChartCard = (props) => {
     };
 
     return (
-        <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h3 className="widget-title" style={{ margin: 0 }}>{title}</h3>
+        <div className="bg-white border border-border rounded-lg p-4">
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide m-0">{title}</h3>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', flexWrap: 'wrap' }}>
-                <div style={{ width: '150px', height: '150px', position: 'relative', flexShrink: 0 }}>
+            <div className="flex items-center gap-4 flex-wrap">
+                <div className="w-[150px] h-[150px] relative shrink-0">
                     <Doughnut data={chartData} options={chartOptions} />
                 </div>
 
-                <div style={{ flex: 1, minWidth: '300px' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <div className="flex-1 min-w-[300px]">
+                    <table className="w-full border-collapse">
                         <thead>
-                            <tr style={{ borderBottom: '1px solid var(--color-border)', height: '32px' }}>
+                            <tr className="border-b border-border h-8">
                                 {columns.map((col, index) => (
-                                    <th key={index} style={{ textAlign: col.align || 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
+                                    <th key={index} className="text-[11px] text-[#888] font-semibold uppercase py-1" style={{ textAlign: col.align || 'left' }}>
                                         {col.header}
                                     </th>
                                 ))}</tr >
                         </thead>
                         <tbody>
                             {details.map((item, index) => (
-                                <tr key={index} style={{ borderBottom: index < details.length - 1 ? '1px solid #f3f4f6' : 'none', height: '32px' }}>
+                                <tr key={index} className={`h-8 ${index < details.length - 1 ? 'border-b border-border-subtle' : ''}`}>
                                     {columns.map((col, colIndex) => (
-                                        <td key={colIndex} style={{ padding: '4px 0', textAlign: col.align || 'left' }}>
+                                        <td key={colIndex} className="py-1" style={{ textAlign: col.align || 'left' }}>
                                             {col.render ? col.render(item) : (
-                                                <span style={{
-                                                    fontSize: '13px',
-                                                    fontWeight: 400,
-                                                    fontFamily: col.monospace ? 'monospace' : 'inherit',
+                                                <span className={`text-[13px] font-normal ${col.monospace ? 'font-mono' : ''}`} style={{
                                                     color: col.color ? (typeof col.color === 'function' ? col.color(item) : col.color) : '#000000'
                                                 }}>
                                                     {(() => {
@@ -150,7 +147,7 @@ const ChartCard = (props) => {
                                                             const parts = val.split(' ');
                                                             return (
                                                                 <>
-                                                                    <span style={{ color: '#9ca3af', fontWeight: 400 }}>{parts[0]}</span>
+                                                                    <span className="text-gray-400 font-normal">{parts[0]}</span>
                                                                     <span> {parts.slice(1).join(' ')}</span>
                                                                 </>
                                                             );
@@ -178,19 +175,13 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
     if (error || !src) {
         return (
             <div
+                className="rounded flex items-center justify-center font-semibold border border-black/5 shrink-0"
                 style={{
                     width: `${size}px`,
                     height: `${size}px`,
-                    borderRadius: '4px',
                     backgroundColor: color || '#f3f4f6',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
                     fontSize: size > 20 ? '16px' : '10px',
-                    fontWeight: 600,
                     color: color ? 'rgba(0,0,0,0.5)' : '#9ca3af',
-                    border: '1px solid rgba(0,0,0,0.05)',
-                    flexShrink: 0
                 }}
             >
                 {name ? name.charAt(0) : 'I'}
@@ -200,29 +191,15 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
 
     return (
         <div
-            style={{
-                width: `${size}px`,
-                height: `${size}px`,
-                borderRadius: '4px',
-                backgroundColor: 'white',
-                border: '1px solid var(--color-border)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-                overflow: 'hidden'
-            }}
+            className="rounded bg-white border border-border flex items-center justify-center shrink-0 overflow-hidden"
+            style={{ width: `${size}px`, height: `${size}px` }}
         >
             <img
                 src={src}
                 alt={name}
                 onError={() => setError(true)}
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'contain',
-                    padding: size > 30 ? '4px' : '2px'
-                }}
+                className="w-full h-full object-contain"
+                style={{ padding: size > 30 ? '4px' : '2px' }}
             />
         </div>
     );
@@ -275,9 +252,9 @@ const InvestmentDetails = () => {
     const investmentColumns = [
         {
             header: 'CURRENCY', key: 'label', fontWeight: 400, render: (item) => (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ width: '12px', height: '12px', borderRadius: '4px', backgroundColor: item.color }}></div>
-                    <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.label}</span>
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded" style={{ backgroundColor: item.color }}></div>
+                    <span className="text-[13px] font-normal text-text-main">{item.label}</span>
                 </div>
             )
         },
@@ -362,9 +339,9 @@ const InvestmentDetails = () => {
     const maturityColumns = [
         {
             header: 'BANK', key: 'label', fontWeight: 400, render: (item) => (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ width: '12px', height: '12px', borderRadius: '4px', backgroundColor: item.color }}></div>
-                    <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.label}</span>
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded" style={{ backgroundColor: item.color }}></div>
+                    <span className="text-[13px] font-normal text-text-main">{item.label}</span>
                 </div>
             )
         },
@@ -523,44 +500,44 @@ const InvestmentDetails = () => {
     ];
 
     return (
-        <div className="dashboard-main-wrapper" style={{ height: '100%', overflowY: 'auto', padding: '24px' }}>
+        <div className="h-full overflow-y-auto p-6">
 
-            <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
+            <div className="bg-bg-subtle -m-6 mb-8 p-6 border-b border-border">
                 {/* Header Section */}
-                <div style={{ marginBottom: '24px' }}>
+                <div className="mb-6">
                     <div>
-                        <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
+                        <h1 className="text-xl font-semibold text-text-main m-0">
                             Investment Details
                         </h1>
-                        <div style={{ marginTop: '4px', fontSize: '13px', fontWeight: 400, color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div className="mt-1 text-[13px] font-normal text-text-secondary flex items-center gap-2">
                             <span>Total Investments: {summaryData.totalInvestments}</span>
-                            <span style={{ color: '#e5e7eb' }}>•</span>
+                            <span className="text-gray-200">•</span>
                             <span>{summaryData.activeFDs} Total FDs</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Summary Cards */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '24px' }}>
-                    <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Total Principal</div>
-                        <div style={{ fontSize: '16px', fontWeight: 600, color: 'black' }}>{summaryData.totalPrincipal}</div>
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                    <div className="bg-white p-4 rounded-lg border border-border">
+                        <div className="text-xs text-text-secondary mb-2">Total Principal</div>
+                        <div className="text-base font-semibold text-black">{summaryData.totalPrincipal}</div>
                     </div>
-                    <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>Interest Earned</div>
-                        <div style={{ fontSize: '16px', fontWeight: 600, color: 'black' }}>{summaryData.interestEarned}</div>
+                    <div className="bg-white p-4 rounded-lg border border-border">
+                        <div className="text-xs text-text-secondary mb-2">Interest Earned</div>
+                        <div className="text-base font-semibold text-black">{summaryData.interestEarned}</div>
                     </div>
-                    <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>WAIR</div>
-                        <div style={{ fontSize: '16px', fontWeight: 600, color: 'black' }}>{summaryData.wair}</div>
+                    <div className="bg-white p-4 rounded-lg border border-border">
+                        <div className="text-xs text-text-secondary mb-2">WAIR</div>
+                        <div className="text-base font-semibold text-black">{summaryData.wair}</div>
                     </div>
                 </div>
 
                 {/* Charts Section */}
-                <div style={{ display: 'flex', gap: '24px', marginBottom: '0' }}>
+                <div className="flex gap-6 mb-0">
                     {/* Investment Distribution */}
-                    <div style={{ flex: 1, padding: '16px', backgroundColor: 'white', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <h3 className="widget-title" style={{ marginBottom: '16px' }}>Bank-wise Investment Distribution (Million LKR)</h3>
+                    <div className="flex-1 p-4 bg-white rounded-lg border border-border">
+                        <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-4">Bank-wise Investment Distribution (Million LKR)</h3>
                         <div style={{ height: '200px' }}>
                             <Bar
                                 data={categoryDistributionData}
@@ -611,7 +588,7 @@ const InvestmentDetails = () => {
 
                 </div>
 
-                <div className="investment-grid" style={{ marginTop: '24px' }}>
+                <div className="grid grid-cols-2 gap-4 mt-6">
                     <ChartCard
                         title="Currency Breakdown"
                         chartData={investmentData}
@@ -626,36 +603,17 @@ const InvestmentDetails = () => {
                     />
                 </div>
 
-                <div style={{ display: 'flex', gap: '24px', marginTop: '24px' }}>
-                    <div style={{ flex: 1, padding: '16px', backgroundColor: 'white', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                            <h3 className="widget-title" style={{ margin: 0 }}>Bank Investment Rates by Currency</h3>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span style={{ fontSize: '13px', color: '#64748b' }}>View:</span>
-                                <div style={{
-                                    position: 'relative',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    border: '1px solid #10b981',
-                                    borderRadius: '6px',
-                                    padding: '0 12px',
-                                    height: '32px',
-                                    backgroundColor: 'white'
-                                }}>
+                <div className="flex gap-6 mt-6">
+                    <div className="flex-1 p-4 bg-white rounded-lg border border-border">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide m-0">Bank Investment Rates by Currency</h3>
+                            <div className="flex items-center gap-2">
+                                <span className="text-[13px] text-slate-500">View:</span>
+                                <div className="relative flex items-center border border-emerald-500 rounded-md px-3 h-8 bg-white">
                                     <select
                                         value={rateFilter}
                                         onChange={(e) => setRateFilter(e.target.value)}
-                                        style={{
-                                            appearance: 'none',
-                                            border: 'none',
-                                            background: 'transparent',
-                                            fontSize: '13px',
-                                            fontWeight: 500,
-                                            paddingRight: '20px',
-                                            cursor: 'pointer',
-                                            outline: 'none',
-                                            height: '100%'
-                                        }}
+                                        className="appearance-none border-none bg-transparent text-[13px] font-medium pr-5 cursor-pointer outline-none h-full"
                                     >
                                         <option value="All">All</option>
                                         <option value="Blended Rate">Blended Rate</option>
@@ -665,7 +623,7 @@ const InvestmentDetails = () => {
                                         <option value="GBP">GBP</option>
                                         <option value="SGD">SGD</option>
                                     </select>
-                                    <ChevronDown size={14} style={{ position: 'absolute', right: '8px', pointerEvents: 'none', color: '#64748b' }} />
+                                    <ChevronDown size={14} className="absolute right-2 pointer-events-none text-slate-500" />
                                 </div>
                             </div>
                         </div>
@@ -723,103 +681,78 @@ const InvestmentDetails = () => {
                 </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '48px', paddingBottom: '48px' }}>
+            <div className="flex flex-col gap-12 pb-12">
                 {banks.map((bank) => (
                     <div key={bank.id} id={`bank-${bank.name.replace(/\s+/g, '-').toLowerCase()}`}>
 
-                        {/* Bank Header Info - Outside Table */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px', paddingLeft: '4px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        {/* Bank Header Info */}
+                        <div className="flex justify-between items-end mb-4 pl-1">
+                            <div className="flex items-center gap-3">
                                 <LogoImage src={bank.logo} name={bank.name} color={bank.color} size={40} />
                                 <div>
-                                    <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>{bank.name}</h3>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+                                    <h3 className="text-base font-semibold text-text-main m-0">{bank.name}</h3>
+                                    <div className="flex items-center gap-3 text-xs text-text-secondary mt-1">
                                         <span>{bank.count} active investments</span>
-                                        <span style={{ color: '#e5e7eb' }}>•</span>
+                                        <span className="text-gray-200">•</span>
                                         <span>{bank.share}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div style={{ textAlign: 'right' }}>
-                                <div style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-main)', lineHeight: 1.2 }}>{bank.totalVolume}</div>
-                                <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px', fontWeight: 400, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0' }}>
-                                    <span style={{ color: '#9ca3af' }}>{bank.desc}</span>
+                            <div className="text-right">
+                                <div className="text-base font-semibold text-text-main leading-tight">{bank.totalVolume}</div>
+                                <div className="text-xs text-text-secondary mt-1 font-normal flex items-center justify-end">
+                                    <span className="text-gray-400">{bank.desc}</span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Table wrapper - Dashboard Entity Overview Style */}
-                        <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)' }}>
-                            <table className="data-table" style={{ borderCollapse: 'collapse' }}>
-                                <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+                        {/* Table */}
+                        <div className="m-0 bg-white border-t border-border overflow-x-auto">
+                            <table className="w-full border-collapse text-[13px]">
+                                <thead className="sticky top-0 z-10">
                                     <tr>
-                                        <th style={{ whiteSpace: 'nowrap' }}>ACC. NO.</th>
-                                        <th style={{ whiteSpace: 'nowrap' }}>TYPE</th>
-                                        <th style={{ whiteSpace: 'nowrap' }}>RENEWAL</th>
-                                        <th style={{ whiteSpace: 'nowrap' }}>START DATE</th>
-                                        <th style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap' }}>RATE</th>
-                                        <th style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap' }}>INTEREST EARNED</th>
-                                        <th style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap' }}>MATURITY VALUE</th>
-                                        <th style={{ whiteSpace: 'nowrap' }}>MATURITY</th>
-                                        <th style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap' }}>PRINCIPAL</th>
+                                        <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">ACC. NO.</th>
+                                        <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">TYPE</th>
+                                        <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">RENEWAL</th>
+                                        <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">START DATE</th>
+                                        <th className="bg-[#fafafa] text-right pr-6 px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">RATE</th>
+                                        <th className="bg-[#fafafa] text-right pr-6 px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">INTEREST EARNED</th>
+                                        <th className="bg-[#fafafa] text-right pr-6 px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">MATURITY VALUE</th>
+                                        <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">MATURITY</th>
+                                        <th className="bg-[#fafafa] text-right pr-6 px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">PRINCIPAL</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {bank.investments.map((inv) => (
-                                        <tr key={inv.id} className="hover-row">
-                                            <td style={{ whiteSpace: 'nowrap' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)' }}>{inv.ref}</div>
+                                        <tr key={inv.id} className="hover:bg-bg-subtle transition-colors duration-150">
+                                            <td className="px-2.5 py-1 border-b border-border whitespace-nowrap">
+                                                <div className="text-[13px] font-medium text-text-main">{inv.ref}</div>
                                             </td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', whiteSpace: 'nowrap' }}>{inv.type}</td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', whiteSpace: 'nowrap' }}>{inv.renewalType}</td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', whiteSpace: 'nowrap' }}>{inv.startDate}</td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', fontFamily: 'monospace', textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>{inv.rate}</td>
-                                            <td style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
-                                                <div style={{
-                                                    fontSize: '13px',
-                                                    fontWeight: 400,
-                                                    color: 'var(--color-text-main)',
-                                                    fontFamily: 'monospace',
-                                                    display: 'inline-flex',
-                                                    alignItems: 'center',
-                                                    gap: '4px'
-                                                }}>
-                                                    <span style={{ color: '#9ca3af' }}>{inv.interestEarned.split(' ')[0]}</span>
+                                            <td className="px-2.5 py-1 border-b border-border text-text-main whitespace-nowrap">{inv.type}</td>
+                                            <td className="px-2.5 py-1 border-b border-border text-text-main whitespace-nowrap">{inv.renewalType}</td>
+                                            <td className="px-2.5 py-1 border-b border-border text-text-main whitespace-nowrap">{inv.startDate}</td>
+                                            <td className="px-2.5 py-1 border-b border-border text-right pr-6 font-mono text-text-main whitespace-nowrap">{inv.rate}</td>
+                                            <td className="px-2.5 py-1 border-b border-border text-right pr-6 whitespace-nowrap">
+                                                <div className="text-[13px] font-normal text-text-main font-mono inline-flex items-center gap-1">
+                                                    <span className="text-gray-400">{inv.interestEarned.split(' ')[0]}</span>
                                                     <span>{inv.interestEarned.split(' ')[1]}</span>
                                                 </div>
                                             </td>
-                                            <td style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
-                                                <div style={{
-                                                    fontSize: '13px',
-                                                    fontWeight: 400,
-                                                    color: 'var(--color-text-main)',
-                                                    fontFamily: 'monospace',
-                                                    display: 'inline-flex',
-                                                    alignItems: 'center',
-                                                    gap: '4px'
-                                                }}>
-                                                    <span style={{ color: '#9ca3af' }}>{inv.maturityValue.split(' ')[0]}</span>
+                                            <td className="px-2.5 py-1 border-b border-border text-right pr-6 whitespace-nowrap">
+                                                <div className="text-[13px] font-normal text-text-main font-mono inline-flex items-center gap-1">
+                                                    <span className="text-gray-400">{inv.maturityValue.split(' ')[0]}</span>
                                                     <span>{inv.maturityValue.split(' ')[1]}</span>
                                                 </div>
                                             </td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', whiteSpace: 'nowrap' }}>
+                                            <td className="px-2.5 py-1 border-b border-border text-text-main whitespace-nowrap">
                                                 {inv.duration} ({inv.maturity})
                                             </td>
-                                            <td style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
+                                            <td className="px-2.5 py-1 border-b border-border text-right pr-6 whitespace-nowrap">
                                                 <div
-                                                    style={{
-                                                        fontSize: '13px',
-                                                        fontWeight: 400,
-                                                        color: 'var(--color-text-main)',
-                                                        fontFamily: 'monospace',
-                                                        cursor: inv.isForeign ? 'help' : 'default',
-                                                        display: 'inline-flex',
-                                                        alignItems: 'center',
-                                                        gap: '4px'
-                                                    }}
+                                                    className={`text-[13px] font-normal text-text-main font-mono inline-flex items-center gap-1 ${inv.isForeign ? 'cursor-help' : ''}`}
                                                     title={inv.isForeign ? inv.lkrAmount : ''}
                                                 >
-                                                    <span style={{ color: '#9ca3af' }}>{inv.amount.split(' ')[0]}</span>
+                                                    <span className="text-gray-400">{inv.amount.split(' ')[0]}</span>
                                                     <span>{inv.amount.split(' ')[1]}</span>
                                                 </div>
                                             </td>

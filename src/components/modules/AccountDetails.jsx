@@ -38,23 +38,23 @@ ChartJS.register(
 
 // Reusable Widget Card for Account Details
 const AccountWidget = ({ title, value, subtext, subtextClass, valueClass, icon: Icon }) => (
-    <div className="widget-card" style={{ flex: 1 }}>
-        <div className="widget-header">
-            <h3 className="widget-title" style={{ margin: 0 }}>{title}</h3>
-            <RotateCw size={14} className="text-gray" style={{ cursor: 'pointer' }} />
+    <div className="bg-white border border-border rounded-lg p-4 flex-1">
+        <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide m-0">{title}</h3>
+            <RotateCw size={14} className="text-gray-400 cursor-pointer" />
         </div>
 
-        <div className="widget-value-row">
-            <div className={`widget-value ${valueClass || ''}`}>{value}</div>
+        <div className="flex items-baseline gap-2">
+            <div className={`text-xl font-bold font-mono ${valueClass === 'text-green' ? 'text-green-600' : 'text-text-main'}`}>{value}</div>
             {Icon && (
-                <span className={subtextClass} style={{ display: 'flex', alignItems: 'center' }}>
+                <span className={`flex items-center ${subtextClass === 'text-green' ? 'text-green-600' : 'text-text-secondary'}`}>
                     <Icon size={14} />
                 </span>
             )}
         </div>
 
         {subtext && (
-            <div className={`widget-subtext ${subtextClass}`}>
+            <div className={`text-xs mt-1 ${subtextClass === 'text-green' ? 'text-green-600' : 'text-text-secondary'}`}>
                 {subtext}
             </div>
         )}
@@ -170,23 +170,23 @@ const AccountDetails = ({ account, bank }) => {
     const isRenewed = accountInfo.status?.toLowerCase() === 'renewed';
 
     return (
-        <div className="dashboard-main-wrapper" style={{ height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
-            <div className="dashboard-container" style={{ padding: '24px' }}>
+        <div className="h-full overflow-y-auto flex flex-col">
+            <div className="flex-1 p-6">
 
                 {/* Header & Widgets Section */}
-                <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
+                <div className="bg-bg-subtle -m-6 mb-8 p-6 border-b border-border">
                     {/* Header */}
-                    <div style={{ marginBottom: '24px' }}>
-                        <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
+                    <div className="mb-6">
+                        <h1 className="text-xl font-semibold text-text-main m-0">
                             {accountInfo.accountNumber}
                         </h1>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
+                        <div className="text-xs text-text-secondary mt-0.5">
                             {bank} • {accountInfo.type}
                         </div>
                     </div>
 
                     {/* Top Widgets Row */}
-                    <div className="dashboard-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: 0 }}>
+                    <div className="grid grid-cols-4 gap-4 mb-0">
                         <AccountWidget
                             title="Current Balance"
                             value={accountInfo.balance}
@@ -213,44 +213,44 @@ const AccountDetails = ({ account, bank }) => {
                 </div>
 
                 {/* Content Row: Side-by-Side Info and Chart */}
-                <div style={{ display: 'flex', gap: '32px', marginTop: '32px', alignItems: 'stretch' }}>
+                <div className="flex gap-8 mt-8 items-stretch">
                     {/* Left: Account Information */}
-                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                        <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
-                            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Account Information</h2>
+                    <div className="flex-1 flex flex-col">
+                        <div className="mb-4 pl-1">
+                            <h2 className="text-lg font-semibold text-text-main mb-1">Account Information</h2>
                         </div>
-                        <div className="widget-card" style={{ padding: '24px', flex: 1 }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', gap: '8px' }}>
-                                <div style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '10px' }}>
-                                    <div style={{ fontSize: '10px', fontWeight: 600, color: '#6b7280', letterSpacing: '0.05em', marginBottom: '2px' }}>ACCOUNT NUMBER</div>
-                                    <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{accountInfo.accountNumber}</div>
+                        <div className="bg-white border border-border rounded-lg p-6 flex-1">
+                            <div className="flex flex-col h-full justify-between gap-2">
+                                <div className="border-b border-border pb-2.5">
+                                    <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">ACCOUNT NUMBER</div>
+                                    <div className="text-[13px] font-medium text-text-main font-mono">{accountInfo.accountNumber}</div>
                                 </div>
-                                <div style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '10px' }}>
-                                    <div style={{ fontSize: '10px', fontWeight: 600, color: '#6b7280', letterSpacing: '0.05em', marginBottom: '2px' }}>ACCOUNT TYPE</div>
-                                    <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)' }}>{accountInfo.type}</div>
+                                <div className="border-b border-border pb-2.5">
+                                    <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">ACCOUNT TYPE</div>
+                                    <div className="text-[13px] font-medium text-text-main">{accountInfo.type}</div>
                                 </div>
-                                <div style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '10px' }}>
-                                    <div style={{ fontSize: '10px', fontWeight: 600, color: '#6b7280', letterSpacing: '0.05em', marginBottom: '2px' }}>CURRENCY</div>
-                                    <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)' }}>{accountInfo.currency}</div>
+                                <div className="border-b border-border pb-2.5">
+                                    <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">CURRENCY</div>
+                                    <div className="text-[13px] font-medium text-text-main">{accountInfo.currency}</div>
                                 </div>
-                                <div style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '10px' }}>
-                                    <div style={{ fontSize: '10px', fontWeight: 600, color: '#6b7280', letterSpacing: '0.05em', marginBottom: '2px' }}>PURPOSE</div>
-                                    <div style={{ display: 'flex', gap: '8px' }}>
-                                        <span style={{ backgroundColor: '#eff6ff', color: '#3b82f6', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>urgent</span>
-                                        <span style={{ backgroundColor: '#eff6ff', color: '#3b82f6', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>PT01</span>
+                                <div className="border-b border-border pb-2.5">
+                                    <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">PURPOSE</div>
+                                    <div className="flex gap-2">
+                                        <span className="bg-blue-50 text-blue-500 px-2 py-0.5 rounded text-[11px] font-semibold">urgent</span>
+                                        <span className="bg-blue-50 text-blue-500 px-2 py-0.5 rounded text-[11px] font-semibold">PT01</span>
                                     </div>
                                 </div>
-                                <div style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '10px' }}>
-                                    <div style={{ fontSize: '10px', fontWeight: 600, color: '#6b7280', letterSpacing: '0.05em', marginBottom: '2px' }}>START DATE</div>
-                                    <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <Calendar size={14} className="text-gray" />
+                                <div className="border-b border-border pb-2.5">
+                                    <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">START DATE</div>
+                                    <div className="text-[13px] font-medium text-text-main flex items-center gap-2">
+                                        <Calendar size={14} className="text-gray-400" />
                                         {accountInfo.startDate}
                                     </div>
                                 </div>
                                 <div>
-                                    <div style={{ fontSize: '10px', fontWeight: 600, color: '#6b7280', letterSpacing: '0.05em', marginBottom: '2px' }}>LAST BALANCE UPDATE</div>
-                                    <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <Clock size={14} className="text-gray" />
+                                    <div className="text-[10px] font-semibold text-gray-500 tracking-wide mb-0.5">LAST BALANCE UPDATE</div>
+                                    <div className="text-[13px] font-medium text-text-main flex items-center gap-2">
+                                        <Clock size={14} className="text-gray-400" />
                                         {accountInfo.lastUpdate}
                                     </div>
                                 </div>
@@ -259,39 +259,29 @@ const AccountDetails = ({ account, bank }) => {
                     </div>
 
                     {/* Right: Balance Trend Chart */}
-                    <div style={{ flex: 1.5, display: 'flex', flexDirection: 'column' }}>
-                        <div style={{ marginBottom: '16px', paddingLeft: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '0' }}>
+                    <div className="flex-[1.5] flex flex-col">
+                        <div className="mb-4 pl-1 flex justify-between items-center">
+                            <h2 className="text-lg font-semibold text-text-main mb-0">
                                 {timeRange === '30 Days' ? '30-Day' : timeRange} Balance Trend
                             </h2>
-                            <div style={{ position: 'relative' }}>
+                            <div className="relative">
                                 <select
                                     value={timeRange}
                                     onChange={(e) => setTimeRange(e.target.value)}
-                                    style={{
-                                        appearance: 'none',
-                                        backgroundColor: 'white',
-                                        border: '1px solid var(--color-border)',
-                                        borderRadius: '6px',
-                                        padding: '6px 32px 6px 12px',
-                                        fontSize: '12px',
-                                        color: 'var(--color-text-main)',
-                                        cursor: 'pointer',
-                                        outline: 'none'
-                                    }}
+                                    className="appearance-none bg-white border border-border rounded-md py-1.5 pl-3 pr-8 text-xs text-text-main cursor-pointer outline-none"
                                 >
                                     <option value="30 Days">30 Days</option>
                                     <option value="3 Months">3 Months</option>
                                     <option value="6 Months">6 Months</option>
                                 </select>
-                                <ChevronDown size={14} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--color-text-secondary)' }} />
+                                <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-text-secondary" />
                             </div>
                         </div>
-                        <div className="widget-card" style={{ padding: '24px', flex: 1 }}>
-                            <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '24px' }}>
+                        <div className="bg-white border border-border rounded-lg p-6 flex-1">
+                            <p className="text-xs text-text-secondary mb-6">
                                 Balance history for the last {timeRange.toLowerCase()}
                             </p>
-                            <div style={{ height: '300px', width: '100%' }}>
+                            <div className="h-[300px] w-full">
                                 <Line data={chartData} options={chartOptions} />
                             </div>
                         </div>
@@ -299,78 +289,48 @@ const AccountDetails = ({ account, bank }) => {
                 </div>
 
                 {/* Balance Thresholds Section */}
-                <div className="widget-card" style={{ marginTop: '32px', padding: '24px' }}>
-                    <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '24px' }}>Balance Thresholds</h3>
+                <div className="bg-white border border-border rounded-lg p-6 mt-8">
+                    <h3 className="text-base font-semibold text-text-main mb-6">Balance Thresholds</h3>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px', marginBottom: '32px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#ef4444' }}></div>
-                                <span style={{ fontSize: '14px', color: 'var(--color-text-main)' }}>Critical Minimum</span>
+                    <div className="grid grid-cols-1 gap-4 mb-8">
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                                <span className="text-sm text-text-main">Critical Minimum</span>
                             </div>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text-main)' }}>S$2,000</span>
+                            <span className="text-sm font-medium text-text-main">S$2,000</span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#f97316' }}></div>
-                                <span style={{ fontSize: '14px', color: 'var(--color-text-main)' }}>Warning Level</span>
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                                <span className="text-sm text-text-main">Warning Level</span>
                             </div>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text-main)' }}>S$5,000</span>
+                            <span className="text-sm font-medium text-text-main">S$5,000</span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#22c55e' }}></div>
-                                <span style={{ fontSize: '14px', color: 'var(--color-text-main)' }}>Current Balance</span>
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span className="text-sm text-text-main">Current Balance</span>
                             </div>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text-main)' }}>S$294,910.027</span>
+                            <span className="text-sm font-medium text-text-main">S$294,910.027</span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#a855f7' }}></div>
-                                <span style={{ fontSize: '14px', color: 'var(--color-text-main)' }}>High Balance Alert</span>
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                                <span className="text-sm text-text-main">High Balance Alert</span>
                             </div>
-                            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text-main)' }}>S$200,000</span>
+                            <span className="text-sm font-medium text-text-main">S$200,000</span>
                         </div>
                     </div>
 
                     {/* Spectrum Bar */}
-                    <div style={{ position: 'relative', height: '12px', borderRadius: '6px', background: 'linear-gradient(to right, #ef4444 0%, #f97316 25%, #eab308 50%, #d8b4fe 75%, #a855f7 100%)', marginTop: '40px' }}>
+                    <div className="relative h-3 rounded-md mt-10" style={{ background: 'linear-gradient(to right, #ef4444 0%, #f97316 25%, #eab308 50%, #d8b4fe 75%, #a855f7 100%)' }}>
                         {/* Current Marker */}
-                        <div style={{
-                            position: 'absolute',
-                            left: '85%', // Approximate position based on value
-                            top: '-5px',
-                            bottom: '-5px',
-                            width: '4px',
-                            backgroundColor: 'black',
-                            borderRadius: '2px',
-                            zIndex: 10
-                        }}>
-                            <div style={{
-                                position: 'absolute',
-                                bottom: '100%',
-                                left: '50%',
-                                transform: 'translate(-50%, -8px)',
-                                backgroundColor: 'black',
-                                color: 'white',
-                                padding: '4px 8px',
-                                borderRadius: '4px',
-                                fontSize: '12px',
-                                whiteSpace: 'nowrap'
-                            }}>
+                        <div className="absolute left-[85%] -top-1.5 -bottom-1.5 w-1 bg-black rounded-sm z-10">
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 -translate-y-2 bg-black text-white px-2 py-1 rounded text-xs whitespace-nowrap">
                                 Current
                                 {/* Triangle pointer */}
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '100%',
-                                    left: '50%',
-                                    transform: 'translateX(-50%)',
-                                    width: 0,
-                                    height: 0,
-                                    borderLeft: '4px solid transparent',
-                                    borderRight: '4px solid transparent',
-                                    borderTop: '4px solid black'
-                                }}></div>
+                                <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px] border-t-black"></div>
                             </div>
                         </div>
                     </div>

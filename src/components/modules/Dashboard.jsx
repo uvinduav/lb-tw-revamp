@@ -50,18 +50,13 @@ const LogoImage = ({ src, name, color, size = 24 }) => {
   if (error || !src) {
     return (
       <div
+        className="rounded flex items-center justify-center font-semibold border border-black/5"
         style={{
           width: `${size}px`,
           height: `${size}px`,
-          borderRadius: '4px',
           backgroundColor: color || '#f3f4f6',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
           fontSize: size > 20 ? '10px' : '8px',
-          fontWeight: 600,
           color: color ? 'rgba(0,0,0,0.5)' : '#9ca3af',
-          border: '1px solid rgba(0,0,0,0.05)'
         }}
       >
         {name ? name.charAt(0) : 'E'}
@@ -74,13 +69,8 @@ const LogoImage = ({ src, name, color, size = 24 }) => {
       src={src}
       alt={name}
       onError={() => setError(true)}
-      style={{
-        width: `${size}px`,
-        height: `${size}px`,
-        borderRadius: '4px',
-        objectFit: 'cover',
-        border: '1px solid var(--color-border)'
-      }}
+      className="rounded object-cover border border-border"
+      style={{ width: `${size}px`, height: `${size}px` }}
     />
   );
 };
@@ -106,31 +96,31 @@ const ChartCard = (props) => {
   };
 
   return (
-    <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-        <h3 className="widget-title" style={{ margin: 0 }}>{title}</h3>
+    <div className="bg-white border border-border rounded-lg p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide m-0">{title}</h3>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', flexWrap: 'wrap' }}>
-        <div style={{ width: '150px', height: '150px', position: 'relative', flexShrink: 0 }}>
+      <div className="flex items-center gap-4 flex-wrap">
+        <div className="w-[150px] h-[150px] relative shrink-0">
           <Doughnut data={chartData} options={chartOptions} />
         </div>
 
-        <div style={{ flex: 1, minWidth: '300px' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div className="flex-1 min-w-[300px]">
+          <table className="w-full border-collapse">
             <thead>
-              <tr style={{ borderBottom: '1px solid var(--color-border)', height: '32px' }}>
+              <tr className="border-b border-border h-8">
                 {columns.map((col, index) => (
-                  <th key={index} style={{ textAlign: col.align || 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
+                  <th key={index} className="text-[11px] text-[#888] font-semibold uppercase py-1" style={{ textAlign: col.align || 'left' }}>
                     {col.header}
                   </th>
                 ))}</tr >
             </thead>
             <tbody>
               {details.map((item, index) => (
-                <tr key={index} style={{ borderBottom: index < details.length - 1 ? '1px solid #f3f4f6' : 'none', height: '32px' }}>
+                <tr key={index} className={`h-8 ${index < details.length - 1 ? 'border-b border-border-subtle' : ''}`}>
                   {columns.map((col, colIndex) => (
-                    <td key={colIndex} style={{ padding: '4px 0', textAlign: col.align || 'left' }}>
+                    <td key={colIndex} className="py-1" style={{ textAlign: col.align || 'left' }}>
                       {col.render ? col.render(item) : (
                         <span style={{
                           fontSize: '13px',
@@ -144,7 +134,7 @@ const ChartCard = (props) => {
                               const parts = val.split(' ');
                               return (
                                 <>
-                                  <span style={{ color: '#9ca3af', fontWeight: 400 }}>{parts[0]}</span>
+                                  <span className="text-gray-400 font-normal">{parts[0]}</span>
                                   <span> {parts.slice(1).join(' ')}</span>
                                 </>
                               );
@@ -590,17 +580,17 @@ const Dashboard = ({ onNavigate }) => {
   };
 
   return (
-    <div className="dashboard-main-wrapper">
+    <div className="h-full overflow-hidden flex flex-col">
       {/* Search/Tabs Wrapper */}
-      <div className="dashboard-tabs-wrapper">
-        <div className="dashboard-tabs">
+      <div className="px-6 pt-3 pb-0 shrink-0 border-b border-border bg-white">
+        <div className="flex items-center gap-1 overflow-x-auto">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
               <React.Fragment key={tab.id}>
-                {tab.id === 'cash-flow' && <div className="vertical-divider" style={{ margin: '0 8px', alignSelf: 'center' }} />}
+                {tab.id === 'cash-flow' && <div className="h-5 w-px bg-gray-200 mx-2 self-center" />}
                 <button
-                  className={`tab-item ${activeTab === tab.id ? 'active' : ''}`}
+                  className={`flex items-center gap-1.5 px-3 py-2 text-[13px] font-medium rounded-t border-none cursor-pointer transition-all duration-200 whitespace-nowrap ${activeTab === tab.id ? 'text-primary-action bg-bg-subtle border-b-2 border-b-primary-action' : 'text-text-secondary bg-transparent hover:text-text-main hover:bg-bg-subtle'}`}
                   onClick={() => scrollToSection(tab.id)}
                 >
                   {Icon && <Icon size={14} />}
@@ -612,50 +602,49 @@ const Dashboard = ({ onNavigate }) => {
         </div>
       </div>
 
-      <div className="dashboard-container" onScroll={handleScroll}>
+      <div className="flex-1 overflow-y-auto p-6" onScroll={handleScroll}>
 
         {/* Widgets Grid Section */}
-        <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
-          <div style={{ marginBottom: '24px', paddingLeft: '4px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Group Overview</h2>
-            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Consolidated financial performance metrics</p>
+        <div className="bg-bg-subtle -m-6 mb-8 p-6 border-b border-border">
+          <div className="mb-6 pl-1">
+            <h2 className="text-lg font-semibold text-text-main mb-1">Group Overview</h2>
+            <p className="text-[13px] text-text-secondary">Consolidated financial performance metrics</p>
           </div>
-          <div id="overview" className="dashboard-grid" style={{ marginBottom: 0 }}>
+          <div id="overview" className="grid grid-cols-3 gap-4 mb-0">
             {widgets.map((widget, index) => {
               const Icon = widget.icon;
               return (
                 <div
                   key={index}
-                  className={`widget-card ${widget.onClick ? 'clickable' : ''}`}
+                  className={`bg-white border border-border rounded-lg p-4 transition-all duration-200 ${widget.onClick ? 'cursor-pointer hover:shadow-md hover:-translate-y-0.5' : ''}`}
                   onClick={widget.onClick}
-                  style={widget.onClick ? { cursor: 'pointer' } : {}}
                 >
-                  <div className="widget-header">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      {Icon && <Icon size={14} className="text-gray" />}
-                      <h3 className="widget-title" style={{ margin: 0 }}>{widget.title}</h3>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-1.5">
+                      {Icon && <Icon size={14} className="text-gray-400" />}
+                      <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide m-0">{widget.title}</h3>
                     </div>
                   </div>
 
-                  <div style={{ marginTop: '0px' }}>
-                    <div className="widget-value-row">
-                      <span className={`widget-value ${isNegative(widget.value) ? 'text-red' : ''}`}>
+                  <div>
+                    <div className="flex items-baseline gap-2">
+                      <span className={`text-xl font-bold font-mono ${isNegative(widget.value) ? 'text-red-500' : 'text-text-main'}`}>
                         {widget.value}
                       </span>
                       {widget.change && (
-                        <span className={`widget-change ${widget.changeType === 'positive' ? 'text-green' :
-                          widget.changeType === 'negative' ? 'text-red' : 'text-gray'
+                        <span className={`text-xs font-semibold ${widget.changeType === 'positive' ? 'text-green-600' :
+                          widget.changeType === 'negative' ? 'text-red-500' : 'text-gray-400'
                           }`}>
                           {widget.change}
                         </span>
                       )}
                     </div>
                     {widget.onClick ? (
-                      <div style={{ marginTop: '4px' }}>
-                        <span style={{ fontSize: '11px', fontWeight: 500, color: '#3b82f6' }}>View more</span>
+                      <div className="mt-1">
+                        <span className="text-[11px] font-medium text-blue-500">View more</span>
                       </div>
                     ) : (
-                      <p className="widget-subtext">
+                      <p className="text-xs text-text-secondary mt-1">
                         {widget.subtext}
                       </p>
                     )}
@@ -667,43 +656,42 @@ const Dashboard = ({ onNavigate }) => {
         </div>
 
         {/* Entity Overview Section */}
-        <div id="entity-overview" style={{ marginTop: '32px' }}>
-          <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Entity Overview</h2>
-            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Click to drill down</p>
+        <div id="entity-overview" className="mt-8">
+          <div className="mb-4 pl-1">
+            <h2 className="text-lg font-semibold text-text-main mb-1">Entity Overview</h2>
+            <p className="text-[13px] text-text-secondary">Click to drill down</p>
           </div>
 
-          <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)' }}>
-            <table className="data-table min-w-800">
-              <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+          <div className="m-0 bg-white border-t border-border overflow-x-auto">
+            <table className="w-full min-w-[800px] border-collapse text-[13px]">
+              <thead className="sticky top-0 z-10">
                 <tr>
-                  <th style={{ width: '40px' }}></th>
-                  <th style={{ width: '30%' }}>ENTITY NAME</th>
-                  <th style={{ textAlign: 'right' }}>TOTAL BALANCE (LKR)</th>
-                  <th style={{ textAlign: 'right' }}>ACCOUNTS</th>
-                  <th style={{ textAlign: 'right' }}>BANKS</th>
-                  <th style={{ textAlign: 'right' }}>CURRENCIES</th>
+                  <th className="w-10 bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8"></th>
+                  <th className="w-[30%] bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">ENTITY NAME</th>
+                  <th className="bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">TOTAL BALANCE (LKR)</th>
+                  <th className="bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">ACCOUNTS</th>
+                  <th className="bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">BANKS</th>
+                  <th className="bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">CURRENCIES</th>
                 </tr>
               </thead>
               <tbody>
                 {entities.map((entity) => (
                   <tr
                     key={entity.id}
-                    className="hover-row"
+                    className="cursor-pointer hover:bg-bg-subtle transition-colors duration-150"
                     onClick={() => onNavigate && onNavigate('Entity Details', entity)}
-                    style={{ cursor: 'pointer' }}
                   >
-                    <td>
+                    <td className="px-2.5 py-1 border-b border-border">
                       <LogoImage src={entity.logo} name={entity.name} color={entity.color} />
                     </td>
-                    <td style={{ fontWeight: 500, color: '#000000' }}>{entity.name}</td>
-                    <td style={{ fontFamily: 'monospace', fontWeight: 500, color: '#000000', textAlign: 'right' }}>
-                      <span style={{ color: '#9ca3af', fontWeight: 400 }}>{entity.balance.split(' ')[0]}</span>
+                    <td className="px-2.5 py-1 border-b border-border font-medium text-black">{entity.name}</td>
+                    <td className="px-2.5 py-1 border-b border-border font-mono font-medium text-black text-right">
+                      <span className="text-gray-400 font-normal">{entity.balance.split(' ')[0]}</span>
                       <span> {entity.balance.split(' ')[1]}</span>
                     </td>
-                    <td style={{ color: '#000000', fontFamily: 'monospace', textAlign: 'right' }}>{entity.accounts}</td>
-                    <td style={{ color: '#000000', fontFamily: 'monospace', textAlign: 'right' }}>{entity.banks}</td>
-                    <td style={{ color: '#000000', fontFamily: 'monospace', textAlign: 'right' }}>{entity.currencies}</td>
+                    <td className="px-2.5 py-1 border-b border-border text-black font-mono text-right">{entity.accounts}</td>
+                    <td className="px-2.5 py-1 border-b border-border text-black font-mono text-right">{entity.banks}</td>
+                    <td className="px-2.5 py-1 border-b border-border text-black font-mono text-right">{entity.currencies}</td>
                   </tr>
                 ))}
               </tbody>
@@ -712,15 +700,15 @@ const Dashboard = ({ onNavigate }) => {
         </div>
 
         {/* Investment Profile Section - Main Wrapper */}
-        <div id="investment-profile" style={{ marginTop: '32px' }}>
+        <div id="investment-profile" className="mt-8">
           {/* Main Section Header */}
-          <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Investment Profile</h2>
-            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Click to drill down</p>
+          <div className="mb-4 pl-1">
+            <h2 className="text-lg font-semibold text-text-main mb-1">Investment Profile</h2>
+            <p className="text-[13px] text-text-secondary">Click to drill down</p>
           </div>
 
           {/* Investment Charts Grid */}
-          <div className="investment-grid">
+          <div className="grid grid-cols-2 gap-4">
             <ChartCard
               title="Total Investments by Category"
               chartData={investmentData}
@@ -748,15 +736,15 @@ const Dashboard = ({ onNavigate }) => {
           </div>
 
           {/* Foreign Currency Profile Section */}
-          <div style={{ marginTop: 'var(--spacing-md)', backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '16px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 className="widget-title" style={{ margin: 0 }}>Foreign Currency Deposits & Loans Overview</h3>
+          <div className="mt-4 bg-white border border-border rounded-lg p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide m-0">Foreign Currency Deposits & Loans Overview</h3>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-md)', flexWrap: 'wrap' }}>
+            <div className="flex items-start gap-4 flex-wrap">
 
               {/* Left: Bar Chart */}
-              <div style={{ width: '350px', height: '220px', position: 'relative', flexShrink: 0 }}>
+              <div className="w-[350px] h-[220px] relative shrink-0">
                 <Bar
                   data={{
                     labels: forexOverviewData.map(d => d.currency),
@@ -832,62 +820,62 @@ const Dashboard = ({ onNavigate }) => {
               </div>
 
               {/* Right: Data Table */}
-              <div style={{ flex: 1.5, minWidth: '400px' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <div className="flex-[1.5] min-w-[400px]">
+                <table className="w-full border-collapse">
                   <thead>
-                    <tr style={{ borderBottom: '1px solid var(--color-border)', height: '32px' }}>
-                      <th style={{ textAlign: 'left', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>CURRENCY</th>
-                      <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
-                          <div style={{ width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#10b981' }}></div>
+                    <tr className="border-b border-border h-8">
+                      <th className="text-left text-[11px] text-[#888] font-semibold uppercase py-1">CURRENCY</th>
+                      <th className="text-right text-[11px] text-[#888] font-semibold uppercase py-1">
+                        <div className="flex items-center gap-1.5 justify-end">
+                          <div className="w-2 h-2 rounded-sm bg-emerald-500"></div>
                           DEPOSITS (AVG RATE)
                         </div>
                       </th>
-                      <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
-                          <div style={{ width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#ef4444' }}></div>
+                      <th className="text-right text-[11px] text-[#888] font-semibold uppercase py-1">
+                        <div className="flex items-center gap-1.5 justify-end">
+                          <div className="w-2 h-2 rounded-sm bg-red-500"></div>
                           LOANS (AVG RATE)
                         </div>
                       </th>
-                      <th style={{ textAlign: 'right', fontSize: '11px', color: '#888', fontWeight: 600, textTransform: 'uppercase', padding: '4px 0' }}>NET POSITION</th>
+                      <th className="text-right text-[11px] text-[#888] font-semibold uppercase py-1">NET POSITION</th>
                     </tr>
                   </thead>
                   <tbody>
                     {forexOverviewData.map((item, index, array) => (
-                      <tr key={index} style={{ borderBottom: index < array.length - 1 ? '1px solid #f3f4f6' : 'none', height: '32px' }}>
-                        <td style={{ padding: '4px 0' }}>
-                          <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{item.currency}</span>
+                      <tr key={index} className={`h-8 ${index < array.length - 1 ? 'border-b border-border-subtle' : ''}`}>
+                        <td className="py-1">
+                          <span className="text-[13px] font-normal text-text-main">{item.currency}</span>
                         </td>
-                        <td style={{ padding: '4px 0', textAlign: 'right' }}>
-                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: '#000000' }}>
-                            <span style={{ color: '#9ca3af', fontWeight: 400 }}>{item.deposits.split(' ')[0]}</span>
+                        <td className="py-1 text-right">
+                          <div className="text-[13px] font-normal font-mono text-black">
+                            <span className="text-gray-400 font-normal">{item.deposits.split(' ')[0]}</span>
                             <span> {item.deposits.split(' ')[1]}</span>
-                            <span style={{ color: '#10b981', fontSize: '12px', marginLeft: '6px' }}>({item.depRate})</span>
+                            <span className="text-emerald-500 text-xs ml-1.5">({item.depRate})</span>
                           </div>
                         </td>
-                        <td style={{ padding: '4px 0', textAlign: 'right' }}>
-                          <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: '#000000' }}>
+                        <td className="py-1 text-right">
+                          <div className="text-[13px] font-normal font-mono text-black">
                             {item.loans !== 'EUR 0.00M' && item.loans !== 'USD 0.00M' ? (
                               <>
-                                <span style={{ color: '#9ca3af', fontWeight: 400 }}>{item.loans.split(' ')[0]}</span>
+                                <span className="text-gray-400 font-normal">{item.loans.split(' ')[0]}</span>
                                 <span> {item.loans.split(' ')[1]}</span>
-                                <span style={{ color: '#ef4444', fontSize: '12px', marginLeft: '6px' }}>({item.loanRate})</span>
+                                <span className="text-red-500 text-xs ml-1.5">({item.loanRate})</span>
                               </>
                             ) : (
                               <>
-                                <span style={{ color: '#9ca3af' }}>{item.loans}</span>
-                                <span style={{ color: '#9ca3af', fontSize: '12px', marginLeft: '6px' }}>(0.00%)</span>
+                                <span className="text-gray-400">{item.loans}</span>
+                                <span className="text-gray-400 text-xs ml-1.5">(0.00%)</span>
                               </>
                             )}
                           </div>
                         </td>
-                        <td style={{ padding: '4px 0', textAlign: 'right' }}>
-                          <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', justifyContent: 'flex-end' }}>
-                            <div style={{ fontSize: '13px', fontWeight: 400, fontFamily: 'monospace', color: '#000000' }}>
-                              <span style={{ color: '#9ca3af', fontWeight: 400 }}>{item.net.split(' ')[0]}</span>
+                        <td className="py-1 text-right">
+                          <div className="flex items-baseline gap-1 justify-end">
+                            <div className="text-[13px] font-normal font-mono text-black">
+                              <span className="text-gray-400 font-normal">{item.net.split(' ')[0]}</span>
                               <span> {item.net.split(' ')[1]}</span>
                             </div>
-                            <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>{item.netType}</div>
+                            <div className="text-[11px] text-text-secondary">{item.netType}</div>
                           </div>
                         </td>
                       </tr>
@@ -901,93 +889,59 @@ const Dashboard = ({ onNavigate }) => {
 
 
         {/* AWPLR Section */}
-        <div id="awplr-rate" style={{ marginTop: '32px' }}>
-          <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-              <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>AWPLR Benchmark Rate</h2>
+        <div id="awplr-rate" className="mt-8">
+          <div className="mb-4 pl-1">
+            <div className="flex items-center gap-2.5 mb-1">
+              <h2 className="text-lg font-semibold text-text-main m-0">AWPLR Benchmark Rate</h2>
               <div
-                style={{
-                  position: 'relative',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  backgroundColor: '#eff6ff',
-                  color: '#3b82f6',
-                  cursor: 'help'
-                }}
+                className="relative flex items-center justify-center w-5 h-5 rounded-full bg-blue-50 text-blue-500 cursor-help"
                 onMouseEnter={() => setShowAwplrInfo(true)}
                 onMouseLeave={() => setShowAwplrInfo(false)}
               >
                 <Info size={12} />
                 {showAwplrInfo && (
-                  <div style={{
-                    position: 'absolute',
-                    left: '100%',
-                    top: '50%',
-                    transform: 'translateY(-50%) translateX(12px)',
-                    width: '300px',
-                    backgroundColor: 'white',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: '8px',
-                    padding: '16px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                    zIndex: 100,
-                    color: 'var(--color-text-main)'
-                  }}>
-                    <h4 style={{ fontSize: '14px', fontWeight: 600, color: '#1e40af', marginBottom: '8px' }}>About AWPLR</h4>
-                    <p style={{ fontSize: '13px', color: '#374151', lineHeight: '1.5', margin: 0, fontWeight: 400 }}>
+                  <div className="absolute left-full top-1/2 -translate-y-1/2 translate-x-3 w-[300px] bg-white border border-border rounded-lg p-4 shadow-[0_4px_12px_rgba(0,0,0,0.1)] z-[100] text-text-main">
+                    <h4 className="text-sm font-semibold text-blue-800 mb-2">About AWPLR</h4>
+                    <p className="text-[13px] text-gray-700 leading-relaxed m-0 font-normal">
                       The Average Weighted Prime Lending Rate (AWPLR) is the benchmark lending rate published by the Central Bank of Sri Lanka.
                       It represents the weighted average of prime lending rates offered by licensed commercial banks and is used as a reference for pricing floating rate loans and deposits.
                     </p>
                     {/* Triangle arrow for popover */}
-                    <div style={{
-                      position: 'absolute',
-                      left: '-6px',
-                      top: '50%',
-                      transform: 'translateY(-50%) rotate(45deg)',
-                      width: '12px',
-                      height: '12px',
-                      backgroundColor: 'white',
-                      borderLeft: '1px solid var(--color-border)',
-                      borderBottom: '1px solid var(--color-border)'
-                    }}></div>
+                    <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 rotate-45 w-3 h-3 bg-white border-l border-b border-border"></div>
                   </div>
                 )}
               </div>
             </div>
-            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Central Bank of Sri Lanka - Average Weighted Prime Lending Rate</p>
+            <p className="text-[13px] text-text-secondary">Central Bank of Sri Lanka - Average Weighted Prime Lending Rate</p>
           </div>
 
           {/* Metrics Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
+          <div className="grid grid-cols-4 gap-4 mb-6">
             {awplrMetrics.map((metric, index) => (
-              <div key={index} className="widget-card">
-                <div className="widget-header">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <h3 className="widget-title" style={{ margin: 0 }}>{metric.title}</h3>
+              <div key={index} className="bg-white border border-border rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-1.5">
+                    <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide m-0">{metric.title}</h3>
                   </div>
                 </div>
 
-                <div style={{ marginTop: '0px' }}>
-                  <div className="widget-value-row">
-                    <span className={`widget-value ${metric.value.startsWith('+') ? 'text-green' :
-                      metric.value.startsWith('-') ? 'text-red' : ''
+                <div>
+                  <div className="flex items-baseline gap-2">
+                    <span className={`text-xl font-bold font-mono ${metric.value.startsWith('+') ? 'text-green-600' :
+                      metric.value.startsWith('-') ? 'text-red-500' : 'text-text-main'
                       }`}>
                       {metric.value}
                     </span>
                     {metric.trend && (
-                      <span className={`widget-change ${metric.value.startsWith('+') ? 'text-green' :
-                        metric.value.startsWith('-') ? 'text-red' : 'text-gray'
+                      <span className={`text-xs font-semibold ${metric.value.startsWith('+') ? 'text-green-600' :
+                        metric.value.startsWith('-') ? 'text-red-500' : 'text-gray-400'
                         }`}>
                         {metric.trend === 'up' ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                       </span>
                     )}
                   </div>
                   {metric.subtext && (
-                    <p className="widget-subtext">
+                    <p className="text-xs text-text-secondary mt-1">
                       {metric.subtext}
                     </p>
                   )}
@@ -997,16 +951,16 @@ const Dashboard = ({ onNavigate }) => {
           </div>
 
           {/* Charts Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', marginBottom: '24px' }}>
-            <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)', height: '320px', display: 'flex', flexDirection: 'column' }}>
-              <h3 className="widget-title" style={{ marginBottom: '16px' }}>AWPLR Trend (AWPLR CBSL Monthly (System))</h3>
-              <div style={{ flex: 1, position: 'relative' }}>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="bg-white p-4 rounded-lg border border-border h-[320px] flex flex-col">
+              <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-4">AWPLR Trend (AWPLR CBSL Monthly (System))</h3>
+              <div className="flex-1 relative">
                 <Line data={awplrTrendData.monthly} options={lineChartOptions} />
               </div>
             </div>
-            <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)', height: '320px', display: 'flex', flexDirection: 'column' }}>
-              <h3 className="widget-title" style={{ marginBottom: '16px' }}>AWPLR Trend (AWPLR CBSL Weekly (System))</h3>
-              <div style={{ flex: 1, position: 'relative' }}>
+            <div className="bg-white p-4 rounded-lg border border-border h-[320px] flex flex-col">
+              <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-4">AWPLR Trend (AWPLR CBSL Weekly (System))</h3>
+              <div className="flex-1 relative">
                 <Line data={awplrTrendData.weekly} options={lineChartOptions} />
               </div>
             </div>
@@ -1015,119 +969,76 @@ const Dashboard = ({ onNavigate }) => {
         </div>
 
         {/* Foreign Exchange Rates Section */}
-        <div id="forex-rates" style={{ marginTop: '32px' }}>
-          <div style={{ marginBottom: '16px', paddingLeft: '4px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-              <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>Foreign Exchange Rates</h2>
+        <div id="forex-rates" className="mt-8">
+          <div className="mb-4 pl-1">
+            <div className="flex items-center gap-2.5 mb-1">
+              <h2 className="text-lg font-semibold text-text-main m-0">Foreign Exchange Rates</h2>
               <div
-                style={{
-                  position: 'relative',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  backgroundColor: '#eff6ff',
-                  color: '#3b82f6',
-                  cursor: 'help'
-                }}
+                className="relative flex items-center justify-center w-5 h-5 rounded-full bg-blue-50 text-blue-500 cursor-help"
                 onMouseEnter={() => setShowForexInfo(true)}
                 onMouseLeave={() => setShowForexInfo(false)}
               >
                 <Info size={12} />
                 {showForexInfo && (
-                  <div style={{
-                    position: 'absolute',
-                    left: '100%',
-                    top: '50%',
-                    transform: 'translateY(-50%) translateX(12px)',
-                    width: '300px',
-                    backgroundColor: 'white',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: '8px',
-                    padding: '16px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                    zIndex: 100,
-                    color: 'var(--color-text-main)'
-                  }}>
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                      <div style={{ color: '#3b82f6', marginTop: '2px' }}><Info size={16} /></div>
+                  <div className="absolute left-full top-1/2 -translate-y-1/2 translate-x-3 w-[300px] bg-white border border-border rounded-lg p-4 shadow-[0_4px_12px_rgba(0,0,0,0.1)] z-[100] text-text-main">
+                    <div className="flex gap-2 items-start">
+                      <div className="text-blue-500 mt-0.5"><Info size={16} /></div>
                       <div>
-                        <h4 style={{ fontSize: '14px', fontWeight: 600, color: '#1e40af', marginBottom: '4px' }}>Selling Rate</h4>
-                        <p style={{ fontSize: '13px', color: '#374151', lineHeight: '1.5', margin: 0, fontWeight: 400 }}>
+                        <h4 className="text-sm font-semibold text-blue-800 mb-1">Selling Rate</h4>
+                        <p className="text-[13px] text-gray-700 leading-relaxed m-0 font-normal">
                           Rate at which banks sell foreign currency to Lion Brewery • Used for import payments, supplier settlements, and CAPEX transactions
                         </p>
                       </div>
                     </div>
                     {/* Triangle arrow for popover */}
-                    <div style={{
-                      position: 'absolute',
-                      left: '-6px',
-                      top: '50%',
-                      transform: 'translateY(-50%) rotate(45deg)',
-                      width: '12px',
-                      height: '12px',
-                      backgroundColor: 'white',
-                      borderLeft: '1px solid var(--color-border)',
-                      borderBottom: '1px solid var(--color-border)'
-                    }}></div>
+                    <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 rotate-45 w-3 h-3 bg-white border-l border-b border-border"></div>
                   </div>
                 )}
               </div>
             </div>
-            <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>Daily selling rates for major currencies</p>
+            <p className="text-[13px] text-text-secondary">Daily selling rates for major currencies</p>
           </div>
 
-          <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)' }}>
-            <table className="data-table min-w-600">
-              <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+          <div className="m-0 bg-white border-t border-border overflow-x-auto">
+            <table className="w-full min-w-[600px] border-collapse text-[13px]">
+              <thead className="sticky top-0 z-10">
                 <tr>
-                  <th style={{ paddingLeft: '24px', width: '20%' }}>CURRENCY (AGAINST LKR)</th>
-                  <th style={{ width: '12%' }}>DATE</th>
-                  <th style={{ width: '12%' }}>SELLING RATE</th>
-                  <th style={{ width: '12%' }}>PREV. RATE</th>
-                  <th style={{ width: '15%' }}>COST PER 100K</th>
-                  <th style={{ paddingRight: '24px', textAlign: 'right' }}>CHANGE</th>
+                  <th className="pl-6 w-[20%] bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">CURRENCY (AGAINST LKR)</th>
+                  <th className="w-[12%] bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">DATE</th>
+                  <th className="w-[12%] bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">SELLING RATE</th>
+                  <th className="w-[12%] bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">PREV. RATE</th>
+                  <th className="w-[15%] bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">COST PER 100K</th>
+                  <th className="pr-6 bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8">CHANGE</th>
                 </tr>
               </thead>
               <tbody>
                 {exchangeRates.map((rate) => (
-                  <tr key={rate.id} className="hover-row">
-                    <td style={{ paddingLeft: '24px', color: 'var(--color-text-main)' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <tr key={rate.id} className="hover:bg-bg-subtle transition-colors duration-150">
+                    <td className="pl-6 px-2.5 py-1 border-b border-border text-text-main">
+                      <div className="flex items-center gap-3">
                         <LogoImage src={rate.flag} name={rate.currency.split('/')[0]} size={20} />
                         <span>{rate.currency.split('/')[0]}</span>
                       </div>
                     </td>
-                    <td style={{ color: 'var(--color-text-secondary)' }}>{rate.date}</td>
-                    <td>
-                      <div style={{ fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{rate.rate}</div>
+                    <td className="px-2.5 py-1 border-b border-border text-text-secondary">{rate.date}</td>
+                    <td className="px-2.5 py-1 border-b border-border">
+                      <div className="font-mono text-text-main">{rate.rate}</div>
                     </td>
-                    <td>
-                      <div style={{ fontFamily: 'monospace', color: 'var(--color-text-secondary)' }}>{rate.prevRate}</div>
+                    <td className="px-2.5 py-1 border-b border-border">
+                      <div className="font-mono text-text-secondary">{rate.prevRate}</div>
                     </td>
-                    <td>
-                      <div style={{ fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{rate.cost}</div>
+                    <td className="px-2.5 py-1 border-b border-border">
+                      <div className="font-mono text-text-main">{rate.cost}</div>
                     </td>
-                    <td style={{ paddingRight: '24px', textAlign: 'right' }}>
+                    <td className="pr-6 px-2.5 py-1 border-b border-border text-right">
                       {(() => {
                         const isPos = rate.change.startsWith('+');
-                        const textColor = isPos ? '#ef4444' : '#10b981';
+                        const colorClass = isPos ? 'text-red-500' : 'text-emerald-500';
                         const Icon = isPos ? TrendingUp : TrendingDown;
                         return (
-                          <div style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '8px'
-                          }}>
-                            <Icon size={14} color={textColor} />
-                            <span style={{
-                              color: textColor,
-                              fontSize: '13px',
-                              fontWeight: '600',
-                              fontFamily: 'monospace'
-                            }}>
+                          <div className="inline-flex items-center gap-2">
+                            <Icon size={14} className={colorClass} />
+                            <span className={`${colorClass} text-[13px] font-semibold font-mono`}>
                               {rate.change} ({rate.changePercent})
                             </span>
                           </div>

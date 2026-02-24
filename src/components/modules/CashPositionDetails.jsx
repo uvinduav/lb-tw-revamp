@@ -34,19 +34,13 @@ ChartJS.register(
 
 const LogoPlaceholder = ({ name, color, size = 20 }) => (
     <div
+        className="rounded flex items-center justify-center font-semibold border border-black/5 shrink-0"
         style={{
             width: `${size}px`,
             height: `${size}px`,
-            borderRadius: '4px',
             backgroundColor: color || '#f3f4f6',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             fontSize: size > 20 ? '10px' : '9px',
-            fontWeight: 600,
             color: color ? 'rgba(0,0,0,0.5)' : '#9ca3af',
-            border: '1px solid rgba(0,0,0,0.05)',
-            flexShrink: 0
         }}
     >
         {name ? name.charAt(0) : 'E'}
@@ -59,19 +53,13 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
     if (error || !src) {
         return (
             <div
+                className="rounded flex items-center justify-center font-semibold border border-black/5 shrink-0"
                 style={{
                     width: `${size}px`,
                     height: `${size}px`,
-                    borderRadius: '4px',
                     backgroundColor: color || '#f3f4f6',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
                     fontSize: size > 20 ? '16px' : '10px',
-                    fontWeight: 600,
                     color: color ? 'rgba(0,0,0,0.5)' : '#9ca3af',
-                    border: '1px solid rgba(0,0,0,0.05)',
-                    flexShrink: 0
                 }}
             >
                 {name ? name.charAt(0) : 'B'}
@@ -81,29 +69,15 @@ const LogoImage = ({ src, name, color, size = 48 }) => {
 
     return (
         <div
-            style={{
-                width: `${size}px`,
-                height: `${size}px`,
-                borderRadius: '4px',
-                backgroundColor: 'white',
-                border: '1px solid var(--color-border)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-                overflow: 'hidden'
-            }}
+            className="rounded bg-white border border-border flex items-center justify-center shrink-0 overflow-hidden"
+            style={{ width: `${size}px`, height: `${size}px` }}
         >
             <img
                 src={src}
                 alt={name}
                 onError={() => setError(true)}
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'contain',
-                    padding: size > 30 ? '4px' : '2px'
-                }}
+                className="w-full h-full object-contain"
+                style={{ padding: size > 30 ? '4px' : '2px' }}
             />
         </div>
     );
@@ -480,25 +454,25 @@ const CashPositionDetails = () => {
     ];
 
     return (
-        <div className="dashboard-main-wrapper" style={{ height: '100%', overflowY: 'auto', padding: '24px' }}>
+        <div className="h-full overflow-y-auto p-6">
 
-            <div style={{ backgroundColor: 'var(--color-bg-subtle)', margin: '-24px -24px 32px -24px', padding: '24px', borderBottom: '1px solid var(--color-border)' }}>
+            <div className="bg-bg-subtle -m-6 mb-8 p-6 border-b border-border">
                 {/* Header Section */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+                <div className="flex items-center gap-4 mb-6">
                     <div>
-                        <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
+                        <h1 className="text-xl font-semibold text-text-main m-0">
                             Cash Breakdown by Bank
                         </h1>
-                        <div style={{ marginTop: '4px', fontSize: '13px', fontWeight: 400, color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div className="mt-1 text-[13px] font-normal text-text-secondary flex items-center gap-2">
                             <span>Total: {summaryData.totalCash}</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Charts Section */}
-                <div style={{ marginBottom: '0' }}>
-                    <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                        <h3 className="widget-title" style={{ marginBottom: '16px' }}>Bank-wise Cash Distribution (Million LKR)</h3>
+                <div className="mb-0">
+                    <div className="bg-white p-4 rounded-lg border border-border">
+                        <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-4">Bank-wise Cash Distribution (Million LKR)</h3>
                         <div style={{ height: '300px' }}>
                             <Bar
                                 data={bankDistributionData}
@@ -549,31 +523,31 @@ const CashPositionDetails = () => {
             </div>
 
             {/* Detailed Breakdown */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '48px', paddingBottom: '48px' }}>
+            <div className="flex flex-col gap-12 pb-12">
                 {banks.map((bank) => (
                     <div key={bank.id} id={`bank-${bank.name.replace(/\s+/g, '-').toLowerCase()}`}>
 
                         {/* Bank Header Info - Outside Table */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px', paddingLeft: '4px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div className="flex justify-between items-end mb-4 pl-1">
+                            <div className="flex items-center gap-3">
                                 <LogoImage src={bank.logo} name={bank.name} color={bank.color} size={40} />
                                 <div>
-                                    <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>{bank.name}</h3>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+                                    <h3 className="text-base font-semibold text-text-main m-0">{bank.name}</h3>
+                                    <div className="flex items-center gap-3 text-xs text-text-secondary mt-1">
                                         <span>{bank.accountCount} accounts</span>
-                                        <span style={{ color: '#e5e7eb' }}>•</span>
+                                        <span className="text-gray-200">•</span>
                                         <span>{bank.share}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div style={{ textAlign: 'right' }}>
-                                <div style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-main)', lineHeight: 1.2 }}>{bank.totalBalance}</div>
-                                <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px', fontWeight: 400, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0' }}>
+                            <div className="text-right">
+                                <div className="text-base font-semibold text-text-main leading-tight">{bank.totalBalance}</div>
+                                <div className="text-xs text-text-secondary mt-1 font-normal flex items-center justify-end">
                                     {bank.currencyBreakdown.map((curr, idx) => (
                                         <React.Fragment key={idx}>
                                             <span>{curr.code} {curr.amount}</span>
                                             {idx < bank.currencyBreakdown.length - 1 && (
-                                                <span style={{ color: '#e5e7eb', fontSize: '10px', margin: '0 12px' }}>|</span>
+                                                <span className="text-gray-200 text-[10px] mx-3">|</span>
                                             )}
                                         </React.Fragment>
                                     ))}
@@ -581,43 +555,35 @@ const CashPositionDetails = () => {
                             </div>
                         </div>
 
-                        {/* Table wrapper - Debt Details Style */}
-                        <div className="table-wrapper" style={{ margin: 0, backgroundColor: 'white', borderTop: '1px solid var(--color-border)' }}>
-                            <table className="data-table" style={{ borderCollapse: 'collapse', width: '100%' }}>
-                                <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+                        {/* Table wrapper */}
+                        <div className="m-0 bg-white border-t border-border overflow-x-auto">
+                            <table className="w-full border-collapse text-[13px]">
+                                <thead className="sticky top-0 z-10">
                                     <tr>
-                                        <th style={{ whiteSpace: 'nowrap' }}>COMPANY</th>
-                                        <th style={{ whiteSpace: 'nowrap' }}>ACCOUNT NUMBER</th>
-                                        <th style={{ whiteSpace: 'nowrap' }}>TYPE</th>
-                                        <th style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap' }}>BALANCE</th>
+                                        <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">COMPANY</th>
+                                        <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">ACCOUNT NUMBER</th>
+                                        <th className="bg-[#fafafa] text-left px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">TYPE</th>
+                                        <th className="pr-6 bg-[#fafafa] text-right px-2.5 py-1 font-semibold text-[#888] text-[11px] uppercase h-8 whitespace-nowrap">BALANCE</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {bank.accounts.map((account) => (
-                                        <tr key={account.id} className="hover-row">
-                                            <td style={{ whiteSpace: 'nowrap' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <tr key={account.id} className="hover:bg-bg-subtle transition-colors duration-150">
+                                            <td className="px-2.5 py-1 border-b border-border whitespace-nowrap">
+                                                <div className="flex items-center gap-2">
                                                     <LogoPlaceholder name={account.company} color={account.companyColor} />
-                                                    <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{account.company}</div>
+                                                    <div className="text-[13px] font-normal text-text-main">{account.company}</div>
                                                 </div>
                                             </td>
-                                            <td style={{ whiteSpace: 'nowrap' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{account.accountNo}</div>
+                                            <td className="px-2.5 py-1 border-b border-border whitespace-nowrap">
+                                                <div className="text-[13px] font-normal text-text-main font-mono">{account.accountNo}</div>
                                             </td>
-                                            <td style={{ whiteSpace: 'nowrap' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{account.type}</div>
+                                            <td className="px-2.5 py-1 border-b border-border whitespace-nowrap">
+                                                <div className="text-[13px] font-normal text-text-main">{account.type}</div>
                                             </td>
-                                            <td style={{ textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
-                                                <div style={{
-                                                    fontSize: '13px',
-                                                    fontWeight: 400,
-                                                    color: 'var(--color-text-main)',
-                                                    fontFamily: 'monospace',
-                                                    display: 'inline-flex',
-                                                    alignItems: 'center',
-                                                    gap: '4px'
-                                                }}>
-                                                    <span style={{ color: '#9ca3af' }}>{account.balance.split(' ')[0]}</span>
+                                            <td className="pr-6 px-2.5 py-1 border-b border-border text-right whitespace-nowrap">
+                                                <div className="text-[13px] font-normal text-text-main font-mono inline-flex items-center gap-1">
+                                                    <span className="text-gray-400">{account.balance.split(' ')[0]}</span>
                                                     <span>{account.balance.split(' ')[1]}</span>
                                                 </div>
                                             </td>
