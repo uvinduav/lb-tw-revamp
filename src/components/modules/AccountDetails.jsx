@@ -21,6 +21,9 @@ import {
     Filler
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import AccountBalanceHistoryTable from './AccountBalanceHistoryTable';
+import InterestCalculationTable from './InterestCalculationTable';
+import AuditInformation from './AuditInformation';
 
 ChartJS.register(
     CategoryScale,
@@ -59,23 +62,23 @@ const AccountWidget = ({ title, value, subtext, subtextClass, valueClass, icon: 
 );
 
 const AccountDetails = ({ account, bank }) => {
+    // --- State ---
+    const [timeRange, setTimeRange] = useState('30 Days');
+
     if (!account) return null;
 
-    // --- Mock Data ---
     const accountInfo = {
-        accountNumber: account.accountNo || '0039545007',
+        accountNumber: account.accountNo || account.accountNumber || '0039545007',
         type: account.type || 'SAVINGS',
         currency: 'LKR - Sri Lankan Rupee',
         purpose: 'urgent,PT01', // Example tags
-        startDate: 'Feb 09, 2026',
+        startDate: account.startDate || 'Feb 09, 2026',
         lastUpdate: 'Feb 09, 2026',
-        status: 'Active',
-        balance: account.balance || 'LKR 4,500,000.00',
+        status: account.status || 'Active',
+        balance: account.balance || account.amount || 'LKR 4,500,000.00',
         avgBalance: 'LKR 4,500,000.00',
         change7d: 'LKR 4,500,000.00'
     };
-
-    const [timeRange, setTimeRange] = useState('30 Days');
 
     const getChartData = (range) => {
         if (range === '3 Months') {
@@ -164,6 +167,8 @@ const AccountDetails = ({ account, bank }) => {
         }
     };
 
+    const isRenewed = accountInfo.status?.toLowerCase() === 'renewed';
+
     return (
         <div className="h-full overflow-y-auto flex flex-col">
             <div className="flex-1 p-6">
@@ -202,7 +207,7 @@ const AccountDetails = ({ account, bank }) => {
                         <AccountWidget
                             title="Account Status"
                             value={accountInfo.status}
-                            valueClass="text-green"
+                            valueClass={isRenewed ? 'text-blue' : 'text-green'}
                         />
                     </div>
                 </div>
@@ -330,6 +335,16 @@ const AccountDetails = ({ account, bank }) => {
                         </div>
                     </div>
                 </div>
+
+                {/* Conditional Table Section */}
+                {isRenewed ? (
+                    <InterestCalculationTable account={account} currency={account.currency || 'LKR'} />
+                ) : (
+                    <AccountBalanceHistoryTable account={account} currency={account.currency || 'LKR'} />
+                )}
+
+                {/* Audit Information Section */}
+                <AuditInformation />
 
             </div>
         </div>

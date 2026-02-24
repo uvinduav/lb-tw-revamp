@@ -26,7 +26,7 @@ const POSTING_DATA = [
   { id: 22, groupId: '202511_FD_USD_CITI', company: 'Lion Brewery', bank: 'Citi Bank', accounts: 1, total: '6,328.77', status: 'Posted', sapDoc: '1200007671', approved: '2025-12-01 / Janak Wijekoon' },
 ];
 
-const PostingCenter = () => {
+const PostingCenter = ({ onNavigate }) => {
   return (
     <ModulePage 
       title="Posting Center"
@@ -45,6 +45,7 @@ const PostingCenter = () => {
       }}
       showAddButton={false}
       showDefaultRowActions={false}
+      onRowClick={(row) => onNavigate && onNavigate('Posting Center Item Details', row)}
     />
   );
 };

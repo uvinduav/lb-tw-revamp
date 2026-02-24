@@ -37,7 +37,8 @@ const ModulePage = ({
   onCreate, // Optional: callback when "Add New" button is clicked
   renderHeaderActions = null, // Optional: function to render custom header actions () => JSX
   showDefaultRowActions = true, // Optional: whether to show default Edit and Delete actions
-  showColumnCustomization = true // Default to true
+  showColumnCustomization = true, // Default to true
+  onRowClick = null // Optional: callback when a row is clicked (row) => void
 }) => {
   const [allData, setAllData] = useState([]);
   const [visibleData, setVisibleData] = useState([]);
@@ -592,8 +593,12 @@ const ModulePage = ({
           </thead>
           <tbody>
             {visibleColumns.size > 0 && visibleData.map((row) => (
-              <tr key={row.id} className="hover:bg-bg-subtle">
-                <td className="w-10 px-2.5 py-1 border-b border-border align-middle text-text-main whitespace-nowrap">
+              <tr
+                key={row.id}
+                onClick={onRowClick ? () => onRowClick(row) : undefined}
+                style={onRowClick ? { cursor: 'pointer' } : {}}
+              >
+                <td className="checkbox-col" onClick={(e) => e.stopPropagation()}>
                   <input
                     type="checkbox"
                     checked={selectedRows.has(row.id)}
@@ -606,8 +611,8 @@ const ModulePage = ({
                   </td>
                 ))}
 
-                <td className="w-20 px-2.5 py-1 border-b border-border align-middle text-text-main whitespace-nowrap">
-                  <div className="flex items-center gap-1 opacity-0 transition-opacity duration-200 [tr:hover_&]:opacity-100">
+                <td className="actions-col" onClick={(e) => e.stopPropagation()}>
+                  <div className="row-actions">
                     {renderRowActions ? (
                       renderRowActions(row)
                     ) : (
