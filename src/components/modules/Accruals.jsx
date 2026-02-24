@@ -12,7 +12,7 @@ const ACCRUAL_DATA = [
   { id: 8, groupId: '202602_STL_LKR_BOCC', company: 'Lion Brewery Sri Lanka', bank: 'Bank of China (BOCC)', accounts: 1, provision: '22,904.11', approvedBy: '-', status: '-', statusInfo: '-' },
 ];
 
-const Accruals = () => {
+const Accruals = ({ onNavigate }) => {
   const [selectedPeriod, setSelectedPeriod] = React.useState('Current month');
 
   const renderPeriodSelector = () => (
@@ -46,6 +46,7 @@ const Accruals = () => {
       showAddButton={false}
       renderHeaderActions={renderPeriodSelector}
       showDefaultRowActions={false}
+      onRowClick={(row) => onNavigate && onNavigate('Accrual Item Details', row)}
     />
   );
 };

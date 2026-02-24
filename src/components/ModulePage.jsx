@@ -37,7 +37,8 @@ const ModulePage = ({
   onCreate, // Optional: callback when "Add New" button is clicked
   renderHeaderActions = null, // Optional: function to render custom header actions () => JSX
   showDefaultRowActions = true, // Optional: whether to show default Edit and Delete actions
-  showColumnCustomization = true // Default to true
+  showColumnCustomization = true, // Default to true
+  onRowClick = null // Optional: callback when a row is clicked (row) => void
 }) => {
   const [allData, setAllData] = useState([]);
   const [visibleData, setVisibleData] = useState([]);
@@ -675,8 +676,12 @@ const ModulePage = ({
           </thead>
           <tbody>
             {visibleColumns.size > 0 && visibleData.map((row) => (
-              <tr key={row.id}>
-                <td className="checkbox-col">
+              <tr
+                key={row.id}
+                onClick={onRowClick ? () => onRowClick(row) : undefined}
+                style={onRowClick ? { cursor: 'pointer' } : {}}
+              >
+                <td className="checkbox-col" onClick={(e) => e.stopPropagation()}>
                   <input
                     type="checkbox"
                     checked={selectedRows.has(row.id)}
@@ -689,7 +694,7 @@ const ModulePage = ({
                   </td>
                 ))}
 
-                <td className="actions-col">
+                <td className="actions-col" onClick={(e) => e.stopPropagation()}>
                   <div className="row-actions">
                     {renderRowActions ? (
                       renderRowActions(row)

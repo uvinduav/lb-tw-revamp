@@ -26,6 +26,7 @@ const FloatingRates = ({ onNavigate }) => {
       showDefaultRowActions={false}
       onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Floating Rates' })}
       createButtonText="Add New Rate"
+      onRowClick={(row) => onNavigate && onNavigate('Floating Rate Item Details', row)}
     />
   );
 };

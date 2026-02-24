@@ -22,13 +22,19 @@ const Accounts = ({ onNavigate }) => {
           accountNumber: entry['Account Number'],
           bank: entry['Bank'],
           branch: entry['Branch'],
+          company: entry['Company'],
           type: entry['Product Type'],
           currency: entry['Currency'],
           amount: entry['Value'] || '-',
           rate: entry['Current Rate (%)'] || '-',
           interestType: 'Fixed',
           startDate: entry['Start Date'],
+          endDate: entry['End Date'] || '-',
           duration: entry['Duration (Days)'] || '-',
+          interestUpToDate: entry['Interest Up To Date'] || '-',
+          totalOutstanding: entry['Total Outstanding'] || '-',
+          totalInterest: entry['Total Interest'] || '-',
+          estimatedTotal: entry['Estimated Total'] || '-',
           status: entry['Status']
         };
       });
@@ -63,6 +69,7 @@ const Accounts = ({ onNavigate }) => {
       dataMap={dataMap}
       onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Accounts' })}
       createButtonText="Add New Account"
+      onRowClick={(row) => onNavigate && onNavigate('Account Item Details', row)}
     />
   );
 };

@@ -27,7 +27,15 @@ import CashFlow from './components/modules/CashFlow';
 import EntityDetails from './components/modules/EntityDetails';
 import BankDetails from './components/modules/BankDetails';
 import AccountDetails from './components/modules/AccountDetails';
+import AccountItemPage from './components/modules/AccountItemPage';
+import PaymentItemPage from './components/modules/PaymentItemPage';
+import AccrualItemPage from './components/modules/AccrualItemPage';
+import PostingCenterItemPage from './components/modules/PostingCenterItemPage';
+import FloatingRateItemPage from './components/modules/FloatingRateItemPage';
+import WorkingCalendarItemPage from './components/modules/WorkingCalendarItemPage';
 import DebtDetails from './components/modules/DebtDetails';
+import CreateModulePage from './components/CreateModulePage';
+import CreateAccount from './components/modules/CreateAccount';
 import CashPositionDetails from './components/modules/CashPositionDetails';
 import InvestmentDetails from './components/modules/InvestmentDetails';
 
@@ -38,7 +46,6 @@ import TasksPanel from './components/modules/TasksPanel';
 import ScrollToTop from './components/common/ScrollToTop';
 import Thresholds from './components/modules/Thresholds';
 import Alerts from './components/modules/Alerts';
-import CreateModulePage from './components/CreateModulePage';
 
 function App() {
   const [activePage, setActivePage] = useState('Dashboard');
@@ -103,7 +110,6 @@ function App() {
 
   const renderPage = () => {
     switch (activePage) {
-      case 'Create Page': return <CreateModulePage title={selectedEntity?.title} />;
       case 'Dashboard': return <Dashboard onNavigate={handlePageChange} />;
       case 'Entity Details': return <EntityDetails entity={selectedEntity} onNavigate={handlePageChange} onBack={() => setActivePage('Dashboard')} />;
       case 'Bank Details': return <BankDetails entity={selectedEntity} bank={selectedBank} onNavigate={handlePageChange} onBack={() => setActivePage('Entity Details')} />;
@@ -113,12 +119,18 @@ function App() {
       case 'Investment Details': return <InvestmentDetails onNavigate={handlePageChange} />;
       case 'Cash Flow': return <CashFlow onNavigate={setActivePage} />;
       case 'Accounts': return <Accounts onNavigate={handlePageChange} />;
-      case 'Payments': return <Payments />;
-      case 'Accruals': return <Accruals />;
+      case 'Account Item Details': return <AccountItemPage account={selectedEntity} onNavigate={handlePageChange} />;
+      case 'Payments': return <Payments onNavigate={handlePageChange} />;
+      case 'Payment Item Details': return <PaymentItemPage payment={selectedEntity} />;
+      case 'Accruals': return <Accruals onNavigate={handlePageChange} />;
+      case 'Accrual Item Details': return <AccrualItemPage accrual={selectedEntity} />;
       case 'Reports': return <Reports />;
       case 'Floating Rates': return <FloatingRates onNavigate={handlePageChange} />;
-      case 'Posting Center': return <PostingCenter />;
+      case 'Floating Rate Item Details': return <FloatingRateItemPage rate={selectedEntity} />;
+      case 'Posting Center': return <PostingCenter onNavigate={handlePageChange} />;
+      case 'Posting Center Item Details': return <PostingCenterItemPage posting={selectedEntity} />;
       case 'Working Calendar': return <WorkingCalendar onNavigate={handlePageChange} />;
+      case 'Working Calendar Item Details': return <WorkingCalendarItemPage entry={selectedEntity} />;
 
       // Setup - Parameters
       case 'Banks': return <Banks onNavigate={handlePageChange} />;
@@ -137,9 +149,12 @@ function App() {
       case 'User Groups': return <UserGroups onNavigate={handlePageChange} />;
       case 'Alerts': return <Alerts />;
 
-      case 'Change Log': return <ChangeLog />;
-      case 'Settings': return <Settings />;
-      case 'Notifications': return <Notifications />;
+      case 'System Logs': return <SystemLogs />;
+      case 'Create Page': 
+        if (selectedEntity?.parent === 'Accounts') {
+          return <CreateAccount onCancel={() => handlePageChange('Accounts')} onSave={() => handlePageChange('Accounts')} />;
+        }
+        return <CreateModulePage title={selectedEntity?.title} />;
 
       default: return <Accounts onNavigate={handlePageChange} />;
     }
@@ -205,6 +220,12 @@ function App() {
             activePage === 'Entity Details' ? 'Dashboard > Entity Details' :
               activePage === 'Bank Details' ? `Dashboard > Entity Details > ${selectedBank || 'Bank Details'}` :
                 activePage === 'Account Details' ? `Dashboard > Entity Details > ${selectedBank} > ${selectedAccount?.accountNo || 'Account'}` :
+                  activePage === 'Account Item Details' ? `Accounts > ${selectedEntity?.accountNumber || 'Account Details'}` :
+                  activePage === 'Payment Item Details' ? `Payments > ${selectedEntity?.accountNo || 'Payment Details'}` :
+                  activePage === 'Accrual Item Details' ? `Accruals > ${selectedEntity?.groupId || 'Group Details'}` :
+                  activePage === 'Posting Center Item Details' ? `Posting Center > ${selectedEntity?.groupId || 'Details'}` :
+                  activePage === 'Floating Rate Item Details' ? `Floating Rates > ${selectedEntity?.name || 'Rate Details'}` :
+                  activePage === 'Working Calendar Item Details' ? `Working Calendar > ${selectedEntity?.displayDate || 'Entry Details'}` :
                   activePage === 'Debt Details' ? 'Dashboard > Debt Details' :
                     activePage === 'Cash Position Details' ? 'Dashboard > Cash Position Details' :
                       activePage === 'Investment Details' ? 'Dashboard > Investment Details' :
