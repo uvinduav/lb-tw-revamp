@@ -2323,3 +2323,49 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 input[type="date"] {
   position: relative;
 }
+
+/* Create Account Page */
+.create-account-wrapper {
+  display: flex;
+  gap: 32px;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+
+.create-account-form-col {
+  flex: 1;
+  min-width: 700px;
+}
+
+.create-account-summary-col {
+  flex: 1 1 240px;
+  max-width: 300px;
+  min-width: 240px;
+}
+
+/* 
+   Hide summary when it doesn't fit inline.
+   Accounts for sidebar (240px) + content padding (48px) + form (700px) + gap (32px) + summary (240px)
+*/
+
+/* 1. When sidebar is visible (default) */
+@media (max-width: 1280px) {
+  .main-content:not(.expanded) .create-account-summary-col {
+    display: none !important;
+  }
+}
+
+/* 2. When sidebar is collapsed */
+@media (max-width: 1040px) {
+  .main-content.expanded .create-account-summary-col {
+    display: none !important;
+  }
+}
+
+/* Fallback for general small screens */
+@media (max-width: 1000px) {
+  .create-account-form-col {
+    min-width: 0;
+    /* Allow form to shrink on very small screens */
+  }
+}

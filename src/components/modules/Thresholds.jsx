@@ -1,7 +1,7 @@
 import React from 'react';
 import ModulePage from '../ModulePage';
 
-const Thresholds = () => {
+const Thresholds = ({ onNavigate }) => {
     return (
         <ModulePage
             title="Thresholds"
@@ -14,6 +14,9 @@ const Thresholds = () => {
                 'Value': 'value',
                 'Status': 'status'
             }}
+            onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Thresholds' })}
+            createButtonText="Add New Threshold"
+            onRowClick={(row) => onNavigate && onNavigate('Parameter Item Details', { ...row, parent: 'Thresholds' })}
         />
     );
 };

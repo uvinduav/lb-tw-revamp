@@ -220,37 +220,35 @@ const AccountDetails = ({ account, bank }) => {
                             <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: '4px' }}>Account Information</h2>
                         </div>
                         <div className="widget-card" style={{ padding: '24px', flex: 1 }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', gap: '8px' }}>
-                                <div style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '10px' }}>
-                                    <div style={{ fontSize: '10px', fontWeight: 600, color: '#6b7280', letterSpacing: '0.05em', marginBottom: '2px' }}>ACCOUNT NUMBER</div>
-                                    <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{accountInfo.accountNumber}</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                <div>
+                                    <div style={{ fontSize: '12px', color: '#9ca3af', textTransform: 'lowercase', marginBottom: '4px', fontWeight: 400 }}>account number</div>
+                                    <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{accountInfo.accountNumber}</div>
                                 </div>
-                                <div style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '10px' }}>
-                                    <div style={{ fontSize: '10px', fontWeight: 600, color: '#6b7280', letterSpacing: '0.05em', marginBottom: '2px' }}>ACCOUNT TYPE</div>
-                                    <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)' }}>{accountInfo.type}</div>
+                                <div>
+                                    <div style={{ fontSize: '12px', color: '#9ca3af', textTransform: 'lowercase', marginBottom: '4px', fontWeight: 400 }}>account type</div>
+                                    <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{accountInfo.type}</div>
                                 </div>
-                                <div style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '10px' }}>
-                                    <div style={{ fontSize: '10px', fontWeight: 600, color: '#6b7280', letterSpacing: '0.05em', marginBottom: '2px' }}>CURRENCY</div>
-                                    <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)' }}>{accountInfo.currency}</div>
+                                <div>
+                                    <div style={{ fontSize: '12px', color: '#9ca3af', textTransform: 'lowercase', marginBottom: '4px', fontWeight: 400 }}>currency</div>
+                                    <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{accountInfo.currency}</div>
                                 </div>
-                                <div style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '10px' }}>
-                                    <div style={{ fontSize: '10px', fontWeight: 600, color: '#6b7280', letterSpacing: '0.05em', marginBottom: '2px' }}>PURPOSE</div>
-                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                <div>
+                                    <div style={{ fontSize: '12px', color: '#9ca3af', textTransform: 'lowercase', marginBottom: '4px', fontWeight: 400 }}>purpose</div>
+                                    <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
                                         <span style={{ backgroundColor: '#eff6ff', color: '#3b82f6', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>urgent</span>
                                         <span style={{ backgroundColor: '#eff6ff', color: '#3b82f6', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>PT01</span>
                                     </div>
                                 </div>
-                                <div style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '10px' }}>
-                                    <div style={{ fontSize: '10px', fontWeight: 600, color: '#6b7280', letterSpacing: '0.05em', marginBottom: '2px' }}>START DATE</div>
-                                    <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <Calendar size={14} className="text-gray" />
+                                <div>
+                                    <div style={{ fontSize: '12px', color: '#9ca3af', textTransform: 'lowercase', marginBottom: '4px', fontWeight: 400 }}>start date</div>
+                                    <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         {accountInfo.startDate}
                                     </div>
                                 </div>
                                 <div>
-                                    <div style={{ fontSize: '10px', fontWeight: 600, color: '#6b7280', letterSpacing: '0.05em', marginBottom: '2px' }}>LAST BALANCE UPDATE</div>
-                                    <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-main)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <Clock size={14} className="text-gray" />
+                                    <div style={{ fontSize: '12px', color: '#9ca3af', textTransform: 'lowercase', marginBottom: '4px', fontWeight: 400 }}>last balance update</div>
+                                    <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         {accountInfo.lastUpdate}
                                     </div>
                                 </div>

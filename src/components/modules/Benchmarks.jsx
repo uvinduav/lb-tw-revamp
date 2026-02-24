@@ -5,17 +5,18 @@ import { BENCHMARK_DATA } from '../../constants/parameterData';
 
 const Benchmarks = ({ onNavigate }) => {
   return (
-    <ModulePage 
+    <ModulePage
       title="Benchmarks"
       columns={['Name', 'Country']}
       data={BENCHMARK_DATA}
       filterFields={['Name', 'Country']}
-      dataMap={{ 
-          'Name': 'name', 
-          'Country': 'country'
+      dataMap={{
+        'Name': 'name',
+        'Country': 'country'
       }}
       onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Benchmarks' })}
       createButtonText="Add New Benchmark"
+      onRowClick={(row) => onNavigate && onNavigate('Parameter Item Details', { ...row, parent: 'Benchmarks' })}
     />
   );
 };

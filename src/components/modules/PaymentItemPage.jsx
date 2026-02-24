@@ -4,21 +4,10 @@ import AuditInformation from './AuditInformation';
 
 // ── Shared InfoRow ────────────────────────────────────────────────────────────
 
-const InfoRow = ({ label, children, mono, last }) => (
-  <div
-    style={{
-      display: 'grid',
-      gridTemplateColumns: '160px 1fr',
-      gap: '8px',
-      alignItems: 'center',
-      minHeight: '36px',
-      borderBottom: last ? 'none' : '1px solid var(--color-border)',
-    }}
-  >
-    <span style={{ fontSize: '13px', color: '#6b7280', fontWeight: 400, lineHeight: '1.4' }}>
-      {label}
-    </span>
-    <span
+const InfoRow = ({ label, children, mono }) => (
+  <div style={{ marginBottom: '16px' }}>
+    <div style={{ fontSize: '12px', color: '#9ca3af', textTransform: 'lowercase', marginBottom: '4px', fontWeight: 400 }}>{label}</div>
+    <div
       style={{
         fontSize: '13px',
         color: '#111827',
@@ -29,7 +18,7 @@ const InfoRow = ({ label, children, mono, last }) => (
       }}
     >
       {children ?? '-'}
-    </span>
+    </div>
   </div>
 );
 
@@ -75,14 +64,15 @@ const Section = ({ title, children }) => (
       border: '1px solid var(--color-border)',
       borderRadius: '8px',
       overflow: 'hidden',
+      padding: '24px'
     }}
   >
-    <div style={{ padding: '14px 18px 10px' }}>
-      <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--color-text-secondary)' }}>
+    <div style={{ marginBottom: '20px' }}>
+      <span style={{ fontSize: '15px', fontWeight: 600, color: 'var(--color-text-main)' }}>
         {title}
       </span>
     </div>
-    <div style={{ padding: '0 18px' }}>{children}</div>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>{children}</div>
   </div>
 );
 
@@ -94,7 +84,7 @@ const WidgetCard = ({ title, value, sub }) => (
       <h3 className="widget-title" style={{ margin: 0 }}>{title}</h3>
     </div>
     <div className="widget-value-row">
-      <div className="widget-value" style={{ fontFamily: 'monospace', fontSize: '18px' }}>{value}</div>
+      <div className="widget-value">{value}</div>
     </div>
     {sub && <div className="widget-subtext text-gray">{sub}</div>}
   </div>
@@ -106,21 +96,21 @@ const PaymentItemPage = ({ payment }) => {
   if (!payment) return null;
 
   // Derive values from payment row data; fall back to sample
-  const accountNo   = payment.accountNo   || '3965738';
-  const bank        = payment.bank        || 'Commercial Bank';
-  const totalValue  = payment.value       || 'LKR 600,000,000.00';
-  const startDate   = payment.startDate   || '2025-05-29';
-  const duration    = payment.duration    || '5 years';
+  const accountNo = payment.accountNo || '3965738';
+  const bank = payment.bank || 'Commercial Bank';
+  const totalValue = payment.value || 'LKR 600,000,000.00';
+  const startDate = payment.startDate || '2025-05-29';
+  const duration = payment.duration || '5 years';
 
   // Static mock data (would typically come from API)
-  const productType   = 'Long Term Loan';
-  const branch        = 'Head Office Branch';
-  const company       = 'Lion Brewery Sri Lanka';
-  const currency      = 'Sri Lankan Rupee (LKR)';
-  const currentRate   = '10%';
-  const status        = 'Active';
-  const totalPaid     = 'LKR 80,000,000.00';
-  const remaining     = 'LKR 520,000,000.00';
+  const productType = 'Long Term Loan';
+  const branch = 'Head Office Branch';
+  const company = 'Lion Brewery Sri Lanka';
+  const currency = 'Sri Lankan Rupee (LKR)';
+  const currentRate = '10%';
+  const status = 'Active';
+  const totalPaid = 'LKR 80,000,000.00';
+  const remaining = 'LKR 520,000,000.00';
 
   const paymentHistory = [
     { date: '2026-01-25', amount: 'LKR 10,000,000.00', note: '—', confirmedBy: 'Oshan Ruberu', confirmedAt: '2026-02-05 05:24' },
@@ -145,24 +135,24 @@ const PaymentItemPage = ({ payment }) => {
         .payment-detail-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 12px;
+          gap: 16px;
         }
-        @media (max-width: 900px) {
+        @media (max-width: 1024px) {
           .payment-detail-grid { grid-template-columns: 1fr; }
         }
       `}</style>
 
-      {/* ── Header (grey bg) ── */}
+      {/* ── Header Area (grey bg) ── */}
       <div
         style={{
           backgroundColor: 'var(--color-bg-subtle)',
-          margin: '-24px -24px 28px -24px',
-          padding: '20px 24px 24px',
+          margin: '-24px -24px 16px -24px',
+          padding: '24px',
           borderBottom: '1px solid var(--color-border)',
         }}
       >
         {/* Title + actions */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
           <div>
             <h1 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
               Account Details
@@ -184,50 +174,50 @@ const PaymentItemPage = ({ payment }) => {
         </div>
 
         {/* ── Summary Widget Cards ── */}
-        <div style={{ display: 'flex', gap: '16px' }}>
-          <WidgetCard title="Total Loan Value"    value={totalValue} />
-          <WidgetCard title="Total Paid"          value={totalPaid} />
-          <WidgetCard title="Remaining Balance"   value={remaining} />
+        <div style={{ display: 'flex', gap: '16px', marginBottom: '20px' }}>
+          <WidgetCard title="Total Loan Value" value={totalValue} />
+          <WidgetCard title="Total Paid" value={totalPaid} />
+          <WidgetCard title="Remaining Balance" value={remaining} />
+        </div>
+
+        {/* ── Account Detail Cards (moved into grey area) ── */}
+        <div className="payment-detail-grid">
+          <Section title="Account Information">
+            <InfoRow label="Account Number" mono>{accountNo}</InfoRow>
+            <InfoRow label="Product Type">{productType}</InfoRow>
+            <InfoRow label="Bank">{bank}</InfoRow>
+            <InfoRow label="Branch">{branch}</InfoRow>
+            <InfoRow label="Company">{company}</InfoRow>
+            <InfoRow label="Currency" last>{currency}</InfoRow>
+          </Section>
+
+          <Section title="Loan Details">
+            <InfoRow label="Total Value" mono>{totalValue}</InfoRow>
+            <InfoRow label="Start Date">{startDate}</InfoRow>
+            <InfoRow label="Duration">{duration}</InfoRow>
+            <InfoRow label="Current Rate">{currentRate}</InfoRow>
+            <InfoRow label="Status" last>
+              <StatusPill status={status} />
+            </InfoRow>
+          </Section>
+
+          <Section title="Repayment Summary">
+            <InfoRow label="Total Paid" mono>{totalPaid}</InfoRow>
+            <InfoRow label="Remaining Balance" mono>{remaining}</InfoRow>
+            <InfoRow label="Payments Made">8</InfoRow>
+            <InfoRow label="Next Payment Due">2026-02-25</InfoRow>
+            <InfoRow label="Next Payment Amt" mono last>LKR 10,000,000.00</InfoRow>
+          </Section>
         </div>
       </div>
 
-      {/* ── Account Information Detail Cards ── */}
-      <div className="payment-detail-grid">
-        <Section title="Account Information">
-          <InfoRow label="Account Number" mono>{accountNo}</InfoRow>
-          <InfoRow label="Product Type">{productType}</InfoRow>
-          <InfoRow label="Bank">{bank}</InfoRow>
-          <InfoRow label="Branch">{branch}</InfoRow>
-          <InfoRow label="Company">{company}</InfoRow>
-          <InfoRow label="Currency" last>{currency}</InfoRow>
-        </Section>
-
-        <Section title="Loan Details">
-          <InfoRow label="Total Value" mono>{totalValue}</InfoRow>
-          <InfoRow label="Start Date">{startDate}</InfoRow>
-          <InfoRow label="Duration">{duration}</InfoRow>
-          <InfoRow label="Current Rate">{currentRate}</InfoRow>
-          <InfoRow label="Status" last>
-            <StatusPill status={status} />
-          </InfoRow>
-        </Section>
-
-        <Section title="Repayment Summary">
-          <InfoRow label="Total Paid" mono>{totalPaid}</InfoRow>
-          <InfoRow label="Remaining Balance" mono>{remaining}</InfoRow>
-          <InfoRow label="Payments Made">8</InfoRow>
-          <InfoRow label="Next Payment Due">2026-02-25</InfoRow>
-          <InfoRow label="Next Payment Amt" mono last>LKR 10,000,000.00</InfoRow>
-        </Section>
-      </div>
-
       {/* ── Payment History Table ── */}
-      <div style={{ marginTop: '32px' }}>
-        <div style={{ marginBottom: '12px' }}>
+      <div style={{ marginTop: '0px' }}>
+        <div style={{ marginBottom: '8px', paddingLeft: '4px' }}>
           <h2 style={{ fontSize: '15px', fontWeight: 600, color: 'var(--color-text-main)', margin: 0 }}>
             Payment History
           </h2>
-          <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '3px', marginBottom: 0 }}>
+          <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '2px', marginBottom: 0 }}>
             All recorded payments for this account
           </p>
         </div>
@@ -244,54 +234,52 @@ const PaymentItemPage = ({ payment }) => {
                 <th style={{ whiteSpace: 'nowrap' }}>INTERNAL NOTE</th>
                 <th style={{ whiteSpace: 'nowrap' }}>CONFIRMED BY</th>
                 <th style={{ whiteSpace: 'nowrap' }}>CONFIRMED AT</th>
-                <th style={{ whiteSpace: 'nowrap', textAlign: 'center' }}>ACTIONS</th>
+                <th className="actions-col"></th>
               </tr>
             </thead>
             <tbody>
               {paymentHistory.map((row, idx) => (
                 <tr key={idx} className="hover-row">
-                  <td style={{ whiteSpace: 'nowrap', fontWeight: 500 }}>
+                  <td style={{ whiteSpace: 'nowrap', fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>
                     {row.date}
                   </td>
-                  <td style={{ whiteSpace: 'nowrap', fontFamily: 'monospace', color: '#16a34a', fontWeight: 600 }}>
+                  <td style={{ whiteSpace: 'nowrap', fontFamily: 'monospace', fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>
                     {row.amount}
                   </td>
-                  <td style={{ color: '#6b7280', fontSize: '12px', maxWidth: '280px', whiteSpace: 'normal', lineHeight: '1.4' }}>
+                  <td style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)', maxWidth: '280px', whiteSpace: 'normal', lineHeight: '1.4' }}>
                     {row.note}
                   </td>
-                  <td style={{ whiteSpace: 'nowrap', color: 'var(--color-text-main)' }}>
+                  <td style={{ whiteSpace: 'nowrap', fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>
                     {row.confirmedBy || '-'}
                   </td>
-                  <td style={{ whiteSpace: 'nowrap', fontFamily: 'monospace', fontSize: '12px', color: '#6b7280' }}>
+                  <td style={{ whiteSpace: 'nowrap', fontFamily: 'monospace', fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>
                     {row.confirmedAt}
                   </td>
-                  <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
-                    <button
-                      className="control-icon"
-                      title="Edit"
-                      style={{ display: 'inline-flex', color: '#3b82f6' }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {/* pencil svg */}
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                      </svg>
-                    </button>
-                    <button
-                      className="control-icon"
-                      title="Delete"
-                      style={{ display: 'inline-flex', color: '#ef4444' }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {/* trash svg */}
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="3 6 5 6 21 6"/>
-                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                        <path d="M10 11v6"/><path d="M14 11v6"/>
-                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-                      </svg>
-                    </button>
+                  <td className="actions-col">
+                    <div className="row-actions">
+                      <button
+                        className="action-btn"
+                        title="Edit"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                      </button>
+                      <button
+                        className="action-btn"
+                        title="Delete"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                          <path d="M10 11v6" /><path d="M14 11v6" />
+                          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                        </svg>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -301,7 +289,12 @@ const PaymentItemPage = ({ payment }) => {
       </div>
 
       {/* ── Audit Information ── */}
-      <AuditInformation />
+      <AuditInformation
+        createdAt="February 12, 2026 9:30 AM"
+        updatedAt="February 12, 2026 9:40 AM"
+        createdBy="dinuka@oshanravlyon.onmicrosoft.com (3657aa5c-0cb7-472d-a9b3-f1a5e86e6477)"
+        updatedBy="amilad@oshanravlyon.onmicrosoft.com (3906f309-55a4-498c-a696-390c8262193f)"
+      />
 
       <div style={{ height: '48px' }} />
     </div>

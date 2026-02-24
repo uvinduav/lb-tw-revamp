@@ -5,17 +5,18 @@ import { DURATION_DATA } from '../../constants/parameterData';
 
 const Durations = ({ onNavigate }) => {
   return (
-    <ModulePage 
+    <ModulePage
       title="Durations"
       columns={['Title', 'Product Type']}
       data={DURATION_DATA}
       filterFields={['Title', 'Product Type']}
-      dataMap={{ 
-          'Title': 'title', 
-          'Product Type': 'type'
+      dataMap={{
+        'Title': 'title',
+        'Product Type': 'type'
       }}
       onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Durations' })}
       createButtonText="Add New Duration"
+      onRowClick={(row) => onNavigate && onNavigate('Parameter Item Details', { ...row, parent: 'Durations' })}
     />
   );
 };

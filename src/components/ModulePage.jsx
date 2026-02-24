@@ -38,7 +38,10 @@ const ModulePage = ({
   renderHeaderActions = null, // Optional: function to render custom header actions () => JSX
   showDefaultRowActions = true, // Optional: whether to show default Edit and Delete actions
   showColumnCustomization = true, // Default to true
-  onRowClick = null // Optional: callback when a row is clicked (row) => void
+  onRowClick = null, // Optional: callback when a row is clicked (row) => void
+  renderCell, // Optional: function to render custom cell content (row, col, value) => JSX
+  onSelectionChange, // Optional: callback when row selection changes (selectedRows) => void
+  renderActions // Optional: function to render custom header actions () => JSX
 }) => {
   const [allData, setAllData] = useState([]);
   const [visibleData, setVisibleData] = useState([]);
@@ -54,6 +57,13 @@ const ModulePage = ({
   const [tempFilters, setTempFilters] = useState({});
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [showEmptyState, setShowEmptyState] = useState(false);
+
+  // Notify parent of selection changes
+  useEffect(() => {
+    if (onSelectionChange) {
+      onSelectionChange(selectedRows);
+    }
+  }, [selectedRows, onSelectionChange]);
 
   // Column Visibility State
   const [visibleColumns, setVisibleColumns] = useState(new Set(columns));
@@ -292,6 +302,10 @@ const ModulePage = ({
     const key = dataMap[col] || col.toLowerCase().replace(/ /g, '');
     const value = row[key];
 
+    if (renderCell) {
+      return renderCell(row, col, value, debouncedSearchQuery);
+    }
+
     if (key === 'status') {
       const getStatusClass = (status) => {
         const s = status?.toLowerCase();
@@ -320,6 +334,7 @@ const ModulePage = ({
           <div className="page-subtitle">Showing {visibleData.length} of {filteredData.length} results</div>
         </div>
         <div className="actions-row">
+          {renderActions && renderActions()}
           <button className="btn btn-outline">
             <Download size={16} />
           </button>
@@ -689,7 +704,12 @@ const ModulePage = ({
                   />
                 </td>
                 {columns.filter(col => visibleColumns.has(col)).map(col => (
-                  <td key={col} style={col === 'Amount' ? { fontFamily: 'monospace', fontWeight: 500 } : {}}>
+                  <td key={col} style={{
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    color: 'var(--color-text-main)',
+                    fontFamily: (col === 'Amount' || col.includes('Rate') || col.includes('Price')) ? 'monospace' : 'inherit'
+                  }}>
                     {getCellContent(row, col)}
                   </td>
                 ))}

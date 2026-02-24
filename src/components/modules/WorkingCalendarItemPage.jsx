@@ -1,5 +1,6 @@
 import React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
+import AuditInformation from './AuditInformation';
 
 // ── Status pill ───────────────────────────────────────────────────────────────
 
@@ -44,30 +45,23 @@ const InfoItem = ({ label, children, mono }) => (
   </div>
 );
 
-// ── Audit row ─────────────────────────────────────────────────────────────────
 
-const AuditRow = ({ label, value }) => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-    <span style={{ fontSize: '12px', color: '#9ca3af', fontWeight: 400 }}>{label}</span>
-    <span style={{ fontSize: '13px', color: '#374151', fontFamily: 'monospace' }}>{value}</span>
-  </div>
-);
 
 // ── Main component ────────────────────────────────────────────────────────────
 
 const WorkingCalendarItemPage = ({ entry }) => {
   if (!entry) return null;
 
-  const displayDate  = entry.displayDate || 'January 31, 2026';
-  const isoDate      = entry.date        || '2026-01-31';
-  const type         = entry.type        || 'Month End';
-  const status       = entry.status      || 'Approved';
+  const displayDate = entry.displayDate || 'January 31, 2026';
+  const isoDate = entry.date || '2026-01-31';
+  const type = entry.type || 'Month End';
+  const status = entry.status || 'Approved';
 
   // Derive period label from ISO date  e.g. "2026-01" → "January 2026"
   const [year, month] = isoDate.split('-');
   const periodLabel = new Date(`${year}-${month}-01`).toLocaleDateString('en-US', {
     month: 'long',
-    year:  'numeric',
+    year: 'numeric',
   });
 
   return (
@@ -157,25 +151,12 @@ const WorkingCalendarItemPage = ({ entry }) => {
       </div>
 
       {/* ── Audit Information ── */}
-      <div
-        style={{
-          backgroundColor: 'white',
-          border: '1px solid var(--color-border)',
-          borderRadius: '8px',
-          padding: '20px 24px 24px',
-        }}
-      >
-        <h2 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-main)', margin: '0 0 20px 0' }}>
-          Audit Information
-        </h2>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px 32px' }}>
-          <AuditRow label="Created At"  value="2026-02-05 07:07:12" />
-          <AuditRow label="Updated At"  value="2026-02-05 07:07:12" />
-          <AuditRow label="Created By"  value="DinukaL@lionbeer.com (6daa13e0-5af3-400b-a2ae-a1d025e3f70a)" />
-          <AuditRow label="Updated By"  value="DinukaL@lionbeer.com (6daa13e0-5af3-400b-a2ae-a1d025e3f70a)" />
-        </div>
-      </div>
+      <AuditInformation
+        createdAt="2026-02-05 07:07:12"
+        updatedAt="2026-02-05 07:07:12"
+        createdBy="DinukaL@lionbeer.com (6daa13e0-5af3-400b-a2ae-a1d025e3f70a)"
+        updatedBy="DinukaL@lionbeer.com (6daa13e0-5af3-400b-a2ae-a1d025e3f70a)"
+      />
 
       <div style={{ height: '48px' }} />
     </div>

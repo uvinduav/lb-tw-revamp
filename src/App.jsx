@@ -38,6 +38,7 @@ import CreateModulePage from './components/CreateModulePage';
 import CreateAccount from './components/modules/CreateAccount';
 import CashPositionDetails from './components/modules/CashPositionDetails';
 import InvestmentDetails from './components/modules/InvestmentDetails';
+import ParameterItemPage from './components/modules/ParameterItemPage';
 
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
 import SlidingPanel from './components/common/SlidingPanel';
@@ -131,6 +132,7 @@ function App() {
       case 'Posting Center Item Details': return <PostingCenterItemPage posting={selectedEntity} />;
       case 'Working Calendar': return <WorkingCalendar onNavigate={handlePageChange} />;
       case 'Working Calendar Item Details': return <WorkingCalendarItemPage entry={selectedEntity} />;
+      case 'Parameter Item Details': return <ParameterItemPage item={selectedEntity} />;
 
       // Setup - Parameters
       case 'Banks': return <Banks onNavigate={handlePageChange} />;
@@ -149,8 +151,8 @@ function App() {
       case 'User Groups': return <UserGroups onNavigate={handlePageChange} />;
       case 'Alerts': return <Alerts />;
 
-      case 'System Logs': return <SystemLogs />;
-      case 'Create Page': 
+      case 'Change Log': return <ChangeLog />;
+      case 'Create Page':
         if (selectedEntity?.parent === 'Accounts') {
           return <CreateAccount onCancel={() => handlePageChange('Accounts')} onSave={() => handlePageChange('Accounts')} />;
         }
@@ -217,20 +219,21 @@ function App() {
           onNavigate={handleBreadcrumbNavigate}
           breadcrumb={
             activePage === 'Create Page' ? `Dashboard > ${selectedEntity?.parent} > ${selectedEntity?.title}` :
-            activePage === 'Entity Details' ? 'Dashboard > Entity Details' :
-              activePage === 'Bank Details' ? `Dashboard > Entity Details > ${selectedBank || 'Bank Details'}` :
-                activePage === 'Account Details' ? `Dashboard > Entity Details > ${selectedBank} > ${selectedAccount?.accountNo || 'Account'}` :
-                  activePage === 'Account Item Details' ? `Accounts > ${selectedEntity?.accountNumber || 'Account Details'}` :
-                  activePage === 'Payment Item Details' ? `Payments > ${selectedEntity?.accountNo || 'Payment Details'}` :
-                  activePage === 'Accrual Item Details' ? `Accruals > ${selectedEntity?.groupId || 'Group Details'}` :
-                  activePage === 'Posting Center Item Details' ? `Posting Center > ${selectedEntity?.groupId || 'Details'}` :
-                  activePage === 'Floating Rate Item Details' ? `Floating Rates > ${selectedEntity?.name || 'Rate Details'}` :
-                  activePage === 'Working Calendar Item Details' ? `Working Calendar > ${selectedEntity?.displayDate || 'Entry Details'}` :
-                  activePage === 'Debt Details' ? 'Dashboard > Debt Details' :
-                    activePage === 'Cash Position Details' ? 'Dashboard > Cash Position Details' :
-                      activePage === 'Investment Details' ? 'Dashboard > Investment Details' :
-                        activePage === 'Settings' ? 'Profile Settings' :
-                          activePage
+              activePage === 'Entity Details' ? 'Dashboard > Entity Details' :
+                activePage === 'Bank Details' ? `Dashboard > Entity Details > ${selectedBank || 'Bank Details'}` :
+                  activePage === 'Account Details' ? `Dashboard > Entity Details > ${selectedBank} > ${selectedAccount?.accountNo || 'Account'}` :
+                    activePage === 'Account Item Details' ? `Accounts > ${selectedEntity?.accountNumber || 'Account Details'}` :
+                      activePage === 'Payment Item Details' ? `Payments > ${selectedEntity?.accountNo || 'Payment Details'}` :
+                        activePage === 'Accrual Item Details' ? `Accruals > ${selectedEntity?.groupId || 'Group Details'}` :
+                          activePage === 'Posting Center Item Details' ? `Posting Center > ${selectedEntity?.groupId || 'Details'}` :
+                            activePage === 'Floating Rate Item Details' ? `Floating Rates > ${selectedEntity?.name || 'Rate Details'}` :
+                              activePage === 'Working Calendar Item Details' ? `Working Calendar > ${selectedEntity?.displayDate || 'Entry Details'}` :
+                                activePage === 'Parameter Item Details' ? `${selectedEntity?.parent || 'Parameters'} > ${selectedEntity?.name || selectedEntity?.title || 'Details'}` :
+                                  activePage === 'Debt Details' ? 'Dashboard > Debt Details' :
+                                    activePage === 'Cash Position Details' ? 'Dashboard > Cash Position Details' :
+                                      activePage === 'Investment Details' ? 'Dashboard > Investment Details' :
+                                        activePage === 'Settings' ? 'Profile Settings' :
+                                          activePage
           }
           onAlertsClick={() => setIsAlertsOpen(true)}
           onTasksClick={() => setIsTasksOpen(true)}
