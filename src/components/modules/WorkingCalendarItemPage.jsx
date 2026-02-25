@@ -151,14 +151,14 @@ const WorkingCalendarItemPage = ({ entry }) => {
       </div>
 
       {/* ── Audit Information ── */}
-      <AuditInformation
-        createdAt="2026-02-05 07:07:12"
-        updatedAt="2026-02-05 07:07:12"
-        createdBy="DinukaL@lionbeer.com (6daa13e0-5af3-400b-a2ae-a1d025e3f70a)"
-        updatedBy="DinukaL@lionbeer.com (6daa13e0-5af3-400b-a2ae-a1d025e3f70a)"
-      />
-
-      <div style={{ height: '48px' }} />
+      <div style={{ marginTop: 'auto' }}>
+        <AuditInformation
+          createdAt="2026-02-05 07:07:12"
+          updatedAt="2026-02-05 07:07:12"
+          createdBy="DinukaL@lionbeer.com (6daa13e0-5af3-400b-a2ae-a1d025e3f70a)"
+          updatedBy="DinukaL@lionbeer.com (6daa13e0-5af3-400b-a2ae-a1d025e3f70a)"
+        />
+      </div>
     </div>
   );
 };

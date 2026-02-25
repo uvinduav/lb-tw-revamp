@@ -34,8 +34,11 @@ import PostingCenterItemPage from './components/modules/PostingCenterItemPage';
 import FloatingRateItemPage from './components/modules/FloatingRateItemPage';
 import WorkingCalendarItemPage from './components/modules/WorkingCalendarItemPage';
 import DebtDetails from './components/modules/DebtDetails';
-import CreateModulePage from './components/CreateModulePage';
+import CreateParameterPage from './components/CreateParameterPage';
 import CreateAccount from './components/modules/CreateAccount';
+import CreateFloatingRate from './components/modules/CreateFloatingRate';
+import CreateWorkingCalendar from './components/modules/CreateWorkingCalendar';
+import ChangeLogItemPage from './components/modules/ChangeLogItemPage';
 import CashPositionDetails from './components/modules/CashPositionDetails';
 import InvestmentDetails from './components/modules/InvestmentDetails';
 import ParameterItemPage from './components/modules/ParameterItemPage';
@@ -122,7 +125,7 @@ function App() {
       case 'Accounts': return <Accounts onNavigate={handlePageChange} />;
       case 'Account Item Details': return <AccountItemPage account={selectedEntity} onNavigate={handlePageChange} />;
       case 'Payments': return <Payments onNavigate={handlePageChange} />;
-      case 'Payment Item Details': return <PaymentItemPage payment={selectedEntity} />;
+      case 'Payment Item Details': return <PaymentItemPage payment={selectedEntity} onNavigate={handlePageChange} />;
       case 'Accruals': return <Accruals onNavigate={handlePageChange} />;
       case 'Accrual Item Details': return <AccrualItemPage accrual={selectedEntity} />;
       case 'Reports': return <Reports />;
@@ -132,6 +135,7 @@ function App() {
       case 'Posting Center Item Details': return <PostingCenterItemPage posting={selectedEntity} />;
       case 'Working Calendar': return <WorkingCalendar onNavigate={handlePageChange} />;
       case 'Working Calendar Item Details': return <WorkingCalendarItemPage entry={selectedEntity} />;
+      case 'Change Log Item Details': return <ChangeLogItemPage logEntry={selectedEntity} onBack={() => handlePageChange('Change Log')} />;
       case 'Parameter Item Details': return <ParameterItemPage item={selectedEntity} />;
 
       // Setup - Parameters
@@ -144,20 +148,34 @@ function App() {
       case 'Interest Rates': return <InterestRates onNavigate={handlePageChange} />;
       case 'Exchange Rates': return <ExchangeRates onNavigate={handlePageChange} />;
       case 'Purpose Tags': return <PurposeTags onNavigate={handlePageChange} />;
-      case 'Thresholds': return <Thresholds />;
+      case 'Thresholds': return <Thresholds onNavigate={handlePageChange} />;
 
       // Setup - Users
       case 'Users': return <Users onNavigate={handlePageChange} />;
       case 'User Groups': return <UserGroups onNavigate={handlePageChange} />;
       case 'Alerts': return <Alerts />;
 
-      case 'Change Log': return <ChangeLog />;
+      case 'Change Log': return <ChangeLog onNavigate={handlePageChange} />;
       case 'Create Page':
         if (selectedEntity?.parent === 'Accounts') {
           return <CreateAccount onCancel={() => handlePageChange('Accounts')} onSave={() => handlePageChange('Accounts')} />;
         }
-        return <CreateModulePage title={selectedEntity?.title} />;
+        if (selectedEntity?.parent === 'Floating Rates') {
+          return <CreateFloatingRate onCancel={() => handlePageChange('Floating Rates')} onSave={() => handlePageChange('Floating Rates')} />;
+        }
+        if (selectedEntity?.parent === 'Working Calendar') {
+          return <CreateWorkingCalendar onCancel={() => handlePageChange('Working Calendar')} onSave={() => handlePageChange('Working Calendar')} />;
+        }
+        return (
+          <CreateParameterPage 
+            title={selectedEntity?.title} 
+            parent={selectedEntity?.parent} 
+            onCancel={() => handlePageChange(selectedEntity?.parent)} 
+            onSave={() => handlePageChange(selectedEntity?.parent)} 
+          />
+        );
 
+      case 'Settings': return <Settings />;
       default: return <Accounts onNavigate={handlePageChange} />;
     }
   };
@@ -229,11 +247,12 @@ function App() {
                             activePage === 'Floating Rate Item Details' ? `Floating Rates > ${selectedEntity?.name || 'Rate Details'}` :
                               activePage === 'Working Calendar Item Details' ? `Working Calendar > ${selectedEntity?.displayDate || 'Entry Details'}` :
                                 activePage === 'Parameter Item Details' ? `${selectedEntity?.parent || 'Parameters'} > ${selectedEntity?.name || selectedEntity?.title || 'Details'}` :
-                                  activePage === 'Debt Details' ? 'Dashboard > Debt Details' :
-                                    activePage === 'Cash Position Details' ? 'Dashboard > Cash Position Details' :
-                                      activePage === 'Investment Details' ? 'Dashboard > Investment Details' :
-                                        activePage === 'Settings' ? 'Profile Settings' :
-                                          activePage
+                                  activePage === 'Change Log Item Details' ? `Change Log > ${selectedEntity?.entityType || 'Log Entry Details'}` :
+                                    activePage === 'Debt Details' ? 'Dashboard > Debt Details' :
+                                      activePage === 'Cash Position Details' ? 'Dashboard > Cash Position Details' :
+                                        activePage === 'Investment Details' ? 'Dashboard > Investment Details' :
+                                          activePage === 'Settings' ? 'Profile Settings' :
+                                            activePage
           }
           onAlertsClick={() => setIsAlertsOpen(true)}
           onTasksClick={() => setIsTasksOpen(true)}

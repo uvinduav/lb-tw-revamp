@@ -5,6 +5,12 @@ import { X, ChevronDown, ChevronRight, CheckCircle2, Clock } from 'lucide-react'
 const AccrualApprovalModal = ({ isOpen, onClose, selectedData = [] }) => {
     const [expandedGroups, setExpandedGroups] = useState(new Set());
 
+    React.useEffect(() => {
+        if (isOpen) {
+            setExpandedGroups(new Set(selectedData.map(item => item.id)));
+        }
+    }, [isOpen, selectedData]);
+
     const toggleGroup = (groupId) => {
         const newExpanded = new Set(expandedGroups);
         if (newExpanded.has(groupId)) {
@@ -65,73 +71,73 @@ const AccrualApprovalModal = ({ isOpen, onClose, selectedData = [] }) => {
                             borderRadius: '0',
                             overflow: 'hidden'
                         }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
-                                    <tr style={{ backgroundColor: '#f8fafc', borderBottom: '1px solid var(--color-border)' }}>
-                                        <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: 'black', width: '40px' }}></th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: 'black' }}>GROUP ID</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: 'black' }}>PRODUCT</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: 'black' }}>BANK</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 600, color: 'black' }}>ACCOUNTS</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 600, color: 'black' }}>PROVISION</th>
+                                    <tr style={{ backgroundColor: '#fafafa', borderBottom: '1px solid var(--color-border)', height: '32px' }}>
+                                        <th style={{ padding: '4px 10px', textAlign: 'left', fontWeight: 600, color: '#888', fontSize: '11px', textTransform: 'uppercase', width: '40px' }}></th>
+                                        <th style={{ padding: '4px 10px', textAlign: 'left', fontWeight: 600, color: '#888', fontSize: '11px', textTransform: 'uppercase' }}>GROUP ID</th>
+                                        <th style={{ padding: '4px 10px', textAlign: 'left', fontWeight: 600, color: '#888', fontSize: '11px', textTransform: 'uppercase' }}>PRODUCT</th>
+                                        <th style={{ padding: '4px 10px', textAlign: 'left', fontWeight: 600, color: '#888', fontSize: '11px', textTransform: 'uppercase' }}>BANK</th>
+                                        <th style={{ padding: '4px 10px', textAlign: 'center', fontWeight: 600, color: '#888', fontSize: '11px', textTransform: 'uppercase' }}>ACCOUNTS</th>
+                                        <th style={{ padding: '4px 10px', textAlign: 'right', fontWeight: 600, color: '#888', fontSize: '11px', textTransform: 'uppercase' }}>PROVISION</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {selectedData.map((item) => (
                                         <React.Fragment key={item.id}>
                                             <tr
-                                                style={{ borderBottom: expandedGroups.has(item.id) ? 'none' : '1px solid var(--color-border)', cursor: 'pointer', transition: 'background-color 0.2s' }}
+                                                style={{ borderBottom: expandedGroups.has(item.id) ? 'none' : '1px solid var(--color-border)', cursor: 'pointer', transition: 'background-color 0.2s', height: '32px' }}
                                                 onClick={() => toggleGroup(item.id)}
-                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
                                                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                                             >
-                                                <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                                                    {expandedGroups.has(item.id) ? <ChevronDown size={16} color="black" /> : <ChevronRight size={16} color="black" />}
+                                                <td style={{ padding: '4px 10px', textAlign: 'center' }}>
+                                                    {expandedGroups.has(item.id) ? <ChevronDown size={14} color="#6b7280" /> : <ChevronRight size={14} color="#6b7280" />}
                                                 </td>
-                                                <td style={{ padding: '12px 16px', color: 'black', fontWeight: 400 }}>{item.groupId}</td>
-                                                <td style={{ padding: '12px 16px' }}>
+                                                <td style={{ padding: '4px 10px', color: 'var(--color-text-main)', fontWeight: 400, fontSize: '13px' }}>{item.groupId}</td>
+                                                <td style={{ padding: '4px 10px' }}>
                                                     <span style={{
-                                                        padding: '2px 8px',
+                                                        padding: '1px 8px',
                                                         borderRadius: '12px',
-                                                        backgroundColor: '#f0fdf4',
-                                                        color: 'black',
-                                                        fontSize: '13px',
-                                                        fontWeight: 400
+                                                        backgroundColor: 'var(--status-posted-bg)',
+                                                        color: 'var(--status-posted-text)',
+                                                        fontSize: '11px',
+                                                        fontWeight: 600
                                                     }}>
                                                         {item.groupId.includes('FD') ? 'FD' : item.groupId.includes('LTL') ? 'LTL' : 'STL'}
                                                     </span>
                                                 </td>
-                                                <td style={{ padding: '12px 16px', color: 'black', fontWeight: 400 }}>{item.bank}</td>
-                                                <td style={{ padding: '12px 16px', textAlign: 'center', color: 'black', fontWeight: 400, fontFamily: 'monospace' }}>{item.accounts}</td>
-                                                <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: 'black', fontFamily: 'monospace' }}>
+                                                <td style={{ padding: '4px 10px', color: 'var(--color-text-main)', fontWeight: 400, fontSize: '13px' }}>{item.bank}</td>
+                                                <td style={{ padding: '4px 10px', textAlign: 'center', color: 'var(--color-text-main)', fontWeight: 400, fontSize: '13px', fontFamily: 'monospace' }}>{item.accounts}</td>
+                                                <td style={{ padding: '4px 10px', textAlign: 'right', fontWeight: 600, color: 'var(--color-text-main)', fontSize: '13px', fontFamily: 'monospace' }}>
                                                     LKR {item.provision}
                                                 </td>
                                             </tr>
                                             {expandedGroups.has(item.id) && (
-                                                <tr style={{ backgroundColor: '#f8fafc', borderBottom: '1px solid var(--color-border)' }}>
-                                                    <td style={{ padding: '8px 16px', textAlign: 'center' }}>
-                                                        <input type="checkbox" checked readOnly style={{ accentColor: 'var(--color-primary)' }} />
+                                                <tr style={{ backgroundColor: '#f9fafb', borderBottom: '1px solid var(--color-border)', height: '32px' }}>
+                                                    <td style={{ padding: '4px 10px', textAlign: 'center' }}>
+                                                        <input type="checkbox" checked readOnly style={{ accentColor: 'var(--color-primary-action)' }} />
                                                     </td>
-                                                    <td style={{ padding: '8px 16px', color: 'black', fontSize: '13px', fontWeight: 400 }}>
+                                                    <td style={{ padding: '4px 10px', color: 'var(--color-text-main)', fontSize: '13px', fontWeight: 400 }}>
                                                         {item.id === 6 ? 'LTL' : '02468'}
                                                     </td>
-                                                    <td style={{ padding: '8px 16px' }}>
+                                                    <td style={{ padding: '4px 10px' }}>
                                                         <span style={{
-                                                            padding: '2px 6px',
+                                                            padding: '1px 6px',
                                                             borderRadius: '4px',
-                                                            backgroundColor: '#f1f5f9',
-                                                            color: 'black',
-                                                            fontSize: '13px',
-                                                            fontWeight: 400
+                                                            backgroundColor: 'var(--color-bg-subtle)',
+                                                            color: 'var(--color-text-secondary)',
+                                                            fontSize: '11px',
+                                                            fontWeight: 600
                                                         }}>
                                                             {item.groupId.includes('FD') ? 'FD' : item.groupId.includes('LTL') ? 'LTL' : 'STL'}
                                                         </span>
                                                     </td>
-                                                    <td style={{ padding: '8px 16px', color: 'black', fontSize: '13px', fontWeight: 400, fontFamily: 'monospace' }}>
+                                                    <td style={{ padding: '4px 10px', color: 'var(--color-text-main)', fontSize: '13px', fontWeight: 400, fontFamily: 'monospace' }}>
                                                         2025-01-14
                                                     </td>
-                                                    <td style={{ padding: '8px 16px' }}></td>
-                                                    <td style={{ padding: '8px 16px', textAlign: 'right', color: 'black', fontFamily: 'monospace', fontSize: '13px', fontWeight: 400 }}>
+                                                    <td style={{ padding: '4px 10px' }}></td>
+                                                    <td style={{ padding: '4px 10px', textAlign: 'right', color: 'var(--color-text-main)', fontFamily: 'monospace', fontSize: '13px', fontWeight: 400 }}>
                                                         LKR {item.provision}
                                                     </td>
                                                 </tr>
@@ -140,9 +146,9 @@ const AccrualApprovalModal = ({ isOpen, onClose, selectedData = [] }) => {
                                     ))}
                                 </tbody>
                                 <tfoot>
-                                    <tr style={{ backgroundColor: '#f8fafc', borderTop: '2px solid var(--color-border)', borderRadius: '0' }}>
-                                        <td colSpan="5" style={{ padding: '16px', textAlign: 'right', fontWeight: 700, fontSize: '13px', color: 'black' }}>Total:</td>
-                                        <td style={{ padding: '16px', textAlign: 'right', fontWeight: 700, fontSize: '13px', color: 'black', fontFamily: 'monospace' }}>
+                                    <tr style={{ backgroundColor: '#fafafa', borderTop: '2px solid var(--color-border)', height: '40px' }}>
+                                        <td colSpan="5" style={{ padding: '4px 10px', textAlign: 'right', fontWeight: 700, fontSize: '13px', color: 'var(--color-text-main)' }}>Total:</td>
+                                        <td style={{ padding: '4px 10px', textAlign: 'right', fontWeight: 700, fontSize: '13px', color: 'var(--color-text-main)', fontFamily: 'monospace' }}>
                                             LKR {totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                         </td>
                                     </tr>
@@ -151,28 +157,15 @@ const AccrualApprovalModal = ({ isOpen, onClose, selectedData = [] }) => {
                         </div>
                     </div>
 
-                    <div className="dialog-actions" style={{ padding: '16px 24px', backgroundColor: 'white', borderTop: '1px solid var(--color-border)', margin: 0 }}>
-                        <button
-                            className="btn-clear"
-                            onClick={onClose}
-                            style={{ color: 'var(--color-text-secondary)', fontWeight: 500 }}
-                        >
-                            Cancel
-                        </button>
-                        <div style={{ display: 'flex', gap: '12px' }}>
+                    <div className="dialog-actions" style={{ padding: '16px 24px', backgroundColor: 'white', borderTop: '1px solid var(--color-border)', margin: 0, justifyContent: 'flex-end' }}>
+                        <div style={{ display: 'flex' }}>
                             <button
                                 className="btn btn-primary"
                                 style={{
-                                    padding: '10px 24px',
+                                    padding: '8px 24px',
                                     display: 'flex',
                                     alignItems: 'center',
-                                    gap: '8px',
-                                    background: 'var(--color-primary-action)',
-                                    borderRadius: '6px',
-                                    fontWeight: 600,
-                                    border: 'none',
-                                    color: 'white',
-                                    cursor: 'pointer'
+                                    gap: '8px'
                                 }}
                                 onClick={onClose}
                             >

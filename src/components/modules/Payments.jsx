@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Eye } from 'lucide-react';
 import ModulePage from '../ModulePage';
 import NewPaymentModal from './NewPaymentModal';
 
@@ -37,13 +37,25 @@ const Payments = ({ onNavigate }) => {
         showAddButton={false}
         onRowClick={(row) => onNavigate && onNavigate('Payment Item Details', row)}
         renderRowActions={(row) => (
-          <button
-            className="text-action-btn"
-            onClick={(e) => handleAddPaymentClick(e, row)}
-          >
-            <Plus size={14} />
-            add payment
-          </button>
+          <>
+            <button
+              className="action-btn"
+              title="View"
+              onClick={(e) => {
+                e.stopPropagation();
+                onNavigate && onNavigate('Payment Item Details', row);
+              }}
+            >
+              <Eye size={14} />
+            </button>
+            <button
+              className="btn-table-success"
+              onClick={(e) => handleAddPaymentClick(e, row)}
+            >
+              <Plus size={14} />
+              Pay
+            </button>
+          </>
         )}
       />
       <NewPaymentModal

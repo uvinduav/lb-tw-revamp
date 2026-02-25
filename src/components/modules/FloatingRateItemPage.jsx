@@ -67,12 +67,7 @@ const FloatingRateItemPage = ({ rate }) => {
 
   const name = rate.name || 'AWPLR CBSL Weekly (System)';
   const baseRate = rate.baseRate || '8.9500%';
-  const spread = rate.spread || '0.00%';
   const effectiveDate = rate.effectiveDate || '2026-02-20';
-  const status = rate.status || 'Active';
-
-  const displayName = `${name} (${baseRate}) [from ${effectiveDate}]`;
-  const isActive = status?.toLowerCase() === 'active';
 
   return (
     <div

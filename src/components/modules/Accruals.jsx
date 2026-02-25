@@ -40,18 +40,14 @@ const Accruals = ({ onNavigate }) => {
     const isSelected = selectedRows.size > 0;
     return (
       <button
-        className="btn"
+        className={`btn ${isSelected ? 'btn-primary' : ''}`}
         disabled={!isSelected}
         onClick={() => setIsModalOpen(true)}
         style={{
-          backgroundColor: isSelected ? 'var(--color-primary-action)' : '#f3f4f6',
-          color: isSelected ? 'white' : '#9ca3af',
-          border: '1px solid',
+          backgroundColor: isSelected ? undefined : '#f3f4f6',
+          color: isSelected ? undefined : '#9ca3af',
           borderColor: isSelected ? 'transparent' : '#e5e7eb',
-          padding: '8px 16px',
-          fontWeight: 600,
-          cursor: isSelected ? 'pointer' : 'not-allowed',
-          transition: 'all 0.2s ease'
+          cursor: isSelected ? 'pointer' : 'not-allowed'
         }}
       >
         Approve and Queue
@@ -81,7 +77,7 @@ const Accruals = ({ onNavigate }) => {
         renderActions={renderActions}
         onSelectionChange={handleSelectionChange}
         onRowClick={(row) => onNavigate && onNavigate('Accrual Item Details', row)}
-        renderRowActions={(row) => (
+        renderRowActions={() => (
           <button className="action-btn" title="View">
             <Eye size={14} />
           </button>

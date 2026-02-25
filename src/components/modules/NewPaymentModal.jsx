@@ -63,8 +63,13 @@ const NewPaymentModal = ({ isOpen, onClose, accountData }) => {
                                     <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--color-text-tertiary)', textTransform: 'uppercase', marginBottom: '4px' }}>
                                         Remaining Balance
                                     </div>
-                                    <div style={{ fontSize: '20px', fontWeight: 700, color: '#f97316' }}>
-                                        <span style={{ fontSize: '14px', marginRight: '4px' }}>SGD</span>
+                                    <div style={{
+                                        fontSize: '15px',
+                                        fontWeight: 600,
+                                        color: 'var(--color-text-main)',
+                                        fontFamily: 'monospace'
+                                    }}>
+                                        <span style={{ color: 'var(--color-text-tertiary)', fontWeight: 400, marginRight: '4px' }}>SGD</span>
                                         2,500,000.00
                                     </div>
                                 </div>
@@ -73,8 +78,8 @@ const NewPaymentModal = ({ isOpen, onClose, accountData }) => {
                             <div style={{ height: '1px', backgroundColor: 'var(--color-border)', margin: '16px 0' }}></div>
 
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>
-                                <span>Total: SGD 2,500,000.00</span>
-                                <span>Paid: SGD 0.00 (0%)</span>
+                                <span>Total: <span style={{ fontFamily: 'monospace' }}>SGD 2,500,000.00</span></span>
+                                <span>Paid: <span style={{ fontFamily: 'monospace' }}>SGD 0.00 (0%)</span></span>
                             </div>
 
                             <div style={{ height: '6px', backgroundColor: '#e5e7eb', borderRadius: '3px', overflow: 'hidden' }}>
@@ -84,92 +89,123 @@ const NewPaymentModal = ({ isOpen, onClose, accountData }) => {
 
                         {/* Form Fields */}
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                            <div className="filter-field">
-                                <label>Payment Date <span style={{ color: '#ef4444' }}>*</span></label>
+                            <div className="form-field">
+                                <label style={{ display: 'block', textTransform: 'none', fontSize: '12px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>
+                                    Payment Date <span style={{ color: '#ef4444' }}>*</span>
+                                </label>
                                 <div style={{ position: 'relative' }}>
                                     <input
                                         type="date"
                                         defaultValue="2026-02-24"
-                                        className="filter-field input"
                                         style={{
-                                            paddingLeft: '12px',
-                                            height: '36px'
+                                            width: '100%',
+                                            height: '36px',
+                                            padding: '0 12px',
+                                            border: '1px solid #e5e7eb',
+                                            borderRadius: '4px',
+                                            fontSize: '13px',
+                                            fontFamily: 'inherit',
+                                            outline: 'none',
+                                            boxSizing: 'border-box'
+                                        }}
+                                        onFocus={(e) => e.target.style.borderColor = '#8d6e63'}
+                                        onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                                    />
+                                    <CalendarIcon
+                                        size={14}
+                                        style={{
+                                            position: 'absolute',
+                                            right: '12px',
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            color: '#6b7280',
+                                            pointerEvents: 'none'
                                         }}
                                     />
                                 </div>
-                                <p style={{ fontSize: '11px', color: 'var(--color-text-secondary)', margin: 0 }}>Date when the payment was made</p>
                             </div>
 
-                            <div className="filter-field">
-                                <label>Planned Amount <span style={{ color: '#ef4444' }}>*</span></label>
-                                <div style={{ position: 'relative', display: 'flex' }}>
+                            <div className="form-field">
+                                <label style={{ display: 'block', textTransform: 'none', fontSize: '12px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>
+                                    Planned Amount <span style={{ color: '#ef4444' }}>*</span>
+                                </label>
+                                <div style={{ border: '1px solid #e5e7eb', borderRadius: '4px', height: '36px', display: 'flex', overflow: 'hidden' }}>
                                     <div style={{
-                                        height: '36px',
-                                        padding: '0 12px',
+                                        width: '80px',
+                                        backgroundColor: 'white',
                                         display: 'flex',
                                         alignItems: 'center',
-                                        border: '1px solid var(--color-border)',
-                                        borderRight: 'none',
-                                        borderRadius: '4px 0 0 4px',
-                                        backgroundColor: 'var(--color-bg-subtle)',
-                                        fontSize: '13px',
-                                        color: 'var(--color-text-secondary)'
+                                        padding: '0 10px',
+                                        gap: '8px',
+                                        borderRight: '1px solid #e5e7eb'
                                     }}>
-                                        SGD
+                                        <div style={{
+                                            width: '18px',
+                                            height: '18px',
+                                            borderRadius: '4px',
+                                            overflow: 'hidden',
+                                            border: '1px solid rgba(0,0,0,0.05)',
+                                            display: 'flex',
+                                            flexShrink: 0
+                                        }}>
+                                            <img
+                                                src="https://flagcdn.com/w20/sg.png"
+                                                alt="SG Flag"
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                            />
+                                        </div>
+                                        <span style={{ fontSize: '13px', color: '#111827', fontWeight: 500 }}>SGD</span>
                                     </div>
                                     <input
                                         type="text"
                                         defaultValue="52,083.33"
                                         style={{
                                             flex: 1,
-                                            height: '36px',
+                                            height: '100%',
                                             padding: '0 12px',
-                                            border: '1px solid var(--color-border)',
-                                            borderRadius: '0 4px 4px 0',
+                                            border: 'none',
                                             fontSize: '13px',
-                                            outline: 'none'
+                                            fontFamily: 'inherit',
+                                            outline: 'none',
+                                            boxSizing: 'border-box'
                                         }}
                                     />
                                 </div>
-                                <p style={{ fontSize: '11px', color: 'var(--color-text-secondary)', margin: 0 }}>Amount paid in SGD</p>
                             </div>
 
-                            <div className="filter-field" style={{ gridColumn: 'span 2' }}>
-                                <label>Internal Note</label>
+                            <div className="form-field" style={{ gridColumn: 'span 2' }}>
+                                <label style={{ display: 'block', textTransform: 'none', fontSize: '12px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>
+                                    Internal Note
+                                </label>
                                 <textarea
                                     placeholder="Add any notes about this payment..."
                                     style={{
                                         width: '100%',
                                         minHeight: '80px',
                                         padding: '8px 12px',
-                                        border: '1px solid var(--color-border)',
+                                        border: '1px solid #e5e7eb',
                                         borderRadius: '4px',
                                         fontSize: '13px',
+                                        fontFamily: 'inherit',
                                         boxSizing: 'border-box',
                                         resize: 'none',
                                         outline: 'none'
                                     }}
+                                    onFocus={(e) => e.target.style.borderColor = '#8d6e63'}
+                                    onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
                                 />
-                                <p style={{ fontSize: '11px', color: 'var(--color-text-secondary)', margin: 0 }}>Optional notes for internal reference</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="dialog-actions" style={{ padding: '16px 24px', backgroundColor: 'var(--color-bg-subtle)', margin: 0 }}>
-                        <button
-                            className="btn-clear"
-                            onClick={onClose}
-                            style={{ color: 'var(--color-text-secondary)' }}
-                        >
-                            Cancel
-                        </button>
-                        <div style={{ display: 'flex', gap: '12px' }}>
+                    <div className="dialog-actions" style={{ padding: '16px 24px', backgroundColor: 'var(--color-bg-subtle)', margin: 0, justifyContent: 'flex-end' }}>
+                        <div style={{ display: 'flex' }}>
                             <button
                                 className="btn btn-primary"
                                 style={{ padding: '8px 24px' }}
                                 onClick={onClose}
                             >
-                                Save Payment
+                                Record payment
                             </button>
                         </div>
                     </div>

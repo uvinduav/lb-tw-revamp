@@ -1,6 +1,6 @@
 import React from 'react';
 
-const InterestCalculationTable = ({ account, currency = 'USD' }) => {
+const InterestCalculationTable = () => {
   const data = [
     {
       date: 'February 18, 2026',

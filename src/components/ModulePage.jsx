@@ -41,7 +41,8 @@ const ModulePage = ({
   onRowClick = null, // Optional: callback when a row is clicked (row) => void
   renderCell, // Optional: function to render custom cell content (row, col, value) => JSX
   onSelectionChange, // Optional: callback when row selection changes (selectedRows) => void
-  renderActions // Optional: function to render custom header actions () => JSX
+  renderActions, // Optional: function to render custom header actions () => JSX
+  showSelection = true // Optional: whether to show the selection checkbox column
 }) => {
   const [allData, setAllData] = useState([]);
   const [visibleData, setVisibleData] = useState([]);
@@ -334,10 +335,10 @@ const ModulePage = ({
           <div className="page-subtitle">Showing {visibleData.length} of {filteredData.length} results</div>
         </div>
         <div className="actions-row">
-          {renderActions && renderActions()}
           <button className="btn btn-outline">
             <Download size={16} />
           </button>
+          {renderActions && renderActions()}
           {showAddButton && (
             <button className="btn btn-primary" onClick={() => onCreate && onCreate(createButtonText || `Add New ${title.replace(/^All /, '').replace(/s$/, '')}`)}>
               <Plus size={16} />
@@ -676,17 +677,19 @@ const ModulePage = ({
         <table className="data-table">
           <thead style={{ position: 'sticky', top: 0, zIndex: 20 }}>
             <tr>
-              <th className="checkbox-col">
-                <input
-                  type="checkbox"
-                  checked={visibleData.length > 0 && selectedRows.size === visibleData.length}
-                  onChange={toggleAllSelection}
-                />
-              </th>
+              {showSelection && (
+                <th className="checkbox-col">
+                  <input
+                    type="checkbox"
+                    checked={visibleData.length > 0 && selectedRows.size === visibleData.length}
+                    onChange={toggleAllSelection}
+                  />
+                </th>
+              )}
               {columns.filter(col => visibleColumns.has(col)).map(col => (
                 <th key={col}>{col.toUpperCase()}</th>
               ))}
-              <th className="actions-col"></th>
+              {(renderRowActions || showDefaultRowActions) && <th className="actions-col"></th>}
             </tr>
           </thead>
           <tbody>
@@ -696,13 +699,15 @@ const ModulePage = ({
                 onClick={onRowClick ? () => onRowClick(row) : undefined}
                 style={onRowClick ? { cursor: 'pointer' } : {}}
               >
-                <td className="checkbox-col" onClick={(e) => e.stopPropagation()}>
-                  <input
-                    type="checkbox"
-                    checked={selectedRows.has(row.id)}
-                    onChange={() => toggleRowSelection(row.id)}
-                  />
-                </td>
+                {showSelection && (
+                  <td className="checkbox-col" onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      checked={selectedRows.has(row.id)}
+                      onChange={() => toggleRowSelection(row.id)}
+                    />
+                  </td>
+                )}
                 {columns.filter(col => visibleColumns.has(col)).map(col => (
                   <td key={col} style={{
                     fontSize: '13px',
@@ -714,29 +719,28 @@ const ModulePage = ({
                   </td>
                 ))}
 
-                <td className="actions-col" onClick={(e) => e.stopPropagation()}>
-                  <div className="row-actions">
-                    {renderRowActions ? (
-                      renderRowActions(row)
-                    ) : (
-                      <>
-                        {showDefaultRowActions && (
-                          <>
-                            <button className="action-btn" title="Edit">
-                              <Pencil size={14} />
-                            </button>
-                            <button className="action-btn" title="Delete">
-                              <Trash2 size={14} />
-                            </button>
-                          </>
-                        )}
-                        {/* <button className="action-btn" title="More">
-                          <MoreVertical size={14} />
-                        </button> */}
-                      </>
-                    )}
-                  </div>
-                </td>
+                {(renderRowActions || showDefaultRowActions) && (
+                  <td className="actions-col" onClick={(e) => e.stopPropagation()}>
+                    <div className="row-actions">
+                      {renderRowActions ? (
+                        renderRowActions(row)
+                      ) : (
+                        <>
+                          {showDefaultRowActions && (
+                            <>
+                              <button className="action-btn" title="Edit">
+                                <Pencil size={14} />
+                              </button>
+                              <button className="action-btn" title="Delete">
+                                <Trash2 size={14} />
+                              </button>
+                            </>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </td>
+                )}
               </tr>
             ))}
             {visibleColumns.size > 0 && visibleData.length === 0 && (isLoading || !showEmptyState) && (

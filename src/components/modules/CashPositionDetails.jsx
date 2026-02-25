@@ -137,7 +137,7 @@ const ghostBarsPlugin = {
     id: 'ghostBars',
     beforeDatasetsDraw(chart) {
         if (chart.config.type !== 'bar') return;
-        const { ctx, chartArea, scales: { x, y } } = chart;
+        const { ctx, chartArea } = chart;
         const dataset = chart.data.datasets[0];
 
         ctx.save();

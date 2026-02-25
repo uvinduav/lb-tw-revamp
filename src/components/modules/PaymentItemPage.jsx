@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Eye, Plus } from 'lucide-react';
 import AuditInformation from './AuditInformation';
+import NewPaymentModal from './NewPaymentModal';
 
 // ── Shared InfoRow ────────────────────────────────────────────────────────────
 
@@ -92,7 +93,8 @@ const WidgetCard = ({ title, value, sub }) => (
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-const PaymentItemPage = ({ payment }) => {
+const PaymentItemPage = ({ payment, onNavigate }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   if (!payment) return null;
 
   // Derive values from payment row data; fall back to sample
@@ -162,11 +164,28 @@ const PaymentItemPage = ({ payment }) => {
             </div>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px' }}>
+            <button 
+              className="btn btn-outline" 
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px' }}
+              onClick={() => onNavigate && onNavigate('Account Item Details', {
+                accountNumber: accountNo,
+                bank: bank,
+                type: productType,
+                company: company,
+                currency: currency.includes('LKR') ? 'LKR' : 'SGD',
+                amount: totalValue,
+                rate: currentRate,
+                status: status
+              })}
+            >
               <Eye size={14} />
               View Account Master
             </button>
-            <button className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px' }}>
+            <button 
+              className="btn btn-success" 
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px' }}
+              onClick={() => setIsModalOpen(true)}
+            >
               <Plus size={14} />
               Record Payment
             </button>
@@ -294,6 +313,12 @@ const PaymentItemPage = ({ payment }) => {
         updatedAt="February 12, 2026 9:40 AM"
         createdBy="dinuka@oshanravlyon.onmicrosoft.com (3657aa5c-0cb7-472d-a9b3-f1a5e86e6477)"
         updatedBy="amilad@oshanravlyon.onmicrosoft.com (3906f309-55a4-498c-a696-390c8262193f)"
+      />
+
+      <NewPaymentModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        accountData={payment} 
       />
 
       <div style={{ height: '48px' }} />

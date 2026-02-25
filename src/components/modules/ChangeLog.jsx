@@ -1,6 +1,6 @@
 import React from 'react';
 import ModulePage from '../ModulePage';
-import { Play } from 'lucide-react';
+import { Play, Eye } from 'lucide-react';
 import HighlightText from '../common/HighlightText';
 
 const CHANGELOG_DATA = [
@@ -11,16 +11,16 @@ const CHANGELOG_DATA = [
     entityId: '#uvindu.p@avlyon.com (b0bc0d5d-5742-4b2a-8c1d-6e1e1e1e1e1e)',
     action: 'Update',
     user: 'uvindu.p@avlyon.com (uvindu.p@avlyon.com)',
-    changes: '2 field(s) changed'
+    changes: '2 changes'
   },
   {
     id: 2,
     timestamp: '2026-02-24 09:15:33',
     entityType: 'User',
     entityId: '#uvindu.p@avlyon.com (b0bc0d5d-5742-4b2a-8c1d-6e1e1e1e1e1e)',
-    action: 'Update',
+    action: 'Create',
     user: 'System',
-    changes: '1 field(s) changed'
+    changes: '1 changes'
   },
   {
     id: 3,
@@ -29,89 +29,77 @@ const CHANGELOG_DATA = [
     entityId: '#chanodya.l@avlyon.com (f5f15366-8a50-4b2a-8c1d-6e1e1e1e1e1e)',
     action: 'Update',
     user: 'chanodya.l@avlyon.com (chanodya.l@avlyon.com)',
-    changes: '2 field(s) changed'
+    changes: '2 changes'
   },
   {
     id: 4,
     timestamp: '2026-02-24 09:13:07',
     entityType: 'User',
     entityId: '#chanodya.l@avlyon.com (f5f15366-8a50-4b2a-8c1d-6e1e1e1e1e1e)',
-    action: 'Update',
+    action: 'Delete',
     user: 'System',
-    changes: '1 field(s) changed'
+    changes: '1 changes'
   },
   {
     id: 5,
     timestamp: '2026-02-24 05:14:42',
-    entityType: 'User',
-    entityId: '#uvindu.p@avlyon.com (b0bc0d5d-5742-4b2a-8c1d-6e1e1e1e1e1e)',
+    entityType: 'Account',
+    entityId: '#1421310601',
     action: 'Update',
     user: 'uvindu.p@avlyon.com (uvindu.p@avlyon.com)',
-    changes: '2 field(s) changed'
+    changes: '5 changes'
   },
   {
     id: 6,
     timestamp: '2026-02-24 05:14:42',
-    entityType: 'User',
-    entityId: '#uvindu.p@avlyon.com (b0bc0d5d-5742-4b2a-8c1d-6e1e1e1e1e1e)',
+    entityType: 'Account',
+    entityId: '#1421310601',
     action: 'Update',
     user: 'System',
-    changes: '1 field(s) changed'
+    changes: '1 changes'
   },
   {
     id: 7,
     timestamp: '2026-02-24 03:45:56',
     entityType: 'User',
-    entityId: '#oshan.r@avlyon.com#EXT#@oshanravlyon.com (c2f1b4a1-4b2a-8c1d)',
+    entityId: '#oshan.r@avlyon.com (c2f1b4a1-4b2a-8c1d)',
     action: 'Update',
-    user: 'Oshan Rube (oshan.r@avlyon.com...)',
-    changes: '2 field(s) changed'
+    user: 'Oshan Rube (oshan.r@avlyon.com)',
+    changes: '2 changes'
   },
   {
     id: 8,
     timestamp: '2026-02-24 03:45:56',
     entityType: 'User',
-    entityId: '#oshan.r@avlyon.com#EXT#@oshanravlyon.com (c2f1b4a1-4b2a-8c1d)',
-    action: 'Update',
+    entityId: '#oshan.r@avlyon.com (c2f1b4a1-4b2a-8c1d)',
+    action: 'Create',
     user: 'System',
-    changes: '1 field(s) changed'
-  },
-  {
-    id: 9,
-    timestamp: '2026-02-24 03:40:38',
-    entityType: 'Account',
-    entityId: '#1421310601',
-    action: 'Update',
-    user: 'chanodya.l@avlyon.com (chanodya.l@avlyon.com)',
-    changes: '11 field(s) changed'
-  },
+    changes: '1 changes'
+  }
 ];
 
-const ChangeLog = () => {
+const ChangeLog = ({ onNavigate }) => {
   const renderCell = (row, col, value, highlight) => {
     if (col === 'ENTITY') {
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', padding: '4px 0', gap: '2px' }}>
-          <span style={{ fontWeight: 600, fontSize: '13px', color: 'var(--color-text-main)' }}>
-            <HighlightText text={row.entityType} highlight={highlight} />
-          </span>
-          <span style={{ fontSize: '12px', color: '#1677ff', cursor: 'pointer' }} className="truncate">
-            <HighlightText text={row.entityId} highlight={highlight} />
-          </span>
-        </div>
+        <span style={{ fontWeight: 400, fontSize: '13px', color: 'var(--color-text-main)' }}>
+          <HighlightText text={row.entityType} highlight={highlight} />
+        </span>
       );
     }
 
     if (col === 'ACTION') {
+      let actionColor = 'var(--color-text-main)';
+      if (value === 'Update') actionColor = '#1677ff';
+      if (value === 'Create') actionColor = '#22c55e';
+      if (value === 'Delete') actionColor = '#ef4444';
+
       return (
         <span style={{
-          backgroundColor: '#e6f4ff',
-          color: '#1677ff',
-          padding: '2px 10px',
-          borderRadius: '6px',
-          fontSize: '12px',
-          fontWeight: 600,
-          display: 'inline-block'
+          color: actionColor,
+          fontSize: '13px',
+          fontWeight: 400,
+          fontFamily: 'monospace',
         }}>
           <HighlightText text={value} highlight={highlight} />
         </span>
@@ -119,23 +107,41 @@ const ChangeLog = () => {
     }
 
     if (col === 'CHANGES') {
+      const match = value?.match(/(\d+)/);
+      const count = match ? match[1] : '0';
       return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#1677ff', cursor: 'pointer', fontWeight: 400 }}>
-          <Play size={10} fill="#1677ff" />
-          <span><HighlightText text={value} highlight={highlight} /></span>
-        </div>
+        <span style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>
+          <HighlightText text={`${count} changes`} highlight={highlight} />
+        </span>
       );
     }
 
-    if (col === 'USER' || col === 'TIME') {
+    if (col === 'TIME') {
       return (
-        <span style={{ color: 'var(--color-text-main)', fontSize: '13px' }} className="truncate">
+        <span style={{ color: 'var(--color-text-secondary)', fontSize: '13px', fontWeight: 400, fontFamily: 'monospace' }} className="truncate">
           <HighlightText text={value} highlight={highlight} />
         </span>
       )
     }
 
-    return <HighlightText text={value || '-'} highlight={highlight} />;
+    if (col === 'USER') {
+      let displayUser = value;
+      if (value.includes('(') && value.includes(')')) {
+        const match = value.match(/\(([^)]+)\)/);
+        if (match) displayUser = match[1].replace('...', '');
+      }
+      return (
+        <span style={{ color: 'var(--color-text-main)', fontSize: '13px', fontWeight: 400 }} className="truncate">
+          <HighlightText text={displayUser} highlight={highlight} />
+        </span>
+      );
+    }
+
+    return (
+      <span style={{ color: 'var(--color-text-main)', fontSize: '13px', fontWeight: 400 }} className="truncate">
+        <HighlightText text={value || '-'} highlight={highlight} />
+      </span>
+    );
   };
 
   return (
@@ -153,7 +159,14 @@ const ChangeLog = () => {
       }}
       showAddButton={false}
       showDefaultRowActions={false}
+      showSelection={false}
       renderCell={renderCell}
+      onRowClick={(row) => onNavigate && onNavigate('Change Log Item Details', row)}
+      renderRowActions={() => (
+        <button className="action-btn" title="View">
+          <Eye size={14} />
+        </button>
+      )}
     />
   );
 };

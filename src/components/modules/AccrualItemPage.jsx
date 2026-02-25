@@ -97,7 +97,6 @@ const AccrualItemPage = ({ accrual }) => {
   const period = parts[0] || '202602';
   const accountType = parts[1] || 'FD';
   const currency = parts[2] || 'LKR';
-  const bankCode = parts.slice(3).join('_') || 'DFCC';
   const periodLabel = period.length === 6
     ? `${period.slice(0, 4)}-${period.slice(4)}`
     : period;
