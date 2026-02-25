@@ -525,7 +525,7 @@ const AccountsTable = () => {
         onScroll={handleScroll}
       >
 
-        <table className="data-table">
+        <table className="data-table min-w-1000">
           <thead style={{ position: 'sticky', top: 0, zIndex: 20 }}>
             <tr>
               <th className="checkbox-col">

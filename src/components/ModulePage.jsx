@@ -33,9 +33,16 @@ const ModulePage = ({
   filterOptions = {}, // Optional: object mapping field names to array of options
   alertCount = 0, // Optional: number of alerts to show
   showAddButton = true, // Optional: whether to show the "Add New" button
+  createButtonText, // Optional: custom text for the "Add New" button (without "Add New ")
+  onCreate, // Optional: callback when "Add New" button is clicked
   renderHeaderActions = null, // Optional: function to render custom header actions () => JSX
   showDefaultRowActions = true, // Optional: whether to show default Edit and Delete actions
-  showColumnCustomization = true // Default to true
+  showColumnCustomization = true, // Default to true
+  onRowClick = null, // Optional: callback when a row is clicked (row) => void
+  renderCell, // Optional: function to render custom cell content (row, col, value) => JSX
+  onSelectionChange, // Optional: callback when row selection changes (selectedRows) => void
+  renderActions, // Optional: function to render custom header actions () => JSX
+  showSelection = true // Optional: whether to show the selection checkbox column
 }) => {
   const [allData, setAllData] = useState([]);
   const [visibleData, setVisibleData] = useState([]);
@@ -51,6 +58,13 @@ const ModulePage = ({
   const [tempFilters, setTempFilters] = useState({});
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [showEmptyState, setShowEmptyState] = useState(false);
+
+  // Notify parent of selection changes
+  useEffect(() => {
+    if (onSelectionChange) {
+      onSelectionChange(selectedRows);
+    }
+  }, [selectedRows, onSelectionChange]);
 
   // Column Visibility State
   const [visibleColumns, setVisibleColumns] = useState(new Set(columns));
@@ -289,6 +303,10 @@ const ModulePage = ({
     const key = dataMap[col] || col.toLowerCase().replace(/ /g, '');
     const value = row[key];
 
+    if (renderCell) {
+      return renderCell(row, col, value, debouncedSearchQuery);
+    }
+
     if (key === 'status') {
       const getStatusClass = (status) => {
         const s = status?.toLowerCase();
@@ -320,10 +338,11 @@ const ModulePage = ({
           <button className="btn btn-outline">
             <Download size={16} />
           </button>
+          {renderActions && renderActions()}
           {showAddButton && (
-            <button className="btn btn-primary">
+            <button className="btn btn-primary" onClick={() => onCreate && onCreate(createButtonText || `Add New ${title.replace(/^All /, '').replace(/s$/, '')}`)}>
               <Plus size={16} />
-              Add New {title.slice(0, -1) || 'Item'}
+              {createButtonText || `Add New ${title.replace(/^All /, '').replace(/s$/, '')}`}
             </button>
           )}
         </div>
@@ -658,58 +677,70 @@ const ModulePage = ({
         <table className="data-table">
           <thead style={{ position: 'sticky', top: 0, zIndex: 20 }}>
             <tr>
-              <th className="checkbox-col">
-                <input
-                  type="checkbox"
-                  checked={visibleData.length > 0 && selectedRows.size === visibleData.length}
-                  onChange={toggleAllSelection}
-                />
-              </th>
+              {showSelection && (
+                <th className="checkbox-col">
+                  <input
+                    type="checkbox"
+                    checked={visibleData.length > 0 && selectedRows.size === visibleData.length}
+                    onChange={toggleAllSelection}
+                  />
+                </th>
+              )}
               {columns.filter(col => visibleColumns.has(col)).map(col => (
                 <th key={col}>{col.toUpperCase()}</th>
               ))}
-              <th className="actions-col"></th>
+              {(renderRowActions || showDefaultRowActions) && <th className="actions-col"></th>}
             </tr>
           </thead>
           <tbody>
             {visibleColumns.size > 0 && visibleData.map((row) => (
-              <tr key={row.id}>
-                <td className="checkbox-col">
-                  <input
-                    type="checkbox"
-                    checked={selectedRows.has(row.id)}
-                    onChange={() => toggleRowSelection(row.id)}
-                  />
-                </td>
+              <tr
+                key={row.id}
+                onClick={onRowClick ? () => onRowClick(row) : undefined}
+                style={onRowClick ? { cursor: 'pointer' } : {}}
+              >
+                {showSelection && (
+                  <td className="checkbox-col" onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      checked={selectedRows.has(row.id)}
+                      onChange={() => toggleRowSelection(row.id)}
+                    />
+                  </td>
+                )}
                 {columns.filter(col => visibleColumns.has(col)).map(col => (
-                  <td key={col} style={col === 'Amount' ? { fontFamily: 'monospace', fontWeight: 500 } : {}}>
+                  <td key={col} style={{
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    color: 'var(--color-text-main)',
+                    fontFamily: (col === 'Amount' || col.includes('Rate') || col.includes('Price')) ? 'monospace' : 'inherit'
+                  }}>
                     {getCellContent(row, col)}
                   </td>
                 ))}
 
-                <td className="actions-col">
-                  <div className="row-actions">
-                    {renderRowActions ? (
-                      renderRowActions(row)
-                    ) : (
-                      <>
-                        {showDefaultRowActions && (
-                          <>
-                            <button className="action-btn" title="Edit">
-                              <Pencil size={14} />
-                            </button>
-                            <button className="action-btn" title="Delete">
-                              <Trash2 size={14} />
-                            </button>
-                          </>
-                        )}
-                        {/* <button className="action-btn" title="More">
-                          <MoreVertical size={14} />
-                        </button> */}
-                      </>
-                    )}
-                  </div>
-                </td>
+                {(renderRowActions || showDefaultRowActions) && (
+                  <td className="actions-col" onClick={(e) => e.stopPropagation()}>
+                    <div className="row-actions">
+                      {renderRowActions ? (
+                        renderRowActions(row)
+                      ) : (
+                        <>
+                          {showDefaultRowActions && (
+                            <>
+                              <button className="action-btn" title="Edit">
+                                <Pencil size={14} />
+                              </button>
+                              <button className="action-btn" title="Delete">
+                                <Trash2 size={14} />
+                              </button>
+                            </>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </td>
+                )}
               </tr>
             ))}
             {visibleColumns.size > 0 && visibleData.length === 0 && (isLoading || !showEmptyState) && (

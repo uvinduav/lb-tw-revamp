@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ModulePage from '../ModulePage';
 import csvFile from '../../assets/accounts-test-sheet.csv?raw';
 
-const Accounts = () => {
+const Accounts = ({ onNavigate }) => {
   const [data] = useState(() => {
     if (!csvFile) return [];
 
@@ -22,13 +22,19 @@ const Accounts = () => {
           accountNumber: entry['Account Number'],
           bank: entry['Bank'],
           branch: entry['Branch'],
+          company: entry['Company'],
           type: entry['Product Type'],
           currency: entry['Currency'],
           amount: entry['Value'] || '-',
           rate: entry['Current Rate (%)'] || '-',
           interestType: 'Fixed',
           startDate: entry['Start Date'],
+          endDate: entry['End Date'] || '-',
           duration: entry['Duration (Days)'] || '-',
+          interestUpToDate: entry['Interest Up To Date'] || '-',
+          totalOutstanding: entry['Total Outstanding'] || '-',
+          totalInterest: entry['Total Interest'] || '-',
+          estimatedTotal: entry['Estimated Total'] || '-',
           status: entry['Status']
         };
       });
@@ -61,6 +67,9 @@ const Accounts = () => {
       data={data}
       filterFields={filterFields}
       dataMap={dataMap}
+      onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'Accounts' })}
+      createButtonText="Add New Account"
+      onRowClick={(row) => onNavigate && onNavigate('Account Item Details', row)}
     />
   );
 };

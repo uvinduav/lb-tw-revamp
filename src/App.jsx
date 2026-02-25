@@ -23,11 +23,78 @@ import ExchangeRates from './components/modules/ExchangeRates';
 import PurposeTags from './components/modules/PurposeTags';
 import Users from './components/modules/Users';
 import UserGroups from './components/modules/UserGroups';
+import CashFlow from './components/modules/CashFlow';
+import EntityDetails from './components/modules/EntityDetails';
+import BankDetails from './components/modules/BankDetails';
+import AccountDetails from './components/modules/AccountDetails';
+import AccountItemPage from './components/modules/AccountItemPage';
+import PaymentItemPage from './components/modules/PaymentItemPage';
+import AccrualItemPage from './components/modules/AccrualItemPage';
+import PostingCenterItemPage from './components/modules/PostingCenterItemPage';
+import FloatingRateItemPage from './components/modules/FloatingRateItemPage';
+import WorkingCalendarItemPage from './components/modules/WorkingCalendarItemPage';
+import DebtDetails from './components/modules/DebtDetails';
+import CreateParameterPage from './components/CreateParameterPage';
+import CreateAccount from './components/modules/CreateAccount';
+import CreateFloatingRate from './components/modules/CreateFloatingRate';
+import CreateWorkingCalendar from './components/modules/CreateWorkingCalendar';
+import ChangeLogItemPage from './components/modules/ChangeLogItemPage';
+import CashPositionDetails from './components/modules/CashPositionDetails';
+import InvestmentDetails from './components/modules/InvestmentDetails';
+import ParameterItemPage from './components/modules/ParameterItemPage';
 
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
+import SlidingPanel from './components/common/SlidingPanel';
+import AlertsPanel from './components/modules/AlertsPanel';
+import TasksPanel from './components/modules/TasksPanel';
+import ScrollToTop from './components/common/ScrollToTop';
+import Thresholds from './components/modules/Thresholds';
+import Alerts from './components/modules/Alerts';
 
 function App() {
-  const [activePage, setActivePage] = useState('Accounts');
+  const [activePage, setActivePage] = useState('Dashboard');
+  const [selectedEntity, setSelectedEntity] = useState(null);
+  const [selectedBank, setSelectedBank] = useState(null);
+  const [selectedAccount, setSelectedAccount] = useState(null);
+
+  // Panel State
+  const [isAlertsOpen, setIsAlertsOpen] = useState(false);
+  const [isTasksOpen, setIsTasksOpen] = useState(false);
+
+  // History state for chronological navigation
+  const [history, setHistory] = useState([{ page: 'Dashboard', entity: null, bank: null, account: null }]);
+  const [historyIndex, setHistoryIndex] = useState(0);
+
+  const handlePageChange = (page, entity = null, bank = null, account = null, isHistoryNav = false) => {
+    // If not navigating history, push new state and truncate "forward" history
+    if (!isHistoryNav) {
+      const newHistory = history.slice(0, historyIndex + 1);
+      newHistory.push({ page, entity, bank, account });
+      setHistory(newHistory);
+      setHistoryIndex(newHistory.length - 1);
+    }
+
+    if (entity !== undefined) setSelectedEntity(entity);
+    if (bank !== undefined) setSelectedBank(bank);
+    if (account !== undefined) setSelectedAccount(account);
+    setActivePage(page);
+  };
+
+  const goBack = () => {
+    if (historyIndex > 0) {
+      const prev = history[historyIndex - 1];
+      setHistoryIndex(historyIndex - 1);
+      handlePageChange(prev.page, prev.entity, prev.bank, prev.account, true);
+    }
+  };
+
+  const goForward = () => {
+    if (historyIndex < history.length - 1) {
+      const next = history[historyIndex + 1];
+      setHistoryIndex(historyIndex + 1);
+      handlePageChange(next.page, next.entity, next.bank, next.account, true);
+    }
+  };
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
@@ -35,41 +102,108 @@ function App() {
   // Toggle sidebar function
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
-  // Use hook for global sidebar toggle shortcut
+  // use hook for global sidebar toggle shortcut
   useKeyboardShortcuts(null, null, toggleSidebar);
+
+  React.useEffect(() => {
+    const titleMap = {
+      'Settings': 'Profile Settings'
+    };
+    document.title = (titleMap[activePage] || activePage) + ' - LB Treasury';
+  }, [activePage]);
 
   const renderPage = () => {
     switch (activePage) {
-      case 'Dashboard': return <Dashboard />;
-      case 'Accounts': return <Accounts />;
-      case 'Payments': return <Payments />;
-      case 'Accruals': return <Accruals />;
+      case 'Dashboard': return <Dashboard onNavigate={handlePageChange} />;
+      case 'Entity Details': return <EntityDetails entity={selectedEntity} onNavigate={handlePageChange} onBack={() => setActivePage('Dashboard')} />;
+      case 'Bank Details': return <BankDetails entity={selectedEntity} bank={selectedBank} onNavigate={handlePageChange} onBack={() => setActivePage('Entity Details')} />;
+      case 'Account Details': return <AccountDetails account={selectedAccount} bank={selectedBank} entity={selectedEntity} onBack={() => setActivePage('Bank Details')} />;
+      case 'Debt Details': return <DebtDetails onNavigate={handlePageChange} />;
+      case 'Cash Position Details': return <CashPositionDetails onNavigate={handlePageChange} />;
+      case 'Investment Details': return <InvestmentDetails onNavigate={handlePageChange} />;
+      case 'Cash Flow': return <CashFlow onNavigate={setActivePage} />;
+      case 'Accounts': return <Accounts onNavigate={handlePageChange} />;
+      case 'Account Item Details': return <AccountItemPage account={selectedEntity} onNavigate={handlePageChange} />;
+      case 'Payments': return <Payments onNavigate={handlePageChange} />;
+      case 'Payment Item Details': return <PaymentItemPage payment={selectedEntity} onNavigate={handlePageChange} />;
+      case 'Accruals': return <Accruals onNavigate={handlePageChange} />;
+      case 'Accrual Item Details': return <AccrualItemPage accrual={selectedEntity} />;
       case 'Reports': return <Reports />;
-      case 'Floating Rates': return <FloatingRates />;
-      case 'Posting Center': return <PostingCenter />;
-      case 'Working Calendar': return <WorkingCalendar />;
+      case 'Floating Rates': return <FloatingRates onNavigate={handlePageChange} />;
+      case 'Floating Rate Item Details': return <FloatingRateItemPage rate={selectedEntity} />;
+      case 'Posting Center': return <PostingCenter onNavigate={handlePageChange} />;
+      case 'Posting Center Item Details': return <PostingCenterItemPage posting={selectedEntity} />;
+      case 'Working Calendar': return <WorkingCalendar onNavigate={handlePageChange} />;
+      case 'Working Calendar Item Details': return <WorkingCalendarItemPage entry={selectedEntity} />;
+      case 'Change Log Item Details': return <ChangeLogItemPage logEntry={selectedEntity} onBack={() => handlePageChange('Change Log')} />;
+      case 'Parameter Item Details': return <ParameterItemPage item={selectedEntity} />;
 
       // Setup - Parameters
-      case 'Banks': return <Banks />;
-      case 'Benchmarks': return <Benchmarks />;
-      case 'Branches': return <Branches />;
-      case 'Companies': return <Companies />;
-      case 'Currencies': return <Currencies />;
-      case 'Durations': return <Durations />;
-      case 'Interest Rates': return <InterestRates />;
-      case 'Exchange Rates': return <ExchangeRates />;
-      case 'Purpose Tags': return <PurposeTags />;
+      case 'Banks': return <Banks onNavigate={handlePageChange} />;
+      case 'Benchmarks': return <Benchmarks onNavigate={handlePageChange} />;
+      case 'Branches': return <Branches onNavigate={handlePageChange} />;
+      case 'Companies': return <Companies onNavigate={handlePageChange} />;
+      case 'Currencies': return <Currencies onNavigate={handlePageChange} />;
+      case 'Durations': return <Durations onNavigate={handlePageChange} />;
+      case 'Interest Rates': return <InterestRates onNavigate={handlePageChange} />;
+      case 'Exchange Rates': return <ExchangeRates onNavigate={handlePageChange} />;
+      case 'Purpose Tags': return <PurposeTags onNavigate={handlePageChange} />;
+      case 'Thresholds': return <Thresholds onNavigate={handlePageChange} />;
 
       // Setup - Users
-      case 'Users': return <Users />;
-      case 'User Groups': return <UserGroups />;
+      case 'Users': return <Users onNavigate={handlePageChange} />;
+      case 'User Groups': return <UserGroups onNavigate={handlePageChange} />;
+      case 'Alerts': return <Alerts />;
 
-      case 'Change Log': return <ChangeLog />;
+      case 'Change Log': return <ChangeLog onNavigate={handlePageChange} />;
+      case 'Create Page':
+        if (selectedEntity?.parent === 'Accounts') {
+          return <CreateAccount onCancel={() => handlePageChange('Accounts')} onSave={() => handlePageChange('Accounts')} />;
+        }
+        if (selectedEntity?.parent === 'Floating Rates') {
+          return <CreateFloatingRate onCancel={() => handlePageChange('Floating Rates')} onSave={() => handlePageChange('Floating Rates')} />;
+        }
+        if (selectedEntity?.parent === 'Working Calendar') {
+          return <CreateWorkingCalendar onCancel={() => handlePageChange('Working Calendar')} onSave={() => handlePageChange('Working Calendar')} />;
+        }
+        return (
+          <CreateParameterPage 
+            title={selectedEntity?.title} 
+            parent={selectedEntity?.parent} 
+            onCancel={() => handlePageChange(selectedEntity?.parent)} 
+            onSave={() => handlePageChange(selectedEntity?.parent)} 
+          />
+        );
+
       case 'Settings': return <Settings />;
-      case 'Notifications': return <Notifications />;
-
-      default: return <Accounts />;
+      default: return <Accounts onNavigate={handlePageChange} />;
     }
+  };
+
+  const handleBreadcrumbNavigate = (item) => {
+    if (item === 'Dashboard') {
+      handlePageChange('Dashboard');
+    } else if (item === 'Entity Details') {
+      handlePageChange('Entity Details', selectedEntity);
+    } else if (item === selectedBank) {
+      handlePageChange('Bank Details', selectedEntity, selectedBank);
+    } else if (item === selectedAccount?.accountNo) {
+      handlePageChange('Account Details', selectedEntity, selectedBank, selectedAccount);
+    } else {
+      handlePageChange(item);
+    }
+  };
+
+  const [alerts, setAlerts] = useState([
+    { id: 1, type: 'critical', message: 'Liquidity threshold breach: LKR position below minimum requirements' },
+    { id: 2, type: 'warning', message: 'Upcoming payment of 5M USD scheduled for tomorrow has insufficient funds' },
+    { id: 3, type: 'anomaly', message: 'Unusual transaction volume detected in Commercial Bank VND account' },
+    { id: 4, type: 'anomaly', message: 'Significant variance in daily LKR cash flow vs previous month average' },
+    { id: 5, type: 'anomaly', message: 'Unexpected withdrawal pattern observed in Entity: Global Exports Ltd' },
+  ]);
+
+  const handleDismissAlert = (id) => {
+    setAlerts(prev => prev.filter(alert => alert.id !== id));
   };
 
   return (
@@ -84,7 +218,7 @@ function App() {
 
       <Sidebar
         activePage={activePage}
-        setActivePage={setActivePage}
+        setActivePage={handlePageChange}
         isOpen={isSidebarOpen}
         isHovered={isSidebarHovered}
         onMouseEnter={() => !isSidebarOpen && setIsSidebarHovered(true)}
@@ -96,9 +230,45 @@ function App() {
           activePage={activePage}
           toggleSidebar={toggleSidebar}
           isSidebarOpen={isSidebarOpen}
+          showBack={historyIndex > 0}
+          onBack={goBack}
+          showForward={historyIndex < history.length - 1}
+          onForward={goForward}
+          onNavigate={handleBreadcrumbNavigate}
+          breadcrumb={
+            activePage === 'Create Page' ? `Dashboard > ${selectedEntity?.parent} > ${selectedEntity?.title}` :
+              activePage === 'Entity Details' ? 'Dashboard > Entity Details' :
+                activePage === 'Bank Details' ? `Dashboard > Entity Details > ${selectedBank || 'Bank Details'}` :
+                  activePage === 'Account Details' ? `Dashboard > Entity Details > ${selectedBank} > ${selectedAccount?.accountNo || 'Account'}` :
+                    activePage === 'Account Item Details' ? `Accounts > ${selectedEntity?.accountNumber || 'Account Details'}` :
+                      activePage === 'Payment Item Details' ? `Payments > ${selectedEntity?.accountNo || 'Payment Details'}` :
+                        activePage === 'Accrual Item Details' ? `Accruals > ${selectedEntity?.groupId || 'Group Details'}` :
+                          activePage === 'Posting Center Item Details' ? `Posting Center > ${selectedEntity?.groupId || 'Details'}` :
+                            activePage === 'Floating Rate Item Details' ? `Floating Rates > ${selectedEntity?.name || 'Rate Details'}` :
+                              activePage === 'Working Calendar Item Details' ? `Working Calendar > ${selectedEntity?.displayDate || 'Entry Details'}` :
+                                activePage === 'Parameter Item Details' ? `${selectedEntity?.parent || 'Parameters'} > ${selectedEntity?.name || selectedEntity?.title || 'Details'}` :
+                                  activePage === 'Change Log Item Details' ? `Change Log > ${selectedEntity?.entityType || 'Log Entry Details'}` :
+                                    activePage === 'Debt Details' ? 'Dashboard > Debt Details' :
+                                      activePage === 'Cash Position Details' ? 'Dashboard > Cash Position Details' :
+                                        activePage === 'Investment Details' ? 'Dashboard > Investment Details' :
+                                          activePage === 'Settings' ? 'Profile Settings' :
+                                            activePage
+          }
+          onAlertsClick={() => setIsAlertsOpen(true)}
+          onTasksClick={() => setIsTasksOpen(true)}
+          alerts={alerts}
         />
         {renderPage()}
       </div>
+
+      <AlertsPanel
+        isOpen={isAlertsOpen}
+        onClose={() => setIsAlertsOpen(false)}
+        alerts={alerts}
+        onDismiss={handleDismissAlert}
+      />
+      <TasksPanel isOpen={isTasksOpen} onClose={() => setIsTasksOpen(false)} />
+      <ScrollToTop activePage={activePage} />
     </div>
   );
 }

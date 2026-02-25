@@ -1,7 +1,7 @@
 import React from 'react';
 import ModulePage from '../ModulePage';
 
-const UserGroups = () => {
+const UserGroups = ({ onNavigate }) => {
   return (
     <ModulePage 
       title="User Groups"
@@ -15,6 +15,8 @@ const UserGroups = () => {
           'Permissions': 'permissions',
           'Status': 'status'
       }}
+      onCreate={(title) => onNavigate && onNavigate('Create Page', { title, parent: 'User Groups' })}
+      createButtonText="Add New User Group"
     />
   );
 };

@@ -31,6 +31,7 @@ const Reports = () => {
       }}
       showAddButton={false}
       showDefaultRowActions={false}
+      showSelection={false}
     />
   );
 };
