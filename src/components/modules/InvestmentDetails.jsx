@@ -384,6 +384,7 @@ const InvestmentDetails = () => {
             color: "#fefce8",
             totalVolume: "LKR 5,450,000,000.00",
             share: "47.4% of total",
+            avgRate: "9.52%",
             count: 8,
             desc: "5 LKR FDs, 3 USD FDs",
             investments: [
@@ -442,6 +443,7 @@ const InvestmentDetails = () => {
             color: "#e0f2fe",
             totalVolume: "LKR 3,200,000,000.00",
             share: "27.8% of total",
+            avgRate: "10.10%",
             count: 5,
             desc: "5 LKR FDs",
             investments: [
@@ -484,6 +486,7 @@ const InvestmentDetails = () => {
             color: "#ffedd5",
             totalVolume: "LKR 1,838,720,000.00",
             share: "16.0% of total",
+            avgRate: "9.20%",
             count: 4,
             desc: "3 LKR FDs, 1 EUR FD",
             investments: [
@@ -534,6 +537,8 @@ const InvestmentDetails = () => {
                         </h1>
                         <div style={{ marginTop: '4px', fontSize: '13px', fontWeight: 400, color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span>Total Investments: {summaryData.totalInvestments}</span>
+                            <span style={{ color: '#e5e7eb' }}>•</span>
+                            <span>Avg. Rate: {summaryData.wair}</span>
                             <span style={{ color: '#e5e7eb' }}>•</span>
                             <span>{summaryData.activeFDs} Total FDs</span>
                         </div>
@@ -737,6 +742,8 @@ const InvestmentDetails = () => {
                                         <span>{bank.count} active investments</span>
                                         <span style={{ color: '#e5e7eb' }}>•</span>
                                         <span>{bank.share}</span>
+                                        <span style={{ color: '#e5e7eb' }}>•</span>
+                                        <span>Avg. Rate {bank.avgRate}</span>
                                     </div>
                                 </div>
                             </div>

@@ -425,7 +425,14 @@ const DebtDetails = () => {
                                                     {loan.type}
                                                 </div>
                                             </td>
-                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', fontFamily: 'monospace', textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>{loan.rate}</td>
+                                            <td style={{ fontSize: '13px', color: 'var(--color-text-main)', fontFamily: 'monospace', textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
+                                                <div 
+                                                    title={loan.type === 'Floating' && loan.margin ? loan.margin.replace(' Margin: ', ' + ').replace(' + +', ' + ') : ''}
+                                                    style={{ cursor: loan.type === 'Floating' ? 'help' : 'default' }}
+                                                >
+                                                    {loan.rate}
+                                                </div>
+                                            </td>
                                             <td style={{ fontSize: '13px', color: 'var(--color-text-main)', fontFamily: 'monospace', textAlign: 'right', paddingRight: '24px', whiteSpace: 'nowrap', maxWidth: 'none', overflow: 'visible' }}>
                                                 <span style={{ color: '#9ca3af' }}>{loan.accrual.split(' ')[0]}</span>
                                                 <span> {loan.accrual.split(' ')[1]}</span>
