@@ -722,7 +722,7 @@ const Dashboard = ({ onNavigate }) => {
           {/* Investment Charts Grid */}
           <div className="investment-grid">
             <ChartCard
-              title="Total Investments by Category"
+              title="Total Investments by Currency"
               chartData={investmentData}
               details={investmentDetails}
               columns={investmentColumns}
