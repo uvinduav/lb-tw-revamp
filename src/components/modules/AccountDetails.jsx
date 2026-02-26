@@ -21,9 +21,7 @@ import {
     Filler
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import AccountBalanceHistoryTable from './AccountBalanceHistoryTable';
 import InterestCalculationTable from './InterestCalculationTable';
-import AuditInformation from './AuditInformation';
 
 ChartJS.register(
     CategoryScale,
@@ -75,6 +73,7 @@ const AccountDetails = ({ account, bank }) => {
         startDate: account.startDate || 'Feb 09, 2026',
         lastUpdate: 'Feb 09, 2026',
         status: account.status || 'Active',
+        interestRate: account.interestRate || '2.50%',
         balance: account.balance || account.amount || 'LKR 4,500,000.00',
         avgBalance: 'LKR 4,500,000.00',
         change7d: 'LKR 4,500,000.00'
@@ -234,6 +233,10 @@ const AccountDetails = ({ account, bank }) => {
                                     <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)' }}>{accountInfo.currency}</div>
                                 </div>
                                 <div>
+                                    <div style={{ fontSize: '12px', color: '#9ca3af', textTransform: 'lowercase', marginBottom: '4px', fontWeight: 400 }}>interest rate</div>
+                                    <div style={{ fontSize: '13px', fontWeight: 400, color: 'var(--color-text-main)', fontFamily: 'monospace' }}>{accountInfo.interestRate}</div>
+                                </div>
+                                <div>
                                     <div style={{ fontSize: '12px', color: '#9ca3af', textTransform: 'lowercase', marginBottom: '4px', fontWeight: 400 }}>purpose</div>
                                     <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
                                         <span style={{ backgroundColor: '#eff6ff', color: '#3b82f6', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>urgent</span>
@@ -375,14 +378,9 @@ const AccountDetails = ({ account, bank }) => {
                 </div>
 
                 {/* Conditional Table Section */}
-                {isRenewed ? (
+                {isRenewed && (
                     <InterestCalculationTable account={account} currency={account.currency || 'LKR'} />
-                ) : (
-                    <AccountBalanceHistoryTable account={account} currency={account.currency || 'LKR'} />
                 )}
-
-                {/* Audit Information Section */}
-                <AuditInformation />
 
             </div>
         </div>

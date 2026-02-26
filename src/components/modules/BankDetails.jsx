@@ -397,9 +397,9 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
 
     // Mock Data for Operating Accounts
     const operatingAccounts = [
-        { accountNo: '1100023456', company: 'Lanka Bell', name: 'Operational Account', type: 'Current', currency: 'LKR', avgBalance: '240,000,000.00', balance: '250,500,000.00', trend: 4.5 },
-        { accountNo: '1100023457', company: 'Bell Solutions', name: 'Payroll Account', type: 'Current', currency: 'LKR', avgBalance: '48,000,000.00', balance: '50,000,000.00', trend: 2.1 },
-        { accountNo: '1100023458', company: 'Lanka Bell', name: 'Collection Account', type: 'Savings', currency: 'USD', avgBalance: '1,150,000.00', balance: '1,200,000.00', trend: -1.2 },
+        { accountNo: '1100023456', company: 'Lanka Bell', name: 'Operational Account', type: 'Current', currency: 'LKR', avgBalance: '240,000,000.00', balance: '250,500,000.00', interestRate: '2.50%', trend: 4.5 },
+        { accountNo: '1100023457', company: 'Bell Solutions', name: 'Payroll Account', type: 'Current', currency: 'LKR', avgBalance: '48,000,000.00', balance: '50,000,000.00', interestRate: '2.50%', trend: 2.1 },
+        { accountNo: '1100023458', company: 'Lanka Bell', name: 'Collection Account', type: 'Savings', currency: 'USD', avgBalance: '1,150,000.00', balance: '1,200,000.00', interestRate: '1.25%', trend: -1.2 },
     ];
 
     // Mock Data for Loan Facilities
@@ -497,6 +497,7 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
                                     <th>ACCOUNT NAME</th>
                                     <th>TYPE</th>
                                     <th>CURRENCY</th>
+                                    <th style={{ textAlign: 'right' }}>INT. RATE</th>
                                     <th style={{ textAlign: 'right' }}>AVG BALANCE</th>
                                     <th style={{ textAlign: 'right' }}>BALANCE</th>
                                     <th style={{ textAlign: 'right', paddingRight: '24px' }}>TREND</th>
@@ -515,6 +516,7 @@ const BankDetails = ({ entity, bank, onNavigate }) => {
                                         <td style={{ color: 'var(--color-text-main)' }}>{acc.name}</td>
                                         <td style={{ color: 'var(--color-text-main)' }}>{acc.type}</td>
                                         <td><span className="currency-badge">{acc.currency}</span></td>
+                                        <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>{acc.interestRate}</td>
                                         <td style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--color-text-main)' }}>
                                             <span style={{ color: '#9ca3af' }}>{acc.currency} </span>{acc.avgBalance}
                                         </td>
