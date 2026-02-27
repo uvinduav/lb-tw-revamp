@@ -58,6 +58,21 @@
   padding: 0;
 }
 
+.text-right {
+  text-align: right !important;
+}
+
+.col-amount {
+  min-width: 180px !important;
+  max-width: 250px !important;
+}
+
+.col-rate {
+  width: 60px !important;
+  min-width: 60px !important;
+  text-align: right !important;
+}
+
 body {
   font-family: var(--font-inter);
   background-color: var(--color-bg);

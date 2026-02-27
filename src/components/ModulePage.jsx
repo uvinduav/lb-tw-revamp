@@ -304,7 +304,10 @@ const ModulePage = ({
     const value = row[key];
 
     if (renderCell) {
-      return renderCell(row, col, value, debouncedSearchQuery);
+      const customCell = renderCell(row, col, value, debouncedSearchQuery);
+      if (customCell !== null && customCell !== undefined) {
+        return customCell;
+      }
     }
 
     if (key === 'status') {
@@ -687,7 +690,16 @@ const ModulePage = ({
                 </th>
               )}
               {columns.filter(col => visibleColumns.has(col)).map(col => (
-                <th key={col}>{col.toUpperCase()}</th>
+                <th
+                  key={col}
+                  className={`
+                    ${(col === 'Amount' || col.toLowerCase().includes('value') || col.toLowerCase().includes('total')) ? 'text-right' : ''}
+                    ${col === 'Amount' ? 'col-amount' : ''}
+                    ${col.toLowerCase().includes('rate') ? 'col-rate' : ''}
+                  `}
+                >
+                  {col.toUpperCase()}
+                </th>
               ))}
               {(renderRowActions || showDefaultRowActions) && <th className="actions-col"></th>}
             </tr>
@@ -709,12 +721,19 @@ const ModulePage = ({
                   </td>
                 )}
                 {columns.filter(col => visibleColumns.has(col)).map(col => (
-                  <td key={col} style={{
-                    fontSize: '13px',
-                    fontWeight: 400,
-                    color: 'var(--color-text-main)',
-                    fontFamily: (col === 'Amount' || col.includes('Rate') || col.includes('Price')) ? 'monospace' : 'inherit'
-                  }}>
+                  <td
+                    key={col}
+                    className={`
+                      ${(col === 'Amount' || col.toLowerCase().includes('value') || col.toLowerCase().includes('total')) ? 'text-right' : ''}
+                      ${col === 'Amount' ? 'col-amount' : ''}
+                      ${col.toLowerCase().includes('rate') ? 'col-rate' : ''}
+                    `}
+                    style={{
+                      fontSize: '13px',
+                      fontWeight: 400,
+                      color: 'var(--color-text-main)',
+                      fontFamily: (col === 'Amount' || col.includes('Rate') || col.includes('Price')) ? 'monospace' : 'inherit'
+                    }}>
                     {getCellContent(row, col)}
                   </td>
                 ))}
