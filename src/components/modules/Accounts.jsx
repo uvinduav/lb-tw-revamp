@@ -50,14 +50,16 @@ const Accounts = ({ onNavigate }) => {
     return parseCSV(csvFile);
   });
 
-  const columns = ['Account No.', 'Bank', 'Branch', 'Type', 'Amount', 'Rate', 'Int. Type', 'Start Date', 'Duration', 'Status'];
-  const filterFields = ['Account No.', 'Bank', 'Branch', 'Type', 'Start Date', 'Rate', 'Int. Type', 'Amount', 'Status', 'Duration'];
+  const columns = ['Account No.', 'Bank', 'Branch', 'Type', 'Currency', 'Amount', 'Last Updated', 'Rate', 'Int. Type', 'Start Date', 'Duration', 'Status'];
+  const filterFields = ['Account No.', 'Bank', 'Branch', 'Type', 'Currency', 'Start Date', 'Rate', 'Int. Type', 'Amount', 'Last Updated', 'Status', 'Duration'];
   const dataMap = {
     'Account No.': 'accountNumber',
     'Bank': 'bank',
     'Branch': 'branch',
     'Type': 'type',
+    'Currency': 'currency',
     'Amount': 'amount',
+    'Last Updated': 'lastUpdated',
     'Rate': 'rate',
     'Int. Type': 'interestType',
     'Start Date': 'startDate',
@@ -66,17 +68,17 @@ const Accounts = ({ onNavigate }) => {
   };
 
   const renderCell = (row, col, value, highlight) => {
+    if (col === 'Currency') {
+      return (
+        <span style={{ color: 'var(--color-text-tertiary)', fontWeight: 500 }}>
+          <HighlightText text={value} highlight={highlight} />
+        </span>
+      );
+    }
+
     if (col === 'Amount') {
       const amount = row.amount;
-      const currency = row.currency;
-      const lastUpdated = row.lastUpdated;
-      const isToday = lastUpdated === '2026-02-27';
       const isEmpty = !amount || amount === '' || amount === '-' || amount === 'N/A';
-
-      let dotColor = '#9ca3af'; // Grey
-      if (!isEmpty) {
-        dotColor = isToday ? '#22c55e' : '#ef4444'; // Green : Red
-      }
 
       const formattedAmount = !isEmpty ? parseFloat(String(amount).replace(/,/g, '')).toLocaleString('en-US', {
         minimumFractionDigits: 2,
@@ -84,31 +86,28 @@ const Accounts = ({ onNavigate }) => {
       }) : 'N/A';
 
       return (
-        <div
-          title={`Last updated: ${lastUpdated}`}
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', cursor: 'default' }}
-        >
-          <span style={{ color: 'var(--color-text-tertiary)', fontWeight: 500 }}>{currency}</span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ color: isEmpty ? 'var(--color-text-tertiary)' : 'inherit' }}>
-              {isEmpty ? (
-                'N/A'
-              ) : (
-                <HighlightText text={formattedAmount} highlight={highlight} />
-              )}
-            </span>
-            <div
-              style={{
-                width: '6px',
-                height: '6px',
-                borderRadius: '50%',
-                backgroundColor: dotColor,
-                flexShrink: 0,
-                marginTop: '1px'
-              }}
-            />
-          </div>
-        </div>
+        <span style={{ color: isEmpty ? 'var(--color-text-tertiary)' : 'inherit' }}>
+          {isEmpty ? (
+            'N/A'
+          ) : (
+            <HighlightText text={formattedAmount} highlight={highlight} />
+          )}
+        </span>
+      );
+    }
+
+    if (col === 'Last Updated') {
+      const lastUpdated = row.lastUpdated;
+      const isToday = lastUpdated === '2026-02-27';
+      return (
+        <span style={{
+          color: isToday ? 'inherit' : '#f97316', // Black (inherit) if today, Orange if older
+          fontFamily: 'monospace',
+          fontSize: '12px',
+          fontWeight: '400' // Normal weight for both
+        }}>
+          <HighlightText text={lastUpdated} highlight={highlight} />
+        </span>
       );
     }
 

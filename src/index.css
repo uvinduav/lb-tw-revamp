@@ -63,14 +63,15 @@
 }
 
 .col-amount {
-  min-width: 180px !important;
+  min-width: 140px !important;
   max-width: 250px !important;
 }
 
 .col-rate {
-  width: 60px !important;
-  min-width: 60px !important;
+  width: 1% !important;
+  white-space: nowrap !important;
   text-align: right !important;
+  padding-right: 20px !important;
 }
 
 body {
